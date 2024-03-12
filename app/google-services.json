@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "319086098363",
+    "project_id": "deltamedicalteam",
+    "storage_bucket": "deltamedicalteam.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:319086098363:android:e2bbf006999b64554ff69e",
+        "android_client_info": {
+          "package_name": "com.csc131.deltamedicalteam"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD45jRrn5Z-4JkEgcRB_dWQdxdbws3ELtI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
