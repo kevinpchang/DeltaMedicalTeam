@@ -20,11 +20,8 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
-import java.util.HashSet;
-import java.util.ResourceBundle;
-import java.util.Set;
+
 import com.csc131.deltamedicalteam.databinding.ActivityMainBinding;
-import com.google.firebase.Firebase;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -96,10 +93,12 @@ public class MainActivity extends AppCompatActivity {
                     return true; // Return true to indicate that the item is handled
 
                 } else if(item.getItemId() == R.id.nav_home) {
+                    //Take you to the next screen
                     NavController navControllerHome = Navigation.findNavController(MainActivity.this, R.id.nav_host_fragment_content_main);
                     navControllerHome.navigate(R.id.nav_home);
                     drawer.closeDrawer(GravityCompat.START);
                     return true;
+
                 } else if(item.getItemId() == R.id.nav_patient) {
                     // Navigate to the "nav_patient" destination
                     NavController navControllerPatient = Navigation.findNavController(MainActivity.this, R.id.nav_host_fragment_content_main);
@@ -187,8 +186,10 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 // Handle clicks on the profileTextView
                 // Navigate to the profile fragment, assuming its ID is nav_profile
+
                 NavController navControllerProfile = Navigation.findNavController(MainActivity.this, R.id.nav_host_fragment_content_main);
                 navControllerProfile.navigate(R.id.nav_profile);
+               // startActivity(new Intent(getApplicationContext(), ProfilePurple.class));
                 drawer.closeDrawer(GravityCompat.START);
             }
         });

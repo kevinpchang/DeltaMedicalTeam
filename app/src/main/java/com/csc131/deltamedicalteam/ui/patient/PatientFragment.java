@@ -23,6 +23,7 @@ public class PatientFragment extends Fragment {
         View root = binding.getRoot();
 
         final TextView textView = binding.textPatient;
+
         galleryViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
         return root;
     }

@@ -37,6 +37,12 @@ android {
 
 dependencies {
     implementation ("com.balysv:material-ripple:1.0.2")
+//    implementation ("com.mikhaellopez:circularimageview")        // circle image view
+    implementation ("com.github.bumptech.glide:glide:3.7.0")            // image loader
+    implementation ("com.google.android.gms:play-services-maps:18.1.0") //map
+//    implementation("com.google.android.libraries.places:places:2.6.0")// {
+//        //exclude module: 'glide'
+//    //}
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.constraintlayout)

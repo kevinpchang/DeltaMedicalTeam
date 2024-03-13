@@ -29,6 +29,7 @@ public class AppointmentFragment extends Fragment {
         return root;
     }
 
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
