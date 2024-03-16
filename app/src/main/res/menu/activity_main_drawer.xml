@@ -16,6 +16,19 @@
             android:id="@+id/nav_appointment"
             android:icon="@drawable/ic_event"
             android:title="@string/menu_appointment" />
+        <item
+            android:id="@+id/nav_health_condition"
+            android:icon="@drawable/ic_accessibility"
+            android:title="@string/menu_health_condition" />
+        <item
+            android:id="@+id/nav_lab_report"
+            android:icon="@drawable/ic_assignment"
+            android:title="@string/menu_lab_report" />
+        <item
+            android:id="@+id/nav_medication"
+            android:icon="@drawable/ic_enhanced_encryption"
+            android:title="@string/menu_medication" />
+
 
 
 
@@ -26,6 +39,10 @@
 <!--            android:id="@+id/nav_slideshow"-->
 <!--            android:icon="@drawable/ic_person_outline"-->
 <!--            android:title="@string/menu_profile" />-->
+        <item
+            android:id="@+id/userManagerFragment"
+            android:icon="@drawable/ic_peoples"
+            android:title="@string/menu_user" />
         <item
             android:id="@+id/nav_logout"
             android:icon="@drawable/ic_undo"
