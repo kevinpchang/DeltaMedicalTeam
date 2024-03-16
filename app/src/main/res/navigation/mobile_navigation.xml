@@ -16,7 +16,22 @@
         android:name="com.csc131.deltamedicalteam.ui.patient.PatientFragment"
         android:label="@string/menu_patient"
         tools:layout="@layout/fragment_patient" />
+    <fragment
+        android:id="@+id/nav_medication"
+        android:name="com.csc131.deltamedicalteam.ui.medication.MedicationFragment"
+        android:label="@string/menu_medication"
+        tools:layout="@layout/fragment_medication" />
 
+    <fragment
+        android:id="@+id/nav_health_condition"
+        android:name="com.csc131.deltamedicalteam.ui.healthcondition.HealthConditionFragment"
+        android:label="@string/menu_health_condition"
+        tools:layout="@layout/fragment_health_condition" />
+    <fragment
+        android:id="@+id/nav_lab_report"
+        android:name="com.csc131.deltamedicalteam.ui.labreport.LabReportFragment"
+        android:label="@string/menu_lab_report"
+        tools:layout="@layout/fragment_lab_report" />
     <fragment
         android:id="@+id/nav_appointment"
         android:name="com.csc131.deltamedicalteam.ui.appointment.AppointmentFragment"
@@ -27,4 +42,9 @@
         android:name="com.csc131.deltamedicalteam.ui.profile.ProfileFragment"
         android:label="@string/menu_profile"
         tools:layout="@layout/fragment_profile" />
+    <fragment
+        android:id="@+id/userManagerFragment"
+        android:name="com.csc131.deltamedicalteam.ui.user.UserManagerFragment"
+        android:label="fragment_user_manager"
+        tools:layout="@layout/fragment_user_manager" />
 </navigation>

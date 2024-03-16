@@ -8,10 +8,14 @@
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
 
-    <string name="menu_home">Home</string>
+    <string name="menu_home">Home (Analysis)</string>
     <string name="menu_patient">Patients</string>
+    <string name="menu_lab_report">Lab Report</string>
+    <string name="menu_medication">Medication</string>
+    <string name="menu_health_condition">Health Condition</string>
     <string name="menu_appointment">Appointment</string>
     <string name="menu_profile">Profile</string>
+    <string name="menu_user">User</string>
     <!-- Preference Titles -->
     <string name="messages_header">Messages</string>
     <string name="sync_header">Sync</string>
