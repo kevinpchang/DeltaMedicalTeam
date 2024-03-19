@@ -1,6 +1,9 @@
+import org.gradle.internal.impldep.org.junit.experimental.categories.Categories.CategoryFilter.exclude
+
 plugins {
     alias(libs.plugins.androidApplication)
     id("com.google.gms.google-services")
+
 }
 
 android {
@@ -33,16 +36,18 @@ android {
     buildFeatures {
         viewBinding = true
     }
+
+
 }
 
 dependencies {
-    implementation ("com.balysv:material-ripple:1.0.2")
-//    implementation ("com.mikhaellopez:circularimageview")        // circle image view
-    implementation ("com.github.bumptech.glide:glide:3.7.0")            // image loader
-    implementation ("com.google.android.gms:play-services-maps:18.1.0") //map
-//    implementation("com.google.android.libraries.places:places:2.6.0")// {
-//        //exclude module: 'glide'
-//    //}
+    implementation("com.balysv:material-ripple:1.0.2")
+    implementation("com.github.bumptech.glide:glide:4.12.0")
+    implementation("com.google.android.gms:play-services-maps:18.1.0")
+
+
+
+
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.constraintlayout)

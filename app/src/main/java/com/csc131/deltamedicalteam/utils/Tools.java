@@ -31,8 +31,12 @@ import androidx.core.graphics.drawable.RoundedBitmapDrawable;
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import androidx.core.widget.NestedScrollView;
 
-import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
+
+
+import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.material.bottomappbar.BottomAppBar;
@@ -41,6 +45,7 @@ import com.csc131.deltamedicalteam.R;
 import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
 
 public class Tools {
 
@@ -128,39 +133,51 @@ public class Tools {
         }
     }
 
-//    public static void displayImageOriginal(Context ctx, ImageView img, @DrawableRes int drawable) {
-//        try {
-//            Glide.with(ctx).load(drawable)
-//                    .crossFade()
-//                    .diskCacheStrategy(DiskCacheStrategy.NONE)
-//                    .into(img);
-//        } catch (Exception e) {
-//        }
-//    }
 
-//    public static void displayImageRound(final Context ctx, final ImageView img, @DrawableRes int drawable) {
-//        try {
-//            Glide.with(ctx).load(drawable).asBitmap().centerCrop().into(new BitmapImageViewTarget(img) {
-//                @Override
-//                protected void setResource(Bitmap resource) {
-//                    RoundedBitmapDrawable circularBitmapDrawable = RoundedBitmapDrawableFactory.create(ctx.getResources(), resource);
-//                    circularBitmapDrawable.setCircular(true);
-//                    img.setImageDrawable(circularBitmapDrawable);
-//                }
-//            });
-//        } catch (Exception e) {
-//        }
-//    }
+    public static void displayImageOriginal(Context ctx, ImageView img, @DrawableRes int drawable) {
+        try {
+            Glide.with(ctx)
+                    .load(drawable)
+                    .transition(DrawableTransitionOptions.withCrossFade()) // Use transition() method with DrawableTransitionOptions
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .into(img);
+        } catch (Exception e) {
+            e.printStackTrace(); // Handle exception appropriately
+        }
+    }
 
-//    public static void displayImageOriginal(Context ctx, ImageView img, String url) {
-//        try {
-//            Glide.with(ctx).load(url)
-//                    .crossFade()
-//                    .diskCacheStrategy(DiskCacheStrategy.NONE)
-//                    .into(img);
-//        } catch (Exception e) {
-//        }
-//    }
+
+    public static void displayImageRound(final Context ctx, final ImageView img, @DrawableRes int drawable) {
+        try {
+            Glide.with(ctx)
+                    .asBitmap()
+                    .load(drawable)
+                    .apply(RequestOptions.circleCropTransform()) // Apply circle crop transformation
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .into(new BitmapImageViewTarget(img) {
+                        @Override
+                        protected void setResource(Bitmap resource) {
+                            RoundedBitmapDrawable circularBitmapDrawable = RoundedBitmapDrawableFactory.create(ctx.getResources(), resource);
+                            circularBitmapDrawable.setCircular(true);
+                            img.setImageDrawable(circularBitmapDrawable);
+                        }
+                    });
+        } catch (Exception e) {
+            e.printStackTrace(); // Handle exception appropriately
+        }
+    }
+
+    public static void displayImageOriginal(Context ctx, ImageView img, String url) {
+        try {
+            Glide.with(ctx)
+                    .load(url)
+                    .transition(DrawableTransitionOptions.withCrossFade()) // Use transition() method with DrawableTransitionOptions
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .into(img);
+        } catch (Exception e) {
+            e.printStackTrace(); // Handle exception appropriately
+        }
+    }
 
     public static String getFormattedDateShort(Long dateTime) {
         SimpleDateFormat newFormat = new SimpleDateFormat("MMM dd, yyyy");
