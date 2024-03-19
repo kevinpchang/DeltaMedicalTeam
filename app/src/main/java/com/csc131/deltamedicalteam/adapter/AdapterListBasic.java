@@ -77,7 +77,13 @@ public class AdapterListBasic extends RecyclerView.Adapter<RecyclerView.ViewHold
             viewHolder.phone.setText(p.phonenumber); // Assuming you have added a phone TextView
             viewHolder.permission.setText(p.permission); // Assuming you have added a permission TextView
 
-            Tools.displayImageRound(ctx, viewHolder.image, p.image);
+            // Check if image is available
+            if (p.image != 0) {
+                Tools.displayImageRound(ctx, viewHolder.image, p.image);
+            } else {
+                // Load default image
+                viewHolder.image.setImageResource(R.drawable.no_avatar);
+            }
 
             viewHolder.lyt_parent.setOnClickListener(new View.OnClickListener() {
                 @Override

@@ -2,7 +2,6 @@ package com.csc131.deltamedicalteam.splash;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
@@ -11,7 +10,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.csc131.deltamedicalteam.Login;
 import com.csc131.deltamedicalteam.MainActivity;
 import com.csc131.deltamedicalteam.R;
-import com.csc131.deltamedicalteam.Register;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class SplashMoving extends AppCompatActivity {

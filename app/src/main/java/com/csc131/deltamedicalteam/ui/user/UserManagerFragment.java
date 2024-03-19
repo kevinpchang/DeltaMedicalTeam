@@ -1,23 +1,29 @@
 package com.csc131.deltamedicalteam.ui.user;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.balysv.materialripple.MaterialRippleLayout;
 import com.csc131.deltamedicalteam.MainActivity;
 import com.csc131.deltamedicalteam.R;
 import com.csc131.deltamedicalteam.adapter.AdapterListBasic;
 import com.csc131.deltamedicalteam.model.People;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -42,6 +48,17 @@ public class UserManagerFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
 
         initComponent();
+
+        // Find the Button and set its click listener
+        Button btnAddUser = view.findViewById(R.id.add_user_button);
+        btnAddUser.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Navigate to the destination fragment
+                Navigation.findNavController(v).navigate(R.id.action_userManagerFragment_to_nav_add_user);
+            }
+        });
+
 
         return view;
     }

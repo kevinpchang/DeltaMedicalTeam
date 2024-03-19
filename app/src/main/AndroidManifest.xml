@@ -11,8 +11,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.DeltaMedicalTeam"
-        android:appComponentFactory="new_value"
-        tools:replace="android:appComponentFactory">
+        android:appComponentFactory="android.support.v4.app.CoreComponentFactory"
+        tools:replace="android:appComponentFactory">>
         <activity
             android:name=".MainActivity"
             android:exported="true"
