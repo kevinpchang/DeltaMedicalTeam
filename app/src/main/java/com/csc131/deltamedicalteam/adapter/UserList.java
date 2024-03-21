@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.csc131.deltamedicalteam.R;
@@ -66,23 +67,15 @@ public class UserList extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     // Replace the contents of a view (invoked by the layout manager)
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof OriginalViewHolder) {
             OriginalViewHolder viewHolder = (OriginalViewHolder) holder;
 
-            User p = items.get(position);
-            viewHolder.name.setText(p.name);
-            viewHolder.email.setText(p.email); // Assuming you have added an email TextView
-            viewHolder.phone.setText(p.phonenumber); // Assuming you have added a phone TextView
-            viewHolder.permission.setText(p.permission); // Assuming you have added a permission TextView
-
-            // Check if image is available
-            if (p.image != 0) {
-                Tools.displayImageRound(ctx, viewHolder.image, p.image);
-            } else {
-                // Load default image
-                viewHolder.image.setImageResource(R.drawable.no_avatar);
-            }
+            User user = items.get(position);
+            viewHolder.name.setText(user.getfName());
+            viewHolder.email.setText(user.getEmail()); // Assuming you have added an email TextView
+            viewHolder.phone.setText(user.getPhone()); // Assuming you have added a phone TextView
+            viewHolder.permission.setText(user.getPermission()); // Assuming you have added a permission TextView
 
             viewHolder.lyt_parent.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -95,6 +88,7 @@ public class UserList extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             });
         }
     }
+
 
 
     @Override

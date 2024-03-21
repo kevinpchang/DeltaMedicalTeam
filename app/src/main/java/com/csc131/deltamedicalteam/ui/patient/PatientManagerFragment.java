@@ -66,81 +66,32 @@ public class PatientManagerFragment extends Fragment {
         CollectionReference patientsRef = db.collection("patients");
 
         // Query to get all documents from the "patients" collection
-        patientsRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-            @Override
-            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                if (!queryDocumentSnapshots.isEmpty()) {
-                    List<Patient> items = new ArrayList<>();
-                    for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-                        // Retrieve patient information from Firestore document
-                        String firstname = documentSnapshot.getString("fName");
-                        String lastname = documentSnapshot.getString("lName");
-                        String name = firstname + " " + lastname;
-                        String address = documentSnapshot.getString("address");
-                        String phoneNumber = "There no phone number";
+        patientsRef.get().addOnSuccessListener(queryDocumentSnapshots -> {
+            if (!queryDocumentSnapshots.isEmpty()) {
+                List<Patient> items = new ArrayList<>();
+                for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                    // Convert DocumentSnapshot to Patient object
+                    Patient patient = documentSnapshot.toObject(Patient.class);
 
-
-                        // Retrieve the phone field as an Object
-                        Object phoneObj = documentSnapshot.getData().get("phone");
-
-                        // Check if the phoneObj is not null and is of type Map
-                        if (phoneObj instanceof Map) {
-                            // Cast the phoneObj to Map<String, Object>
-                            Map<String, Object> phoneMap = (Map<String, Object>) phoneObj;
-
-                            // Check if the phoneMap contains the "mobile" key
-                            if (phoneMap.containsKey("mobile")) {
-                                // Retrieve the value associated with the "mobile" key
-                                Object mobileObj = phoneMap.get("mobile");
-
-                                // Check if the value is not null and is of type Long
-                                if (mobileObj instanceof Long) {
-                                    // Convert the Long value to a String
-                                    phoneNumber = String.valueOf((Long) mobileObj);
-
-                                    // Now you have the mobile phone number as a String
-                                    System.out.println("Mobile Phone Number: " + phoneNumber);
-                                } else {
-                                    // Handle the case where the value is not a Long
-                                    System.out.println("Mobile phone number is not of type Long.");
-                                }
-                            } else {
-                                // Handle the case where the "phone" map doesn't contain the "mobile" key
-                                System.out.println("Mobile phone number not found.");
-                            }
-                        } else {
-                            // Handle the case where the "phone" field is not a map
-                            System.out.println("Phone field is not of type Map<String, Object>.");
-                        }
-
-
-
-                        // Create People object with patient information
-                        Patient patient = new Patient(name, phoneNumber, address, false);
-                        items.add(patient);
-                    }
-
-                    // Set data and list adapter
-                    mAdapter = new PatientList(getActivity(), items);
-                    recyclerView.setAdapter(mAdapter);
-
-                    // On item list clicked
-                    mAdapter.setOnItemClickListener(new PatientList.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(View view, Patient obj, int position) {
-                            Snackbar.make(view, "Item " + obj.name + " clicked", Snackbar.LENGTH_SHORT).show();
-                        }
-                    });
-                } else {
-                    Log.d(TAG, "No documents found.");
+                    // Add the patient to the list
+                    items.add(patient);
                 }
+
+                // Set data and list adapter
+                mAdapter = new PatientList(getActivity(), items);
+                recyclerView.setAdapter(mAdapter);
+
+                // On item list clicked
+                mAdapter.setOnItemClickListener((view, obj, position) -> {
+                    Snackbar.make(view, "Item " + obj.getfName() + " " + obj.getlName() + " clicked", Snackbar.LENGTH_SHORT).show();
+                });
+            } else {
+                Log.d(TAG, "No documents found.");
             }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.e(TAG, "Error fetching documents: " + e.getMessage());
-            }
+        }).addOnFailureListener(e -> {
+            Log.e(TAG, "Error fetching documents: " + e.getMessage());
         });
     }
+
 
 }

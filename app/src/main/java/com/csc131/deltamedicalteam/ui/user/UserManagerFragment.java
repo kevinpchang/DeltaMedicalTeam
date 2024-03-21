@@ -73,13 +73,14 @@ public class UserManagerFragment extends Fragment {
                     List<User> items = new ArrayList<>();
                     for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
                         // Retrieve user information from Firestore document
-                        String name = documentSnapshot.getString("fName");
+                        String documentId = documentSnapshot.getId();
+                        String fName = documentSnapshot.getString("fName");
                         String email = documentSnapshot.getString("email");
                         String phoneNumber = documentSnapshot.getString("phone");
                         String permission = documentSnapshot.getString("permission");
 
-                        // Create People object with user information
-                        User user = new User(name, email, phoneNumber, permission, false);
+                        // Create User object with user information
+                        User user = new User(documentId, email, fName, permission, phoneNumber);
                         items.add(user);
                     }
 
@@ -91,7 +92,11 @@ public class UserManagerFragment extends Fragment {
                     mAdapter.setOnItemClickListener(new UserList.OnItemClickListener() {
                         @Override
                         public void onItemClick(View view, User obj, int position) {
-                            Snackbar.make(view, "Item " + obj.name + " clicked", Snackbar.LENGTH_SHORT).show();
+                            // Inside the click listener where you navigate to ProfileUserFragment
+                            User selectedUser = items.get(position);
+                            UserManagerFragmentDirections.ActionUserManagerFragmentToNavProfileUser action =
+                                    UserManagerFragmentDirections.actionUserManagerFragmentToNavProfileUser(selectedUser);
+                            Navigation.findNavController(view).navigate(action);
                         }
                     });
                 } else {
@@ -105,5 +110,6 @@ public class UserManagerFragment extends Fragment {
             }
         });
     }
+
 
 }

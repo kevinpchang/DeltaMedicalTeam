@@ -75,7 +75,7 @@ public class AddPatientFragment extends Fragment {
                 }
 
                 if (TextUtils.isEmpty(phone)) {
-                    mPhone.setError("Phone is Required.");
+                    mPhone.setError("com.csc131.deltamedicalteam.model.Patient.Phone is Required.");
                     return;
                 }
 

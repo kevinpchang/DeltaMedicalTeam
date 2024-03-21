@@ -20,7 +20,11 @@
         <action
             android:id="@+id/action_patientManagerFragment_to_nav_add_patient"
             app:destination="@id/nav_add_patient" />
+        <action
+            android:id="@+id/action_patientManagerFragment_to_nav_profile_patient"
+            app:destination="@id/nav_profile_patient" />
     </fragment>
+
     <fragment
         android:id="@+id/nav_medication"
         android:name="com.csc131.deltamedicalteam.ui.medication.MedicationFragment"
@@ -32,19 +36,21 @@
         android:name="com.csc131.deltamedicalteam.ui.healthcondition.HealthConditionFragment"
         android:label="@string/menu_health_condition"
         tools:layout="@layout/fragment_health_condition" />
+
     <fragment
         android:id="@+id/nav_lab_report"
         android:name="com.csc131.deltamedicalteam.ui.labreport.LabReportFragment"
         android:label="@string/menu_lab_report"
         tools:layout="@layout/fragment_lab_report" />
+
     <fragment
         android:id="@+id/nav_appointment"
         android:name="com.csc131.deltamedicalteam.ui.appointment.AppointmentManagerFragment"
         android:label="@string/menu_appointment"
         tools:layout="@layout/fragment_appointment" >
-    <action
-        android:id="@+id/action_appointmentManagerFragment_to_nav_add_appointment"
-        app:destination="@id/nav_add_appointment" />
+        <action
+            android:id="@+id/action_appointmentManagerFragment_to_nav_add_appointment"
+            app:destination="@id/nav_add_appointment" />
     </fragment>
 
     <fragment
@@ -52,6 +58,7 @@
         android:name="com.csc131.deltamedicalteam.ui.appointment.AppointmentFragment"
         android:label="@string/menu_add_appointment"
         tools:layout="@layout/fragment_addappointment" />
+
     <fragment
         android:id="@+id/nav_profile"
         android:name="com.csc131.deltamedicalteam.ui.profile.ProfileFragment"
@@ -59,10 +66,27 @@
         tools:layout="@layout/fragment_profile" />
 
     <fragment
+        android:id="@+id/nav_profile_user"
+        android:name="com.csc131.deltamedicalteam.ui.profile.ProfileUserFragment"
+        android:label="@string/menu_profile"
+        tools:layout="@layout/fragment_profile_user" >
+        <argument
+            android:name="user"
+            app:argType="com.csc131.deltamedicalteam.model.User" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_profile_patient"
+        android:name="com.csc131.deltamedicalteam.ui.profile.ProfilePatientFragment"
+        android:label="@string/menu_profile"
+        tools:layout="@layout/fragment_profile_patient" />
+
+    <fragment
         android:id="@+id/nav_add_user"
         android:name="com.csc131.deltamedicalteam.ui.user.AddUserFragment"
         android:label="@string/menu_add_user"
         tools:layout="@layout/fragment_adduser" />
+
     <fragment
         android:id="@+id/userManagerFragment"
         android:name="com.csc131.deltamedicalteam.ui.user.UserManagerFragment"
@@ -71,6 +95,9 @@
         <action
             android:id="@+id/action_userManagerFragment_to_nav_add_user"
             app:destination="@id/nav_add_user" />
+        <action
+            android:id="@+id/action_userManagerFragment_to_nav_profile_user"
+            app:destination="@id/nav_profile_user" />
     </fragment>
 
     <fragment

@@ -100,7 +100,7 @@ public class AppointmentManagerFragment extends Fragment {
                                     phoneNumber = String.valueOf((Long) mobileObj);
 
                                     // Now you have the mobile phone number as a String
-                                    System.out.println("Mobile Phone Number: " + phoneNumber);
+                                    System.out.println("Mobile com.csc131.deltamedicalteam.model.Patient.Phone Number: " + phoneNumber);
                                 } else {
                                     // Handle the case where the value is not a Long
                                     System.out.println("Mobile phone number is not of type Long.");
@@ -111,7 +111,7 @@ public class AppointmentManagerFragment extends Fragment {
                             }
                         } else {
                             // Handle the case where the "phone" field is not a map
-                            System.out.println("Phone field is not of type Map<String, Object>.");
+                            System.out.println("com.csc131.deltamedicalteam.model.Patient.Phone field is not of type Map<String, Object>.");
                         }
 
 

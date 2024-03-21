@@ -1,8 +1,11 @@
 import org.gradle.internal.impldep.org.junit.experimental.categories.Categories.CategoryFilter.exclude
 
+
 plugins {
     alias(libs.plugins.androidApplication)
     id("com.google.gms.google-services")
+    id("androidx.navigation.safeargs")
+
 
 }
 

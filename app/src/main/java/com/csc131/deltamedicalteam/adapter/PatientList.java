@@ -11,6 +11,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.csc131.deltamedicalteam.R;
 import com.csc131.deltamedicalteam.model.Patient;
+import com.csc131.deltamedicalteam.model.Phone;
+
+
 import com.csc131.deltamedicalteam.utils.Tools;
 
 import java.util.ArrayList;
@@ -69,30 +72,29 @@ public class PatientList extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         if (holder instanceof OriginalViewHolder) {
             OriginalViewHolder viewHolder = (OriginalViewHolder) holder;
 
-            Patient p = items.get(position);
-            viewHolder.name.setText(p.name);
-            viewHolder.phone.setText(p.phonenumber); // Assuming you have added a phone TextView
-            viewHolder.address.setText(p.address); // Assuming you have added a permission TextView
+            Patient patient = items.get(position);
+            viewHolder.name.setText(patient.getfName() + " " + patient.getlName());
+            viewHolder.phone.setText(String.valueOf(patient.getPhone().getMobile()));
+
+            viewHolder.address.setText(patient.getAddress()); // Assuming you have added an address TextView
 
             // Check if image is available
-            if (p.image != 0) {
-                Tools.displayImageRound(ctx, viewHolder.image, p.image);
+            if (patient.getImage() != 0) {
+                Tools.displayImageRound(ctx, viewHolder.image, patient.getImage());
             } else {
                 // Load default image
                 viewHolder.image.setImageResource(R.drawable.no_avatar_patient);
             }
 
-            viewHolder.lyt_parent.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    int adapterPosition = holder.getAdapterPosition();
-                    if (adapterPosition != RecyclerView.NO_POSITION && mOnItemClickListener != null) {
-                        mOnItemClickListener.onItemClick(view, items.get(adapterPosition), adapterPosition);
-                    }
+            viewHolder.lyt_parent.setOnClickListener(view -> {
+                int adapterPosition = holder.getAdapterPosition();
+                if (adapterPosition != RecyclerView.NO_POSITION && mOnItemClickListener != null) {
+                    mOnItemClickListener.onItemClick(view, items.get(adapterPosition), adapterPosition);
                 }
             });
         }
     }
+
 
 
     @Override
