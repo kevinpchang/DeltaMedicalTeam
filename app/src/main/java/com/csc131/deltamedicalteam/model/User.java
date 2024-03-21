@@ -2,7 +2,7 @@ package com.csc131.deltamedicalteam.model;
 
 import android.graphics.drawable.Drawable;
 
-public class People {
+public class User {
 
     public int image;
     public Drawable imageDrw;
@@ -12,10 +12,10 @@ public class People {
     public String permission;
     public boolean section = false;
 
-    public People() {
+    public User() {
     }
 
-    public People(String name, String email, String phonenumber, String permission, boolean section) {
+    public User(String name, String email, String phonenumber, String permission, boolean section) {
         this.name = name;
         this.email = email;
         this.phonenumber = phonenumber;

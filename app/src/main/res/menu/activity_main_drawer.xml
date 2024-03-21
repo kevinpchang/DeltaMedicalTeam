@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
@@ -9,9 +10,9 @@
             android:icon="@drawable/ic_auto_awesome"
             android:title="@string/menu_home" />
         <item
-            android:id="@+id/nav_patient"
+            android:id="@+id/patientManagerFragment"
             android:icon="@drawable/ic_peoples_outline"
-            android:title="@string/menu_patient" />
+            android:title="@string/menu_patientManagement" />
         <item
             android:id="@+id/nav_appointment"
             android:icon="@drawable/ic_event"
@@ -43,6 +44,8 @@
             android:id="@+id/userManagerFragment"
             android:icon="@drawable/ic_peoples"
             android:title="@string/menu_user" />
+
+
         <item
             android:id="@+id/nav_logout"
             android:icon="@drawable/ic_undo"

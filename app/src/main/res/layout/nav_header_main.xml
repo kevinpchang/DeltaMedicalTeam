@@ -27,7 +27,7 @@
         android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/fullName"
+            android:id="@+id/add_patient_fName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingTop="@dimen/nav_header_vertical_spacing"

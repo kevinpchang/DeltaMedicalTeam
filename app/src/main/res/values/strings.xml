@@ -15,9 +15,13 @@
     <string name="menu_health_condition">Health Condition</string>
     <string name="menu_appointment">Appointment</string>
     <string name="menu_profile">Profile</string>
-    <string name="menu_user">User</string>
+    <string name="menu_user">User Management</string>
     <string name="menu_add_user">Add User</string>
     <string name="fragment_user_manager">User Management</string>
+    <string name="menu_patientManagement">Patient Management</string>
+    <string name="fragment_patient_manager">Patient Management</string>
+    <string name="menu_add_patient">Add Patient</string>
+    <string name="menu_add_appointment">Add Appointment</string>
 
     <!-- Preference Titles -->
     <string name="messages_header">Messages</string>

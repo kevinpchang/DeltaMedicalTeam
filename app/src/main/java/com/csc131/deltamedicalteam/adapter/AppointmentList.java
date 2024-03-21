@@ -10,29 +10,29 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.csc131.deltamedicalteam.R;
-import com.csc131.deltamedicalteam.model.People;
+import com.csc131.deltamedicalteam.model.Appointment;
+import com.csc131.deltamedicalteam.model.Appointment;
 import com.csc131.deltamedicalteam.utils.Tools;
 
-import java.text.BreakIterator;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AdapterListBasic extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class AppointmentList extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private List<People> items = new ArrayList<>();
+    private List<Appointment> items = new ArrayList<>();
 
     private Context ctx;
     private OnItemClickListener mOnItemClickListener;
 
     public interface OnItemClickListener {
-        void onItemClick(View view, People obj, int position);
+        void onItemClick(View view, Appointment obj, int position);
     }
 
     public void setOnItemClickListener(final OnItemClickListener mItemClickListener) {
         this.mOnItemClickListener = mItemClickListener;
     }
 
-    public AdapterListBasic(Context context, List<People> items) {
+    public AppointmentList(Context context, List<Appointment> items) {
         this.items = items;
         ctx = context;
     }
@@ -43,15 +43,14 @@ public class AdapterListBasic extends RecyclerView.Adapter<RecyclerView.ViewHold
         public View lyt_parent;
         public TextView email;
         public TextView phone;
-        public TextView permission;
+        public TextView address;
 
         public OriginalViewHolder(View v) {
             super(v);
             image = (ImageView) v.findViewById(R.id.image);
-            name = (TextView) v.findViewById(R.id.user_list_item_name);
-            email = (TextView) v.findViewById(R.id.user_list_item_email);
-            phone = (TextView) v.findViewById(R.id.user_list_item_phone);
-            permission = (TextView) v.findViewById(R.id.user_list_item_permission);
+            name = (TextView) v.findViewById(R.id.appointment_list_item_name);
+            phone = (TextView) v.findViewById(R.id.appointment_list_item_phone);
+            address = (TextView) v.findViewById(R.id.appointment_list_item_address);
             lyt_parent = (View) v.findViewById(R.id.lyt_parent);
         }
     }
@@ -59,7 +58,7 @@ public class AdapterListBasic extends RecyclerView.Adapter<RecyclerView.ViewHold
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         RecyclerView.ViewHolder vh;
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_people_chat, parent, false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_appointment_list, parent, false);
         vh = new OriginalViewHolder(v);
         return vh;
     }
@@ -71,18 +70,17 @@ public class AdapterListBasic extends RecyclerView.Adapter<RecyclerView.ViewHold
         if (holder instanceof OriginalViewHolder) {
             OriginalViewHolder viewHolder = (OriginalViewHolder) holder;
 
-            People p = items.get(position);
+            Appointment p = items.get(position);
             viewHolder.name.setText(p.name);
-            viewHolder.email.setText(p.email); // Assuming you have added an email TextView
             viewHolder.phone.setText(p.phonenumber); // Assuming you have added a phone TextView
-            viewHolder.permission.setText(p.permission); // Assuming you have added a permission TextView
+            viewHolder.address.setText(p.address); // Assuming you have added a permission TextView
 
             // Check if image is available
             if (p.image != 0) {
                 Tools.displayImageRound(ctx, viewHolder.image, p.image);
             } else {
                 // Load default image
-                viewHolder.image.setImageResource(R.drawable.no_avatar);
+                viewHolder.image.setImageResource(R.drawable.no_avatar_patient);
             }
 
             viewHolder.lyt_parent.setOnClickListener(new View.OnClickListener() {

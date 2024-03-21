@@ -1,5 +1,7 @@
 package com.csc131.deltamedicalteam.utils;
 
+import static android.content.ContentValues.TAG;
+
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.ActivityNotFoundException;
@@ -14,6 +16,7 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.View;
@@ -25,6 +28,7 @@ import android.widget.Toast;
 import androidx.annotation.ColorInt;
 import androidx.annotation.ColorRes;
 import androidx.annotation.DrawableRes;
+import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.drawable.RoundedBitmapDrawable;
@@ -38,9 +42,17 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
+import com.csc131.deltamedicalteam.MainActivity;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomappbar.BottomAppBar;
 import com.csc131.deltamedicalteam.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.net.URI;
 import java.text.SimpleDateFormat;
@@ -400,4 +412,43 @@ public class Tools {
         }
     }
 
+    // Method to check if the user has admin permission
+    public static void checkAdminPermission(final MainActivity.PermissionCallback callback) {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            DocumentReference userRef = db.collection("users").document(user.getUid());
+            userRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document.exists()) {
+                            String permission = document.getString("permission");
+                            Log.e(TAG, "db check permission = " + permission);
+                            if ("admin".equalsIgnoreCase(permission)) {
+                                callback.onPermissionCheck(true);
+                            } else {
+                                callback.onPermissionCheck(false);
+                            }
+                        } else {
+                            // User data does not exist
+                            callback.onPermissionCheck(false);
+                            Log.e(TAG, "db not exist");
+                        }
+                    } else {
+                        // Error getting document
+                        callback.onPermissionCheck(false);
+                        Log.e(TAG, "Error getting document: ", task.getException());
+                    }
+                }
+            });
+        } else {
+            // User is not authenticated
+            callback.onPermissionCheck(false);
+            Log.e(TAG, "user not auth");
+        }
+
+
+    }
 }

@@ -6,6 +6,8 @@ plugins {
 
 }
 
+
+
 android {
     namespace = "com.csc131.deltamedicalteam"
     compileSdk = 34
@@ -44,7 +46,7 @@ dependencies {
     implementation("com.balysv:material-ripple:1.0.2")
     implementation("com.github.bumptech.glide:glide:4.12.0")
     implementation("com.google.android.gms:play-services-maps:18.1.0")
-
+//    implementation("com.mikhaellopez:circularimageview:3.2.0")
 
 
 

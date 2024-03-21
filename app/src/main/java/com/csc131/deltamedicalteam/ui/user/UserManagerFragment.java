@@ -1,6 +1,5 @@
 package com.csc131.deltamedicalteam.ui.user;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,19 +10,15 @@ import android.widget.Button;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.balysv.materialripple.MaterialRippleLayout;
-import com.csc131.deltamedicalteam.MainActivity;
 import com.csc131.deltamedicalteam.R;
-import com.csc131.deltamedicalteam.adapter.AdapterListBasic;
-import com.csc131.deltamedicalteam.model.People;
+import com.csc131.deltamedicalteam.adapter.UserList;
+import com.csc131.deltamedicalteam.model.User;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -36,7 +31,7 @@ import java.util.List;
 public class UserManagerFragment extends Fragment {
     private static final String TAG = "UserManagerFragment";
     private RecyclerView recyclerView;
-    private AdapterListBasic mAdapter;
+    private UserList mAdapter;
 
     @Nullable
     @Override
@@ -75,7 +70,7 @@ public class UserManagerFragment extends Fragment {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                 if (!queryDocumentSnapshots.isEmpty()) {
-                    List<People> items = new ArrayList<>();
+                    List<User> items = new ArrayList<>();
                     for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
                         // Retrieve user information from Firestore document
                         String name = documentSnapshot.getString("fName");
@@ -84,18 +79,18 @@ public class UserManagerFragment extends Fragment {
                         String permission = documentSnapshot.getString("permission");
 
                         // Create People object with user information
-                        People people = new People(name, email, phoneNumber, permission, false);
-                        items.add(people);
+                        User user = new User(name, email, phoneNumber, permission, false);
+                        items.add(user);
                     }
 
                     // Set data and list adapter
-                    mAdapter = new AdapterListBasic(getActivity(), items);
+                    mAdapter = new UserList(getActivity(), items);
                     recyclerView.setAdapter(mAdapter);
 
                     // On item list clicked
-                    mAdapter.setOnItemClickListener(new AdapterListBasic.OnItemClickListener() {
+                    mAdapter.setOnItemClickListener(new UserList.OnItemClickListener() {
                         @Override
-                        public void onItemClick(View view, People obj, int position) {
+                        public void onItemClick(View view, User obj, int position) {
                             Snackbar.make(view, "Item " + obj.name + " clicked", Snackbar.LENGTH_SHORT).show();
                         }
                     });

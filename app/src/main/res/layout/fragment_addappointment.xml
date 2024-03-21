@@ -41,7 +41,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:visibility="visible">
 
             <RelativeLayout
                 android:layout_width="90dp"
@@ -64,6 +65,37 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="@dimen/spacing_middle"
+                android:visibility="visible"
+                app:cardBackgroundColor="@android:color/white"
+                app:cardCornerRadius="1dp"
+                app:cardElevation="3dp"
+                app:cardUseCompatPadding="true">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+
+                    <CalendarView
+                        android:id="@+id/calendarView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/grey_5" />
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="@dimen/spacing_middle"
+                android:visibility="visible"
                 app:cardBackgroundColor="@android:color/white"
                 app:cardCornerRadius="1dp"
                 app:cardElevation="3dp"
@@ -78,10 +110,15 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Permission" />
+                        android:text="Time" />
 
-                    <Spinner
-                        android:id="@+id/spinner_permission"
+                    <View
+                        android:id="@+id/view8"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                    <TextClock
+                        android:id="@+id/textClock2"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
 
@@ -107,22 +144,23 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
-                    <EditText
-                        android:id="@+id/add_patient_address"
-                        style="@style/EditText.Flat.Grey"
+                    <TextView
+                        android:id="@+id/textView5"
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/spacing_xxlarge"
-                        android:background="@android:color/transparent"
-                        android:hint="Email"
-                        android:inputType="textEmailAddress"
-                        android:minHeight="@dimen/spacing_xmlarge"
-                        android:paddingLeft="@dimen/spacing_large"
-                        android:paddingRight="@dimen/spacing_large" />
+                        android:layout_height="wrap_content"
+                        android:text="Patient" />
 
                     <View
+                        android:id="@+id/view5"
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:background="@color/grey_5" />
+
+                    <Spinner
+                        android:id="@+id/patient_list_spinner"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:spinnerMode="dropdown" />
 
                     <View
                         android:layout_width="match_parent"
@@ -147,33 +185,17 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
-                    <EditText
-                        android:id="@+id/add_patient_fName"
-                        style="@style/EditText.Flat.Grey"
+                    <TextView
+                        android:id="@+id/textView2"
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/spacing_xxlarge"
-                        android:background="@android:color/transparent"
-                        android:hint="Full Name"
-                        android:minHeight="@dimen/spacing_xmlarge"
-                        android:paddingLeft="@dimen/spacing_large"
-                        android:paddingRight="@dimen/spacing_large" />
+                        android:layout_height="wrap_content"
+                        android:text="Purpose" />
 
-                    <View
+                    <Spinner
+                        android:id="@+id/appointment_purpose_spinner"
                         android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@color/grey_5" />
-
-                    <EditText
-                        android:id="@+id/phone"
-                        style="@style/EditText.Flat.Grey"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/spacing_xxlarge"
-                        android:background="@android:color/transparent"
-                        android:hint="Phone Number"
-                        android:inputType="phone"
-                        android:minHeight="@dimen/spacing_xmlarge"
-                        android:paddingLeft="@dimen/spacing_large"
-                        android:paddingRight="@dimen/spacing_large" />
+                        android:layout_height="48dp"
+                        android:spinnerMode="dropdown" />
 
                     <View
                         android:id="@+id/view"
@@ -192,7 +214,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
-                            android:text="ADD USER"
+                            android:text="ADD APPOINTMENT"
 
                             android:textAppearance="@style/Base.TextAppearance.AppCompat.Body2"
                             android:textColor="@android:color/white" />
@@ -210,37 +232,6 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:visibility="invisible" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_medium"
-                android:gravity="center"
-                android:orientation="horizontal"
-                android:visibility="invisible">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="#979796"
-                    android:text="Already have an account? "
-                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
-                    android:textColor="@color/blue_900"
-                    android:visibility="invisible" />
-
-                <TextView
-                    android:id="@+id/sign_in"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:clickable="true"
-                    android:text="Sign In"
-                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
-                    android:textColor="@color/cyan_A700"
-                    android:textStyle="bold"
-                    android:visibility="invisible"
-                    tools:ignore="TouchTargetSizeCheck" />
-
-            </LinearLayout>
 
         </LinearLayout>
 

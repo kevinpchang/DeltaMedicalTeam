@@ -9,7 +9,7 @@ import android.view.View;
 import android.view.Menu;
 import android.content.Intent;
 import android.widget.TextView;
-
+import com.csc131.deltamedicalteam.utils.Tools;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
@@ -28,11 +28,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.csc131.deltamedicalteam.databinding.ActivityMainBinding;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -81,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
         Menu navMenu = navigationView.getMenu();
         MenuItem userManagerItem = navMenu.findItem(R.id.userManagerFragment);
 
-        checkAdminPermission(new PermissionCallback() {
+        Tools.checkAdminPermission(new PermissionCallback() {
             @Override
             public void onPermissionCheck(boolean isAdmin) {
                     Log.e(TAG, "isAdmin: " + isAdmin );
@@ -102,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.nav_patient, R.id.nav_appointment, R.id.userManagerFragment, R.id.nav_lab_report, R.id.nav_medication, R.id.nav_health_condition, R.id.nav_logout)
+                R.id.nav_home, R.id.patientManagerFragment, R.id.nav_appointment, R.id.userManagerFragment, R.id.nav_lab_report, R.id.nav_medication, R.id.nav_health_condition, R.id.nav_logout)
                 .setOpenableLayout(drawer)
                 .build();
 
@@ -133,12 +128,7 @@ public class MainActivity extends AppCompatActivity {
                     drawer.closeDrawer(GravityCompat.START);
                     return true;
 
-                } else if(item.getItemId() == R.id.nav_patient) {
-                    // Navigate to the "nav_patient" destination
-                    NavController navControllerPatient = Navigation.findNavController(MainActivity.this, R.id.nav_host_fragment_content_main);
-                    navControllerPatient.navigate(R.id.nav_patient);
-                    drawer.closeDrawer(GravityCompat.START);
-                    return true;
+
                 } else if(item.getItemId() == R.id.nav_appointment) {
                     // Navigate to the "nav_appointment" destination
                     NavController navControllerAppointment = Navigation.findNavController(MainActivity.this, R.id.nav_host_fragment_content_main);
@@ -171,6 +161,13 @@ public class MainActivity extends AppCompatActivity {
                     drawer.closeDrawer(GravityCompat.START);
                     return true;
 
+                } else if(item.getItemId() == R.id.patientManagerFragment) {
+                    // Navigate to the "nav_appointment" destination
+                    NavController navControllerAppointment = Navigation.findNavController(MainActivity.this, R.id.nav_host_fragment_content_main);
+                    navControllerAppointment.navigate(R.id.patientManagerFragment);
+                    drawer.closeDrawer(GravityCompat.START);
+                    return true;
+
                 }
                 return false; // Return false to indicate that the item is not handled here
 
@@ -178,7 +175,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         View headerView = navigationView.getHeaderView(0);
-        fullNameTextView = headerView.findViewById(R.id.fullName);
+        fullNameTextView = headerView.findViewById(R.id.add_patient_fName);
         permissionTextView = headerView.findViewById(R.id.permission);
         emailTextView = headerView.findViewById(R.id.profileEmail);
         verifyMsg = headerView.findViewById(R.id.notverifymessage);
@@ -264,44 +261,44 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // Method to check if the user has admin permission
-    private void checkAdminPermission(final PermissionCallback callback) {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user != null) {
-            FirebaseFirestore db = FirebaseFirestore.getInstance();
-            DocumentReference userRef = db.collection("users").document(user.getUid());
-            userRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                    if (task.isSuccessful()) {
-                        DocumentSnapshot document = task.getResult();
-                        if (document.exists()) {
-                            String permission = document.getString("permission");
-                            Log.e(TAG, "db check permission = " + permission);
-                            if ("admin".equalsIgnoreCase(permission)) {
-                                callback.onPermissionCheck(true);
-                            } else {
-                                callback.onPermissionCheck(false);
-                            }
-                        } else {
-                            // User data does not exist
-                            callback.onPermissionCheck(false);
-                            Log.e(TAG, "db not exist");
-                        }
-                    } else {
-                        // Error getting document
-                        callback.onPermissionCheck(false);
-                        Log.e(TAG, "Error getting document: ", task.getException());
-                    }
-                }
-            });
-        } else {
-            // User is not authenticated
-            callback.onPermissionCheck(false);
-            Log.e(TAG, "user not auth");
-        }
-    }
+//    public void checkAdminPermission(final PermissionCallback callback) {
+//        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+//        if (user != null) {
+//            FirebaseFirestore db = FirebaseFirestore.getInstance();
+//            DocumentReference userRef = db.collection("users").document(user.getUid());
+//            userRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+//                @Override
+//                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+//                    if (task.isSuccessful()) {
+//                        DocumentSnapshot document = task.getResult();
+//                        if (document.exists()) {
+//                            String permission = document.getString("permission");
+//                            Log.e(TAG, "db check permission = " + permission);
+//                            if ("admin".equalsIgnoreCase(permission)) {
+//                                callback.onPermissionCheck(true);
+//                            } else {
+//                                callback.onPermissionCheck(false);
+//                            }
+//                        } else {
+//                            // User data does not exist
+//                            callback.onPermissionCheck(false);
+//                            Log.e(TAG, "db not exist");
+//                        }
+//                    } else {
+//                        // Error getting document
+//                        callback.onPermissionCheck(false);
+//                        Log.e(TAG, "Error getting document: ", task.getException());
+//                    }
+//                }
+//            });
+//        } else {
+//            // User is not authenticated
+//            callback.onPermissionCheck(false);
+//            Log.e(TAG, "user not auth");
+//        }
+//    }
 
-    interface PermissionCallback {
+    public interface PermissionCallback {
         void onPermissionCheck(boolean isAdmin);
     }
 

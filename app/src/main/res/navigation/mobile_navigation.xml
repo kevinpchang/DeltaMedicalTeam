@@ -13,10 +13,14 @@
         tools:layout="@layout/fragment_home" />
 
     <fragment
-        android:id="@+id/nav_patient"
-        android:name="com.csc131.deltamedicalteam.ui.patient.PatientFragment"
-        android:label="@string/menu_patient"
-        tools:layout="@layout/fragment_patient" />
+        android:id="@+id/patientManagerFragment"
+        android:name="com.csc131.deltamedicalteam.ui.patient.PatientManagerFragment"
+        android:label="@string/fragment_patient_manager"
+        tools:layout="@layout/fragment_patient_manager" >
+        <action
+            android:id="@+id/action_patientManagerFragment_to_nav_add_patient"
+            app:destination="@id/nav_add_patient" />
+    </fragment>
     <fragment
         android:id="@+id/nav_medication"
         android:name="com.csc131.deltamedicalteam.ui.medication.MedicationFragment"
@@ -35,9 +39,19 @@
         tools:layout="@layout/fragment_lab_report" />
     <fragment
         android:id="@+id/nav_appointment"
-        android:name="com.csc131.deltamedicalteam.ui.appointment.AppointmentFragment"
+        android:name="com.csc131.deltamedicalteam.ui.appointment.AppointmentManagerFragment"
         android:label="@string/menu_appointment"
-        tools:layout="@layout/fragment_appointment" />
+        tools:layout="@layout/fragment_appointment" >
+    <action
+        android:id="@+id/action_appointmentManagerFragment_to_nav_add_appointment"
+        app:destination="@id/nav_add_appointment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_add_appointment"
+        android:name="com.csc131.deltamedicalteam.ui.appointment.AppointmentFragment"
+        android:label="@string/menu_add_appointment"
+        tools:layout="@layout/fragment_addappointment" />
     <fragment
         android:id="@+id/nav_profile"
         android:name="com.csc131.deltamedicalteam.ui.profile.ProfileFragment"
@@ -58,4 +72,12 @@
             android:id="@+id/action_userManagerFragment_to_nav_add_user"
             app:destination="@id/nav_add_user" />
     </fragment>
+
+    <fragment
+        android:id="@+id/nav_add_patient"
+        android:name="com.csc131.deltamedicalteam.ui.patient.AddPatientFragment"
+        android:label="@string/menu_add_patient"
+        tools:layout="@layout/fragment_addpatient" />
+
+
 </navigation>

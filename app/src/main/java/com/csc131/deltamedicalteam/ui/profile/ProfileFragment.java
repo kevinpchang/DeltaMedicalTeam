@@ -23,7 +23,7 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 
 public class ProfileFragment extends Fragment {
 
-    TextView emailProfile;
+    TextView emailProfile, mName, mPermission;
     FirebaseFirestore fStore;
     FirebaseAuth fAuth;
     String userID;
@@ -31,18 +31,18 @@ public class ProfileFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        ProfileViewModel ProfileViewModel =
-                new ViewModelProvider(this).get(ProfileViewModel.class);
+//        ProfileViewModel ProfileViewModel =
+//                new ViewModelProvider(this).get(ProfileViewModel.class);
 
         binding = com.csc131.deltamedicalteam.databinding.FragmentProfileBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-//        final TextView textView = binding.textProfile;
-//        galleryViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
 
 
         // Find the profileEmail view by its ID
-        TextView emailProfile = root.findViewById(R.id.profileEmail);
+        TextView emailProfile = root.findViewById(R.id.profile_email);
+        TextView mName = root.findViewById(R.id.profile_name);
+        TextView mPermission = root.findViewById(R.id.profile_permission);
         //init Database
         fAuth = FirebaseAuth.getInstance();
         fStore = FirebaseFirestore.getInstance();
@@ -74,6 +74,22 @@ public class ProfileFragment extends Fragment {
                     } else {
                         Log.e("Firestore Error", "Email is null");
                         emailProfile.setText("Click to setup Email"); //do this feature later
+                    }
+
+                    // Set the text of emailProfile TextView
+                    if (fullName != null) {
+                        mName.setText(fullName);
+                    } else {
+                        Log.e("Firestore Error", "fullName is null");
+                        mName.setText("Click to setup fullName"); //do this feature later
+                    }
+
+                    // Set the text of emailProfile TextView
+                    if (permission != null) {
+                        mPermission.setText(permission);
+                    } else {
+                        Log.e("Firestore Error", "permission is null");
+                        mPermission.setText("Click to setup permission"); //do this feature later
                     }
 
                     // Similarly, handle other fields like fullName, permission, etc.

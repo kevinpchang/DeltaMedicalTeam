@@ -36,7 +36,7 @@ public class Login extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        mEmail = findViewById(R.id.fieldEmail);
+        mEmail = findViewById(R.id.add_patient_address);
         mPassword = findViewById(R.id.password);
         mPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
         mLoginBtn = findViewById(R.id.log_in);
