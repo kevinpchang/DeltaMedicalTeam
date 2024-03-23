@@ -11,6 +11,7 @@ public class User implements Parcelable {
     private String documentId;
     private String email;
     private String fName;
+    private String lName;
     private String permission;
     private String phone;
 
@@ -18,10 +19,11 @@ public class User implements Parcelable {
         // Default constructor required for Firestore deserialization
     }
 
-    public User(String documentId, String email, String fName, String permission, String phone) {
+    public User(String documentId, String email, String fName, String lName, String permission, String phone) {
         this.documentId = documentId;
         this.email = email;
         this.fName = fName;
+        this.lName = lName;
         this.permission = permission;
         this.phone = phone;
     }
@@ -30,6 +32,7 @@ public class User implements Parcelable {
         documentId = in.readString();
         email = in.readString();
         fName = in.readString();
+        lName = in.readString();
         permission = in.readString();
         phone = in.readString();
     }
@@ -55,7 +58,7 @@ public class User implements Parcelable {
     }
 
     public String getfName() {
-        return fName;
+        return fName + " " + lName;
     }
 
     public String getPermission() {
@@ -70,6 +73,7 @@ public class User implements Parcelable {
         documentId = document.getId();
         email = document.getString("email");
         fName = document.getString("fName");
+        lName = document.getString("lName");
         permission = document.getString("permission");
         phone = document.getString("phone");
     }
@@ -87,6 +91,7 @@ public class User implements Parcelable {
         dest.writeString(documentId);
         dest.writeString(email);
         dest.writeString(fName);
+        dest.writeString(lName);
         dest.writeString(permission);
         dest.writeString(phone);
     }

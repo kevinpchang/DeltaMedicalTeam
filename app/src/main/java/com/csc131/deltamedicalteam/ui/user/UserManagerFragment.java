@@ -75,12 +75,13 @@ public class UserManagerFragment extends Fragment {
                         // Retrieve user information from Firestore document
                         String documentId = documentSnapshot.getId();
                         String fName = documentSnapshot.getString("fName");
+                        String lName = documentSnapshot.getString("lName");
                         String email = documentSnapshot.getString("email");
                         String phoneNumber = documentSnapshot.getString("phone");
                         String permission = documentSnapshot.getString("permission");
 
                         // Create User object with user information
-                        User user = new User(documentId, email, fName, permission, phoneNumber);
+                        User user = new User(documentId, email, fName, lName, permission, phoneNumber);
                         items.add(user);
                     }
 
