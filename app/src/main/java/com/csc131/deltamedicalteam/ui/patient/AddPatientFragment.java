@@ -18,6 +18,7 @@ import androidx.navigation.Navigation;
 
 import com.balysv.materialripple.MaterialRippleLayout;
 import com.csc131.deltamedicalteam.R;
+import com.csc131.deltamedicalteam.model.Patient;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -164,7 +165,7 @@ public class AddPatientFragment extends Fragment {
         return rootView;
     }
 
-    private void addPatient( String fName, String mName, String lName, String address, String dob, String bloodGroup, String rhFactor, String maritalStatus, String phone, String email, String emergencyName, String emergencyPhone){
+    private void addPatient( String fName, String mName, String lName, String address, String dob, String bloodGroup, String rhFactor, String maritalStatus, String phone2, String email, String emergencyName, String emergencyPhone){
         CollectionReference documentReference = fstore.collection("patients");
         Map<String, Object> patientData = new HashMap<>();
         patientData.put("fName", fName);
@@ -175,7 +176,7 @@ public class AddPatientFragment extends Fragment {
         patientData.put("bloodGroup", bloodGroup);
         patientData.put("rhFactor", rhFactor);
         patientData.put("maritalStatus", maritalStatus);
-        patientData.put("phone", phone);
+        patientData.put("phone number", phone2);
         patientData.put("email", email);
         patientData.put("emergencyName", emergencyName);
         patientData.put("emergencyPhone", emergencyPhone);
