@@ -55,9 +55,9 @@ public class AddUserFragment extends Fragment {
 
 
         mFullname = rootView.findViewById(R.id.add_patient_fName);
-        mPhone = rootView.findViewById(R.id.phone);
+        mPhone = rootView.findViewById(R.id.add_patient_phone);
         mEmail = rootView.findViewById(R.id.add_patient_address);
-        mRegisterBtn = rootView.findViewById(R.id.bt_create_account);
+        mRegisterBtn = rootView.findViewById(R.id.bt_create_patient);
         progressBar = rootView.findViewById(R.id.progressBar);
 
         // Initialize Firebase

@@ -164,7 +164,7 @@
                         android:background="@color/grey_5" />
 
                     <EditText
-                        android:id="@+id/phone"
+                        android:id="@+id/add_patient_phone"
                         style="@style/EditText.Flat.Grey"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/spacing_xxlarge"
@@ -182,7 +182,7 @@
                         android:background="@color/grey_5" />
 
                     <com.balysv.materialripple.MaterialRippleLayout
-                        android:id="@+id/bt_create_account"
+                        android:id="@+id/bt_create_patient"
                         style="@style/RippleStyleWhite"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/spacing_xxlarge"
