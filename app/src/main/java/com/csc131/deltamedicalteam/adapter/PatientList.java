@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.csc131.deltamedicalteam.R;
 import com.csc131.deltamedicalteam.model.Patient;
-import com.csc131.deltamedicalteam.model.Phone;
 
 
 import com.csc131.deltamedicalteam.utils.Tools;
@@ -74,7 +73,7 @@ public class PatientList extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
             Patient patient = items.get(position);
             viewHolder.name.setText(patient.getfName() + " " + patient.getlName());
-            viewHolder.phone.setText(String.valueOf(patient.getPhone().getMobile()));
+            viewHolder.phone.setText(patient.getCellPhone());
 
             viewHolder.address.setText(patient.getAddress()); // Assuming you have added an address TextView
 

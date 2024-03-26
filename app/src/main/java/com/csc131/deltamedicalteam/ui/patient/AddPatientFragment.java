@@ -9,19 +9,29 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
 import com.balysv.materialripple.MaterialRippleLayout;
 import com.csc131.deltamedicalteam.R;
+import com.csc131.deltamedicalteam.model.Patient;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class AddPatientFragment extends Fragment {
 
-    private EditText mFullname, mEmail, mPhone;
+    private EditText mFname, mMname, mLname, mAddress, mDOB, mBloodGroup, mRHfactor, mMaritalStatus, mPhone, mEmail, mEmergencyName, mEmergencyPhone;
     private Spinner mPermission;
     private MaterialRippleLayout mRegisterBtn;
     private FirebaseAuth fAuth;
@@ -34,7 +44,7 @@ public class AddPatientFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_addpatient, container, false);
 
         // Prepare the data source (list of suggestions)
-        String[] items  = {"Doctor", "Nurse"};
+        String[] items = {"Doctor", "Nurse"};
 
         // Create the adapter
         ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, items);
@@ -42,11 +52,23 @@ public class AddPatientFragment extends Fragment {
         mPermission = rootView.findViewById(R.id.spinner_permission);
         mPermission.setAdapter(adapter);
 
+        //initialize input fields and ui
+        mFname = rootView.findViewById(R.id.add_patient_fName);
+        mMname = rootView.findViewById(R.id.add_patient_mName);
+        mLname = rootView.findViewById(R.id.add_patient_lName);
 
-        mFullname = rootView.findViewById(R.id.add_patient_fName);
-        mPhone = rootView.findViewById(R.id.phone);
-        mEmail = rootView.findViewById(R.id.add_patient_address);
-        mRegisterBtn = rootView.findViewById(R.id.bt_create_account);
+        mAddress = rootView.findViewById(R.id.add_patient_address);
+        mDOB = rootView.findViewById(R.id.add_patient_dob);
+        mBloodGroup = rootView.findViewById(R.id.add_patient_bloodGroup);
+        mRHfactor = rootView.findViewById(R.id.add_patient_rhFactor);
+        mMaritalStatus = rootView.findViewById(R.id.add_patient_maritalStatus);
+
+        mPhone = rootView.findViewById(R.id.add_patient_phone);
+        mEmail = rootView.findViewById(R.id.add_patient_email);
+        mEmergencyName = rootView.findViewById(R.id.add_patient_eContactName);
+        mEmergencyPhone = rootView.findViewById(R.id.add_patient_eContactPhone);
+
+        mRegisterBtn = rootView.findViewById(R.id.bt_create_patient);
         progressBar = rootView.findViewById(R.id.progressBar);
 
         // Initialize Firebase
@@ -56,50 +78,86 @@ public class AddPatientFragment extends Fragment {
         mRegisterBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Handle registration logic
-                String email = mEmail.getText().toString().trim();
+                // Handle patient add logic
+                String fName = mFname.getText().toString();
+                String mName = mMname.getText().toString();
+                String lName = mLname.getText().toString();
 
-                String fullName = mFullname.getText().toString();
+                String address = mAddress.getText().toString();
+                String dob = mDOB.getText().toString();
+                String bloodGroup = mBloodGroup.getText().toString();
+                String rhFactor = mRHfactor.getText().toString();
+                String maritalStatus = mMaritalStatus.getText().toString();
+
                 String phone = mPhone.getText().toString();
-                String permission = (String) mPermission.getSelectedItem();
+                String email = mEmail.getText().toString().trim();
+                String emergencyName = mEmergencyName.getText().toString().trim();
+                String emergencyPhone = mEmergencyPhone.getText().toString().trim();
 
-
-                if (TextUtils.isEmpty(email)) {
-                    mEmail.setError("Email is Required.");
+                if (TextUtils.isEmpty(fName)) {
+                    mFname.setError("Field is Required.");
                     return;
                 }
 
-                if (TextUtils.isEmpty(fullName)) {
-                    mFullname.setError("Name is Required.");
+                if (TextUtils.isEmpty(mName)) {
+                    mMname.setError("Field is Required.");
+                    return;
+                }
+
+                if (TextUtils.isEmpty(lName)) {
+                    mLname.setError("Field is Required.");
+                    return;
+                }
+
+                if (TextUtils.isEmpty(address)) {
+                    mAddress.setError("Field is Required.");
+                    return;
+                }
+
+                if (TextUtils.isEmpty(dob)) {
+                    mDOB.setError("Field is Required.");
+                    return;
+                }
+
+                if (TextUtils.isEmpty(bloodGroup)) {
+                    mBloodGroup.setError("Field is Required.");
+                    return;
+                }
+
+                if (TextUtils.isEmpty(rhFactor)) {
+                    mRHfactor.setError("Field is Required.");
+                    return;
+                }
+
+                if (TextUtils.isEmpty(maritalStatus)) {
+                    mMaritalStatus.setError("Field is Required.");
+                    return;
+                }
+
+                if (TextUtils.isEmpty(email)) {
+                    mEmail.setError("Field is Required.");
                     return;
                 }
 
                 if (TextUtils.isEmpty(phone)) {
-                    mPhone.setError("com.csc131.deltamedicalteam.model.Patient.Phone is Required.");
+                    mPhone.setError("Field is Required.");
                     return;
                 }
 
+                if (TextUtils.isEmpty(emergencyName)) {
+                    mEmergencyName.setError("Field is Required.");
+                    return;
+                }
 
+                if (TextUtils.isEmpty(emergencyPhone)) {
+                    mEmergencyPhone.setError("com.csc131.deltamedicalteam.model.Patient.Phone is required.");
+                    return;
+                }
 
                 progressBar.setVisibility(View.VISIBLE);
-//                String password = setPassword(fullName,phone);
                 // Register the patient in Firebase
-//                fAuth.createUserWithEmailAndPassword(email, password)
-//                        .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-//                            @Override
-//                            public void onComplete(@NonNull Task<AuthResult> task) {
-//                                if (task.isSuccessful()) {
-//                                    // User registration successful
-//                                    Toast.makeText(requireContext(), "User Created.", Toast.LENGTH_SHORT).show();
-//                                    sendEmailVerification();
-//                                    saveUserData(fullName, email, phone, permission);
-//                                } else {
-//                                    // User registration failed
-//                                    Toast.makeText(requireContext(), "Error: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-//                                }
-//                                progressBar.setVisibility(View.GONE);
-//                            }
-//                        });
+                addPatient(fName, mName, lName, address, dob, bloodGroup, rhFactor, maritalStatus, phone, email, emergencyName, emergencyPhone);
+
             }
         });
 
@@ -107,73 +165,37 @@ public class AddPatientFragment extends Fragment {
         return rootView;
     }
 
-
-
-
-
-//    public static String setPassword(String fullname, String phonenumber) {
-//        // Extract first name and last name
-//        String[] names = fullname.split(" ");
-//        String firstName = names[0];
-//        String lastName = names[names.length - 1];
-//            // Extract last 4 digits of phone number
-//            String lastFourDigits = phonenumber.substring(phonenumber.length() - 4);
-//
-//            // Generate password
-//            String password = firstName.substring(0, 2) + lastName.substring(0, 2) + lastFourDigits;
-//
-//            return password;
-//
-//    }
-
-//    private void sendEmailVerification() {
-//        FirebaseUser fuser = fAuth.getCurrentUser();
-//        if (fuser != null) {
-//            fuser.sendEmailVerification()
-//                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-//                        @Override
-//                        public void onSuccess(Void unused) {
-//                            Toast.makeText(requireContext(), "Verification Email has been Sent.", Toast.LENGTH_SHORT).show();
-//                        }
-//                    })
-//                    .addOnFailureListener(new OnFailureListener() {
-//                        @Override
-//                        public void onFailure(@NonNull Exception e) {
-//                            Toast.makeText(requireContext(), "Email not Sent: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-//                        }
-//                    });
-//        }
-//    }
-
-//    private void saveUserData(String fullName, String email, String phone, String permission) {
-//        FirebaseUser user = fAuth.getCurrentUser();
-//        if (user != null) {
-//            String userID = user.getUid();
-//            DocumentReference documentReference = fstore.collection("users").document(userID);
-//            Map<String, Object> userData = new HashMap<>();
-//            userData.put("fName", fullName);
-//            userData.put("email", email);
-//            userData.put("phone", phone);
-//            userData.put("permission", permission);
-//            documentReference.set(userData)
-//                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-//                        @Override
-//                        public void onSuccess(Void unused) {
-//                            // User data saved successfully
-//                            Toast.makeText(requireContext(), "User Profile created for " + userID, Toast.LENGTH_SHORT).show();
-//                            fAuth.signInWithEmailAndPassword("admin@csc131.delta", "123456");
-//                            Navigation.findNavController(getView()).navigate(R.id.userManagerFragment);
-//                        }
-//                    })
-//                    .addOnFailureListener(new OnFailureListener() {
-//                        @Override
-//                        public void onFailure(@NonNull Exception e) {
-//                            // Failed to save user data
-//                            Toast.makeText(requireContext(), "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-//                        }
-//                    });
-//        }
-//    }
+    private void addPatient( String fName, String mName, String lName, String address, String dob, String bloodGroup, String rhFactor, String maritalStatus, String phone2, String email, String emergencyName, String emergencyPhone){
+        CollectionReference documentReference = fstore.collection("patients");
+        Map<String, Object> patientData = new HashMap<>();
+        patientData.put("fName", fName);
+        patientData.put("mName", mName);
+        patientData.put("lName", lName);
+        patientData.put("address", address);
+        patientData.put("dob", dob);
+        patientData.put("bloodGroup", bloodGroup);
+        patientData.put("rhFactor", rhFactor);
+        patientData.put("maritalStatus", maritalStatus);
+        patientData.put("phone number", phone2);
+        patientData.put("email", email);
+        patientData.put("emergencyName", emergencyName);
+        patientData.put("emergencyPhone", emergencyPhone);
+        documentReference.add(patientData)
+                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+            @Override
+            public void onSuccess(DocumentReference documentReference) {
+                Toast.makeText(requireContext(), "Patient Profile created for " + fName + " " + lName, Toast.LENGTH_SHORT).show();
+                Navigation.findNavController(getView()).navigate(R.id.patientManagerFragment);
+            }
+        })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(requireContext(), "Failed to create Patient Profile ", Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
 }
+
 
 

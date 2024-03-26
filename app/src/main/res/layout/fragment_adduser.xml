@@ -108,7 +108,7 @@
                     android:orientation="vertical">
 
                     <EditText
-                        android:id="@+id/add_patient_address"
+                        android:id="@+id/add_user_address"
                         style="@style/EditText.Flat.Grey"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/spacing_xxlarge"
@@ -148,7 +148,7 @@
                     android:orientation="vertical">
 
                     <EditText
-                        android:id="@+id/add_patient_fName"
+                        android:id="@+id/add_user_fName"
                         style="@style/EditText.Flat.Grey"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/spacing_xxlarge"

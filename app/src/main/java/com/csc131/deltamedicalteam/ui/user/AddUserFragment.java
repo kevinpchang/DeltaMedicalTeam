@@ -54,9 +54,9 @@ public class AddUserFragment extends Fragment {
         mPermission.setAdapter(adapter);
 
 
-        mFullname = rootView.findViewById(R.id.add_patient_fName);
+        mFullname = rootView.findViewById(R.id.add_user_fName);
         mPhone = rootView.findViewById(R.id.phone);
-        mEmail = rootView.findViewById(R.id.add_patient_address);
+        mEmail = rootView.findViewById(R.id.add_user_address);
         mRegisterBtn = rootView.findViewById(R.id.bt_create_account);
         progressBar = rootView.findViewById(R.id.progressBar);
 

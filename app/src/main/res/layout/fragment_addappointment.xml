@@ -204,7 +204,7 @@
                         android:background="@color/grey_5" />
 
                     <com.balysv.materialripple.MaterialRippleLayout
-                        android:id="@+id/bt_create_account"
+                        android:id="@+id/bt_create_appointment"
                         style="@style/RippleStyleWhite"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/spacing_xxlarge"
