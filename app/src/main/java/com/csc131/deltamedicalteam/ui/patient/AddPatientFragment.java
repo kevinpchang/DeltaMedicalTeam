@@ -26,13 +26,17 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 public class AddPatientFragment extends Fragment {
 
-    private EditText mFname, mMname, mLname, mAddress, mDOB, mBloodGroup, mRHfactor, mMaritalStatus, mPhone, mEmail, mEmergencyName, mEmergencyPhone;
-    private Spinner mPermission;
+    private EditText mFname, mMname, mLname, mAddress, mDOB, mBloodGroup, mRHfactor, mPhone, mEmail, mEmergencyName, mEmergencyPhone;
+    private Spinner mMaritalStatus;
     private MaterialRippleLayout mRegisterBtn;
     private FirebaseAuth fAuth;
     private FirebaseFirestore fstore;
@@ -44,13 +48,13 @@ public class AddPatientFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_addpatient, container, false);
 
         // Prepare the data source (list of suggestions)
-        String[] items = {"Doctor", "Nurse"};
+        String[] items = {"Unknown", "Single", "Married"};
 
         // Create the adapter
         ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, items);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        mPermission = rootView.findViewById(R.id.spinner_permission);
-        mPermission.setAdapter(adapter);
+        mMaritalStatus = rootView.findViewById(R.id.spinner_marital_status);
+        mMaritalStatus.setAdapter(adapter);
 
         //initialize input fields and ui
         mFname = rootView.findViewById(R.id.add_patient_fName);
@@ -59,9 +63,8 @@ public class AddPatientFragment extends Fragment {
 
         mAddress = rootView.findViewById(R.id.add_patient_address);
         mDOB = rootView.findViewById(R.id.add_patient_dob);
-        mBloodGroup = rootView.findViewById(R.id.add_patient_bloodGroup);
-        mRHfactor = rootView.findViewById(R.id.add_patient_rhFactor);
-        mMaritalStatus = rootView.findViewById(R.id.add_patient_maritalStatus);
+//        mBloodGroup = rootView.findViewById(R.id.add_patient_bloodGroup);
+//        mRHfactor = rootView.findViewById(R.id.add_patient_rhFactor);
 
         mPhone = rootView.findViewById(R.id.add_patient_phone);
         mEmail = rootView.findViewById(R.id.add_patient_email);
@@ -85,9 +88,9 @@ public class AddPatientFragment extends Fragment {
 
                 String address = mAddress.getText().toString();
                 String dob = mDOB.getText().toString();
-                String bloodGroup = mBloodGroup.getText().toString();
-                String rhFactor = mRHfactor.getText().toString();
-                String maritalStatus = mMaritalStatus.getText().toString();
+//                String bloodGroup = mBloodGroup.getText().toString();
+//                String rhFactor = mRHfactor.getText().toString();
+                String maritalStatus = (String) mMaritalStatus.getSelectedItem();
 
                 String phone = mPhone.getText().toString();
                 String email = mEmail.getText().toString().trim();
@@ -119,23 +122,33 @@ public class AddPatientFragment extends Fragment {
                     return;
                 }
 
-                if (TextUtils.isEmpty(bloodGroup)) {
-                    mBloodGroup.setError("Field is Required.");
+                if (!isValidDateOfBirth(dob)) {
+                    mDOB.setError("Invalid date format. Please use MM-DD-YYYY format.");
                     return;
                 }
 
-                if (TextUtils.isEmpty(rhFactor)) {
-                    mRHfactor.setError("Field is Required.");
-                    return;
-                }
+//                if (TextUtils.isEmpty(bloodGroup)) {
+//                    mBloodGroup.setError("Field is Required.");
+//                    return;
+//                }
+//
+//                if (TextUtils.isEmpty(rhFactor)) {
+//                    mRHfactor.setError("Field is Required.");
+//                    return;
+//                }
 
-                if (TextUtils.isEmpty(maritalStatus)) {
-                    mMaritalStatus.setError("Field is Required.");
+                if (maritalStatus.equals("Unknown")) {
+                    Toast.makeText(requireContext(), "Marital Status is Required" , Toast.LENGTH_SHORT).show();
                     return;
                 }
 
                 if (TextUtils.isEmpty(email)) {
                     mEmail.setError("Field is Required.");
+                    return;
+                }
+
+                if (!isValidEmail(email)) {
+                    mEmail.setError("Invalid email format");
                     return;
                 }
 
@@ -156,7 +169,8 @@ public class AddPatientFragment extends Fragment {
 
                 progressBar.setVisibility(View.VISIBLE);
                 // Register the patient in Firebase
-                addPatient(fName, mName, lName, address, dob, bloodGroup, rhFactor, maritalStatus, phone, email, emergencyName, emergencyPhone);
+//                addPatient(fName, mName, lName, address, dob, bloodGroup, rhFactor, maritalStatus, phone, email, emergencyName, emergencyPhone);
+                addPatient(fName, mName, lName, address, dob, maritalStatus, phone, email, emergencyName, emergencyPhone);
 
             }
         });
@@ -165,7 +179,30 @@ public class AddPatientFragment extends Fragment {
         return rootView;
     }
 
-    private void addPatient( String fName, String mName, String lName, String address, String dob, String bloodGroup, String rhFactor, String maritalStatus, String phone2, String email, String emergencyName, String emergencyPhone){
+    private boolean isValidEmail(String email) {
+        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
+    }
+
+    private boolean isValidDateOfBirth(String dob) {
+        // Define the desired date format (MM-DD-YYYY)
+        String dateFormat = "MM-dd-yyyy";
+        // Set the date format and disable leniency to avoid accepting invalid dates (e.g., February 30th)
+        SimpleDateFormat sdf = new SimpleDateFormat(dateFormat, Locale.US);
+        sdf.setLenient(false);
+
+        try {
+            // Attempt to parse the input date
+            Date parsedDate = sdf.parse(dob);
+            // Check if the parsed date matches the input string, indicating a valid date format
+            return sdf.format(parsedDate).equals(dob);
+        } catch (ParseException e) {
+            // Parsing failed, indicating an invalid date format
+            return false;
+        }
+    }
+
+//    private void addPatient( String fName, String mName, String lName, String address, String dob, String bloodGroup, String rhFactor, String maritalStatus, String phone2, String email, String emergencyName, String emergencyPhone){
+    private void addPatient( String fName, String mName, String lName, String address, String dob, String maritalStatus, String phone2, String email, String emergencyName, String emergencyPhone){
         CollectionReference documentReference = fstore.collection("patients");
         Map<String, Object> patientData = new HashMap<>();
         patientData.put("fName", fName);
@@ -173,8 +210,8 @@ public class AddPatientFragment extends Fragment {
         patientData.put("lName", lName);
         patientData.put("address", address);
         patientData.put("dob", dob);
-        patientData.put("bloodGroup", bloodGroup);
-        patientData.put("rhFactor", rhFactor);
+//        patientData.put("bloodGroup", bloodGroup);
+//        patientData.put("rhFactor", rhFactor);
         patientData.put("maritalStatus", maritalStatus);
         patientData.put("phone number", phone2);
         patientData.put("email", email);

@@ -74,7 +74,10 @@ public class AddUserFragment extends Fragment {
                 String phone = mPhone.getText().toString();
                 String permission = (String) mPermission.getSelectedItem();
 
-
+                if (!isValidEmail(email)) {
+                    mEmail.setError("Invalid email format");
+                    return;
+                }
                 if (TextUtils.isEmpty(email)) {
                     mEmail.setError("Email is Required.");
                     return;
@@ -121,7 +124,9 @@ public class AddUserFragment extends Fragment {
 
 
 
-
+    private boolean isValidEmail(String email) {
+        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
+    }
     public static String setPassword(String fullname, String phonenumber) {
         // Extract first name and last name
         String[] names = fullname.split(" ");
