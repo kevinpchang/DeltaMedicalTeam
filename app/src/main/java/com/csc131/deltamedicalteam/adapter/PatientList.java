@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.csc131.deltamedicalteam.R;
 import com.csc131.deltamedicalteam.model.Patient;
-import com.csc131.deltamedicalteam.model.Phone;
 
 
 import com.csc131.deltamedicalteam.utils.Tools;

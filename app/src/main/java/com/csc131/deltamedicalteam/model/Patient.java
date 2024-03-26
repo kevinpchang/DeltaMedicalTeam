@@ -22,14 +22,13 @@ public class Patient implements Parcelable {
 
     private String cellPhone;
     private Medication medication;
-    private Phone phone;
     private String rhFactor;
 
     public Patient() {
         // Default constructor required for Firestore
     }
 
-    public Patient(String documentId, String address, String ageFormat, String bloodGroup, /* String dob, */ String fName, HealthConditions healthConditions, String lName, String maritalStatus, Medication medication, Phone phone, String cell, String rhFactor, int imageResource) {
+    public Patient(String documentId, String address, String ageFormat, String bloodGroup, /* String dob, */ String fName, HealthConditions healthConditions, String lName, String maritalStatus, Medication medication, String cell, String rhFactor, int imageResource) {
         this.documentId = documentId;
         this.address = address;
         this.ageFormat = ageFormat;
@@ -40,7 +39,6 @@ public class Patient implements Parcelable {
         this.lName = lName;
         this.maritalStatus = maritalStatus;
         this.medication = medication;
-        this.phone = phone;
         this.cellPhone = cell;
         this.rhFactor = rhFactor;
         this.imageResource = imageResource;
@@ -57,7 +55,6 @@ public class Patient implements Parcelable {
         lName = in.readString();
         maritalStatus = in.readString();
         medication = in.readParcelable(Medication.class.getClassLoader());
-        phone = in.readParcelable(Phone.class.getClassLoader());
         cellPhone = in.readString();
         rhFactor = in.readString();
         imageResource = in.readInt();
@@ -115,10 +112,6 @@ public class Patient implements Parcelable {
         return medication;
     }
 
-    public Phone getPhone() {
-        return phone;
-    }
-
     public String getCellPhone() { return cellPhone;}
 
     public String getRhFactor() {
@@ -147,7 +140,6 @@ public class Patient implements Parcelable {
         // Extract nested objects
         healthConditions = document.toObject(HealthConditions.class);
         medication = document.toObject(Medication.class);
-        phone = document.toObject(Phone.class);
     }
 
     // Add method to convert to Map for Firestore
@@ -170,7 +162,7 @@ public class Patient implements Parcelable {
         dest.writeString(lName);
         dest.writeString(maritalStatus);
         dest.writeParcelable(medication, flags);
-        dest.writeParcelable(phone, flags);
+        dest.writeString(cellPhone);
         dest.writeString(rhFactor);
         dest.writeInt(imageResource);
     }
