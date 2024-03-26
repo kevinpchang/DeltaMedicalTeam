@@ -63,7 +63,7 @@
 
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="319dp"
                 android:layout_marginTop="@dimen/spacing_middle"
                 android:visibility="visible"
                 app:cardBackgroundColor="@android:color/white"
@@ -76,11 +76,12 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
-
                     <CalendarView
                         android:id="@+id/calendarView"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+
+                        />
 
                     <View
                         android:layout_width="match_parent"
