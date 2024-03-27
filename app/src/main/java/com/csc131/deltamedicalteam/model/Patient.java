@@ -7,6 +7,13 @@ import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.util.Map;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Patient implements Parcelable {
     private int imageResource;
@@ -172,3 +179,6 @@ public class Patient implements Parcelable {
         return 0;
     }
 }
+
+
+

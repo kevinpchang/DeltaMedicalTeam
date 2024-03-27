@@ -19,24 +19,77 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/appointment_list"
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:padding="16dp"
-            tools:ignore="MissingConstraints" />
+            android:layout_height="wrap_content">
 
-        <Button
-            android:id="@+id/add_appointment_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_margin="16dp"
-            android:text="Add Appointment"
-            android:visibility="visible"
-            tools:ignore="MissingConstraints"
-            tools:visibility="visible" />
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical" >
+
+                    <com.google.android.material.tabs.TabLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                        <com.google.android.material.tabs.TabItem
+                            android:layout_width="800dp"
+                            android:layout_height="wrap_content"
+                            android:text="Analysis" />
+
+                        <com.google.android.material.tabs.TabItem
+                            android:layout_width="800dp"
+                            android:layout_height="wrap_content"
+                            android:text="X-Rays" />
+
+                        <com.google.android.material.tabs.TabItem
+                            android:layout_width="800dp"
+                            android:layout_height="wrap_content"
+                            android:text="Doctor Visits" />
+
+                        <com.google.android.material.tabs.TabItem
+                            android:id="@+id/tabItem"
+                            android:layout_width="800dp"
+                            android:layout_height="wrap_content"
+                            android:text="Vaccinations" />
+                    </com.google.android.material.tabs.TabLayout>
+                </LinearLayout>
+            </HorizontalScrollView>
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/appointment_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:padding="16dp"
+                tools:ignore="MissingConstraints" />
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/add_appointment_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="16dp"
+                android:text="Add Appointment"
+                android:visibility="visible"
+                tools:ignore="MissingConstraints"
+                tools:visibility="visible" />
+        </androidx.cardview.widget.CardView>
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
