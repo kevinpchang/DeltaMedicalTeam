@@ -2,16 +2,12 @@ package com.csc131.deltamedicalteam.ui.appointment;
 
 import static android.content.ContentValues.TAG;
 
-import static com.csc131.deltamedicalteam.utils.PatientUtils.populateSpinner;
-
-import android.app.AlertDialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 
@@ -21,11 +17,6 @@ import androidx.fragment.app.Fragment;
 
 import com.balysv.materialripple.MaterialRippleLayout;
 import com.csc131.deltamedicalteam.R;
-import com.csc131.deltamedicalteam.adapter.PatientList;
-import com.csc131.deltamedicalteam.model.Patient;
-import com.csc131.deltamedicalteam.model.PatientRepository;
-import com.csc131.deltamedicalteam.utils.PatientUtils;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -34,11 +25,15 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AppointmentFragment extends Fragment {
+public class AddAppointmentFragment extends Fragment {
 
     private Spinner mPurpose, patientSpinner;
 
+private MaterialRippleLayout mAddAptBtn;
+    private FirebaseAuth fAuth;
+    private FirebaseFirestore fstore;
     private ProgressBar progressBar;
+
 
     
 

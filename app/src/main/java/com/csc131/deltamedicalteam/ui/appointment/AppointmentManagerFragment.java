@@ -117,7 +117,7 @@ public class AppointmentManagerFragment extends Fragment {
 
 
                         // Create People object with appointment information
-                        Appointment appointment = new Appointment(name, phoneNumber, address, false);
+                        Appointment appointment = new Appointment(patient, date, time, purpose);
                         items.add(appointment);
                     }
 

@@ -55,7 +55,7 @@
 
     <fragment
         android:id="@+id/nav_add_appointment"
-        android:name="com.csc131.deltamedicalteam.ui.appointment.AppointmentFragment"
+        android:name="com.csc131.deltamedicalteam.ui.appointment.AddAppointmentFragment"
         android:label="@string/menu_add_appointment"
         tools:layout="@layout/fragment_addappointment" />
 

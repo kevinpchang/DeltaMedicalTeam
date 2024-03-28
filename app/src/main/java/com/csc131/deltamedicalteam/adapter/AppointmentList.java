@@ -71,17 +71,19 @@ public class AppointmentList extends RecyclerView.Adapter<RecyclerView.ViewHolde
             OriginalViewHolder viewHolder = (OriginalViewHolder) holder;
 
             Appointment p = items.get(position);
-            viewHolder.name.setText(p.name);
-            viewHolder.phone.setText(p.phonenumber); // Assuming you have added a phone TextView
-            viewHolder.address.setText(p.address); // Assuming you have added a permission TextView
+            viewHolder.name.setText(p.patient);
+        //    viewHolder.phone.setText(p.phonenumber); // Assuming you have added a phone TextView
+        //    viewHolder.address.setText(p.address); // Assuming you have added a permission TextView
 
             // Check if image is available
+            /*
             if (p.image != 0) {
                 Tools.displayImageRound(ctx, viewHolder.image, p.image);
             } else {
                 // Load default image
                 viewHolder.image.setImageResource(R.drawable.no_avatar_patient);
             }
+            */
 
             viewHolder.lyt_parent.setOnClickListener(new View.OnClickListener() {
                 @Override
