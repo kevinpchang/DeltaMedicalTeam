@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    tools:context=".ui.appointment.AppointmentFragment">
 
     <ImageView
         android:layout_width="match_parent"
@@ -25,7 +24,8 @@
         android:fitsSystemWindows="false"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:contentInsetStartWithNavigation="0dp"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:layout_constraintTop_toTopOf="@id/toolbar"/>
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -34,6 +34,7 @@
         android:clipToPadding="false"
         android:paddingLeft="@dimen/spacing_mlarge"
         android:paddingRight="@dimen/spacing_mlarge"
+        android:paddingTop="56dp"
         android:scrollbars="none"
         android:scrollingCache="true"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
@@ -63,40 +64,9 @@
 
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
-                android:layout_height="319dp"
-                android:layout_marginTop="@dimen/spacing_middle"
-                android:visibility="visible"
-                app:cardBackgroundColor="@android:color/white"
-                app:cardCornerRadius="1dp"
-                app:cardElevation="3dp"
-                app:cardUseCompatPadding="true">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <CalendarView
-                        android:id="@+id/calendarView"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-
-                        />
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@color/grey_5" />
-
-                </LinearLayout>
-
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="@dimen/spacing_middle"
-                android:visibility="visible"
+                android:visibility="invisible"
                 app:cardBackgroundColor="@android:color/white"
                 app:cardCornerRadius="1dp"
                 app:cardElevation="3dp"
@@ -111,15 +81,10 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Time" />
+                        android:text="Permission" />
 
-                    <View
-                        android:id="@+id/view8"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-
-                    <TextClock
-                        android:id="@+id/textClock2"
+                    <Spinner
+                        android:id="@+id/spinner_permission"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
 
@@ -146,22 +111,35 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/textView5"
+                        android:id="@+id/add_patient_fName"
+                        style="@style/EditText.Flat.Grey"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Patient" />
+                        android:layout_height="@dimen/spacing_xxlarge"
+                        android:background="@android:color/transparent"
+                        android:minHeight="@dimen/spacing_xmlarge"
+                        android:paddingLeft="@dimen/spacing_large"
+                        android:paddingRight="@dimen/spacing_large" />
 
                     <View
-                        android:id="@+id/view5"
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:background="@color/grey_5" />
 
-                    <Spinner
-                        android:id="@+id/patient_list_spinner"
+                    <TextView
+                        android:id="@+id/add_patient_lName"
+                        style="@style/EditText.Flat.Grey"
                         android:layout_width="match_parent"
-                        android:layout_height="48dp"
-                        android:spinnerMode="dropdown" />
+                        android:layout_height="@dimen/spacing_xxlarge"
+                        android:background="@android:color/transparent"
+                        android:minHeight="@dimen/spacing_xmlarge"
+                        android:paddingLeft="@dimen/spacing_large"
+                        android:paddingRight="@dimen/spacing_large" />
+
+                    <View
+                        android:id="@+id/view2"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/grey_5" />
 
                     <View
                         android:layout_width="match_parent"
@@ -187,16 +165,31 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/textView2"
+                        android:id="@+id/add_patient_address"
+                        style="@style/EditText.Flat.Grey"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Purpose" />
+                        android:layout_height="@dimen/spacing_xxlarge"
+                        android:background="@android:color/transparent"
+                        android:inputType="textPostalAddress"
+                        android:minHeight="@dimen/spacing_xmlarge"
+                        android:paddingLeft="@dimen/spacing_large"
+                        android:paddingRight="@dimen/spacing_large" />
 
-                    <Spinner
-                        android:id="@+id/appointment_purpose_spinner"
+                    <View
                         android:layout_width="match_parent"
-                        android:layout_height="48dp"
-                        android:spinnerMode="dropdown" />
+                        android:layout_height="1dp"
+                        android:background="@color/grey_5" />
+
+                    <TextView
+                        android:id="@+id/phone"
+                        style="@style/EditText.Flat.Grey"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/spacing_xxlarge"
+                        android:background="@android:color/transparent"
+                        android:inputType="phone"
+                        android:minHeight="@dimen/spacing_xmlarge"
+                        android:paddingLeft="@dimen/spacing_large"
+                        android:paddingRight="@dimen/spacing_large" />
 
                     <View
                         android:id="@+id/view"
@@ -204,38 +197,61 @@
                         android:layout_height="1dp"
                         android:background="@color/grey_5" />
 
-                    <com.balysv.materialripple.MaterialRippleLayout
-                        android:id="@+id/bt_create_appointment"
-                        style="@style/RippleStyleWhite"
+                    <TextView
+                        android:id="@+id/hello"
+                        style="@style/EditText.Flat.Grey"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/spacing_xxlarge"
-                        android:background="@color/blue_500">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:text="ADD APPOINTMENT"
-
-                            android:textAppearance="@style/Base.TextAppearance.AppCompat.Body2"
-                            android:textColor="@android:color/white" />
-
-                    </com.balysv.materialripple.MaterialRippleLayout>
+                        android:background="@android:color/transparent"
+                        android:inputType="phone"
+                        android:minHeight="@dimen/spacing_xmlarge"
+                        android:paddingLeft="@dimen/spacing_large"
+                        android:paddingRight="@dimen/spacing_large" />
+                    ////
 
                 </LinearLayout>
 
             </androidx.cardview.widget.CardView>
 
-            <ProgressBar
-                android:id="@+id/progressBar"
-                style="?android:attr/progressBarStyle"
+
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:visibility="invisible" />
+                android:layout_marginTop="@dimen/spacing_medium"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:visibility="invisible">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="#979796"
+                    android:text="Already have an account? "
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
+                    android:textColor="@color/blue_900"
+                    android:visibility="invisible" />
+
+                <TextView
+                    android:id="@+id/sign_in"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:text="Sign In"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
+                    android:textColor="@color/cyan_A700"
+                    android:textStyle="bold"
+                    android:visibility="invisible"
+                    tools:ignore="TouchTargetSizeCheck" />
+
+            </LinearLayout>
 
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>
 
-</RelativeLayout>
+
+
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>

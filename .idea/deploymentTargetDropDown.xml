@@ -2,6 +2,18 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
+      <entry key="Login">
+        <State />
+      </entry>
+      <entry key="LoginRedirectHome">
+        <State />
+      </entry>
+      <entry key="Login_redirect_home">
+        <State />
+      </entry>
+      <entry key="MainActivity">
+        <State />
+      </entry>
       <entry key="app">
         <State>
           <targetSelectedWithDropDown>
@@ -17,6 +29,9 @@
           </targetSelectedWithDropDown>
           <timeTargetWasSelectedWithDropDown value="2024-03-26T01:42:32.709857600Z" />
         </State>
+      </entry>
+      <entry key="login_redirect_home">
+        <State />
       </entry>
     </value>
   </component>
