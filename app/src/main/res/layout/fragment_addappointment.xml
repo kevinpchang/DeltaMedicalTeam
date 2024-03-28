@@ -63,7 +63,11 @@
 
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
+<<<<<<< Updated upstream
                 android:layout_height="319dp"
+=======
+                android:layout_height="305dp"
+>>>>>>> Stashed changes
                 android:layout_marginTop="@dimen/spacing_middle"
                 android:visibility="visible"
                 app:cardBackgroundColor="@android:color/white"
@@ -134,7 +138,7 @@
 
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="70dp"
                 app:cardBackgroundColor="@android:color/white"
                 app:cardCornerRadius="1dp"
                 app:cardElevation="3dp"
@@ -225,14 +229,6 @@
                 </LinearLayout>
 
             </androidx.cardview.widget.CardView>
-
-            <ProgressBar
-                android:id="@+id/progressBar"
-                style="?android:attr/progressBarStyle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:visibility="invisible" />
 
         </LinearLayout>
 
