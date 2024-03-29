@@ -82,8 +82,15 @@ public class PatientManagerFragment extends Fragment {
                 recyclerView.setAdapter(mAdapter);
 
                 // On item list clicked
-                mAdapter.setOnItemClickListener((view, obj, position) -> {
-                    Snackbar.make(view, "Item " + obj.getfName() + " " + obj.getlName() + " clicked", Snackbar.LENGTH_SHORT).show();
+                mAdapter.setOnItemClickListener(new PatientList.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(View view, Patient obj, int position) {
+                        // Inside the click listener where you navigate to ProfilePatientFragment
+                        Patient selectedPatient = items.get(position);
+                        PatientManagerFragmentDirections.ActionPatientManagerFragmentToNavProfilePatient action =
+                                PatientManagerFragmentDirections.actionPatientManagerFragmentToNavProfilePatient(selectedPatient);
+                        Navigation.findNavController(view).navigate(action);
+                    }
                 });
             } else {
                 Log.d(TAG, "No documents found.");
