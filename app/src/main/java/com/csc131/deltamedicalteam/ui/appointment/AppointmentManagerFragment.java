@@ -79,7 +79,7 @@ public class AppointmentManagerFragment extends Fragment {
                         String name = firstname + " " + lastname;
                         String address = documentSnapshot.getString("address");
                         String phoneNumber = "There no phone number";
-
+                        String patient=null, date=null, time=null, purpose=null; //REMOVE THIS
 
                         // Retrieve the phone field as an Object
                         Object phoneObj = documentSnapshot.getData().get("phone");
@@ -129,7 +129,7 @@ public class AppointmentManagerFragment extends Fragment {
                     mAdapter.setOnItemClickListener(new AppointmentList.OnItemClickListener() {
                         @Override
                         public void onItemClick(View view, Appointment obj, int position) {
-                            Snackbar.make(view, "Item " + obj.name + " clicked", Snackbar.LENGTH_SHORT).show();
+                            Snackbar.make(view, "Item " + obj.patient + " clicked", Snackbar.LENGTH_SHORT).show();
                         }
                     });
                 } else {

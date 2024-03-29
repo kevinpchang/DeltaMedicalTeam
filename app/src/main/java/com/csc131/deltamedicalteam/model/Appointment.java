@@ -9,6 +9,7 @@ public class Appointment {
     public String time;
     public String purpose;
 
+
     public Appointment() {
         // Default constructor required for Firestore
     }
