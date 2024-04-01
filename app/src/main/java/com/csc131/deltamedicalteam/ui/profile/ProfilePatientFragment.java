@@ -10,8 +10,14 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
 import com.csc131.deltamedicalteam.R;
+import com.csc131.deltamedicalteam.adapter.PatientList;
+import com.csc131.deltamedicalteam.adapter.UserList;
+import com.csc131.deltamedicalteam.model.Patient;
+import com.csc131.deltamedicalteam.model.User;
+import com.csc131.deltamedicalteam.ui.patient.PatientManagerFragmentDirections;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -66,6 +72,7 @@ public class ProfilePatientFragment extends Fragment {
                     String email = documentSnapshot.getString("email");
                     String permission = documentSnapshot.getString("permission");
 
+
                     // Set the text of emailProfile TextView
                     if (email != null) {
                         emailProfile.setText(email);
@@ -89,6 +96,7 @@ public class ProfilePatientFragment extends Fragment {
                         Log.e("Firestore Error", "permission is null");
                         mPermission.setText("Click to setup permission"); //do this feature later
                     }
+
 
                     // Similarly, handle other fields like fullName, permission, etc.
                     // Make sure to handle null cases for other fields as well
