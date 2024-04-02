@@ -19,6 +19,8 @@ public class Patient implements Parcelable {
     private int imageResource;
     private String documentId;
     private String address;
+
+
     private String ageFormat;
     private String bloodGroup;
     // private String dob; // Temporarily disable dob field
@@ -109,6 +111,10 @@ public class Patient implements Parcelable {
 
     public String getlName() {
         return lName;
+    }
+
+    public String getName() {
+        return fName + " " + lName;
     }
 
     public String getMaritalStatus() {
