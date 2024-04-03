@@ -7,7 +7,7 @@
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content" />
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/nested_content"
@@ -25,7 +25,7 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/profile_name"
+                android:id="@+id/profile_patient_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing_xlarge"
@@ -40,7 +40,8 @@
                 android:layout_marginTop="@dimen/spacing_medium"
                 android:text="Permission"
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
-                android:textColor="@color/grey_60" />
+                android:textColor="@color/grey_60"
+                android:visibility="invisible" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -61,9 +62,9 @@
                     android:id="@+id/image"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
-                    android:src="@drawable/photo_female_5"
                     android:background="@drawable/circle_shape"
-                    android:padding="2dp" />
+                    android:padding="2dp"
+                    android:src="@drawable/photo_female_5" />
 
                 <ImageButton
                     android:layout_width="?android:attr/actionBarSize"
@@ -90,8 +91,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:paddingBottom="@dimen/spacing_large"
-                    android:paddingTop="@dimen/spacing_large">
+                    android:paddingTop="@dimen/spacing_large"
+                    android:paddingBottom="@dimen/spacing_large">
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -159,8 +160,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/spacing_xlarge"
-                android:layout_marginRight="@dimen/spacing_xlarge"
                 android:layout_marginTop="@dimen/spacing_large"
+                android:layout_marginRight="@dimen/spacing_xlarge"
                 android:gravity="center"
                 android:lineSpacingExtra="2dp"
                 android:text="@string/middle_lorem_ipsum"
@@ -177,8 +178,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/spacing_xlarge"
-                android:layout_marginRight="@dimen/spacing_xlarge"
                 android:layout_marginTop="@dimen/spacing_large"
+                android:layout_marginRight="@dimen/spacing_xlarge"
                 android:orientation="horizontal">
 
                 <LinearLayout
@@ -220,7 +221,6 @@
                         android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/profile_email"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/spacing_medium"
@@ -237,8 +237,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/spacing_xlarge"
-                android:layout_marginRight="@dimen/spacing_xlarge"
                 android:layout_marginTop="@dimen/spacing_large"
+                android:layout_marginRight="@dimen/spacing_xlarge"
                 android:orientation="horizontal">
 
                 <LinearLayout
@@ -256,11 +256,11 @@
                         android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/profile_phone"
+                        android:id="@+id/profile_patient_phone"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/spacing_medium"
-                        android:text="(022)77723287"
+                        android:text="(022)text-here"
                         android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                         android:textColor="@color/grey_60" />
 
@@ -296,8 +296,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/spacing_xlarge"
-                android:layout_marginRight="@dimen/spacing_xlarge"
                 android:layout_marginTop="@dimen/spacing_large"
+                android:layout_marginRight="@dimen/spacing_xlarge"
                 android:orientation="horizontal">
 
                 <LinearLayout
@@ -339,6 +339,7 @@
                         android:textStyle="bold" />
 
                     <TextView
+                        android:id="@+id/profile_patient_address"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/spacing_medium"
@@ -358,17 +359,17 @@
 
     </androidx.core.widget.NestedScrollView>
 
-<!--    <com.google.android.material.floatingactionbutton.FloatingActionButton-->
-<!--        android:id="@+id/fab_add"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_gravity="bottom|end|right"-->
-<!--        android:layout_margin="@dimen/spacing_smlarge"-->
-<!--        android:clickable="true"-->
-<!--        android:tint="@android:color/white"-->
-<!--        app:backgroundTint="@color/light_green_600"-->
-<!--        app:fabSize="normal"-->
-<!--        app:rippleColor="@android:color/white"-->
-<!--        app:srcCompat="@drawable/ic_person_add" />-->
+    <!--    <com.google.android.material.floatingactionbutton.FloatingActionButton-->
+    <!--        android:id="@+id/fab_add"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_gravity="bottom|end|right"-->
+    <!--        android:layout_margin="@dimen/spacing_smlarge"-->
+    <!--        android:clickable="true"-->
+    <!--        android:tint="@android:color/white"-->
+    <!--        app:backgroundTint="@color/light_green_600"-->
+    <!--        app:fabSize="normal"-->
+    <!--        app:rippleColor="@android:color/white"-->
+    <!--        app:srcCompat="@drawable/ic_person_add" />-->
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
