@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -16,6 +17,8 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.csc131.deltamedicalteam.R;
+import com.google.android.material.tabs.TabItem;
+import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -28,6 +31,9 @@ public class HealthConditionFragment extends Fragment {
     private com.csc131.deltamedicalteam.databinding.FragmentHealthConditionBinding binding;
     private Spinner patientSpinner;
 
+    private TabLayout healthCondTabs;
+    private TabItem currIllnessTab;
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_health_condition, container, false);
@@ -35,6 +41,17 @@ public class HealthConditionFragment extends Fragment {
         patientSpinner = rootView.findViewById(R.id.healthcondition_patient_list_spinner);
         getPatientList();
 
+        healthCondTabs = rootView.findViewById(R.id.healConditionTabs);
+
+        currIllnessTab = rootView.findViewById(R.id.currentIllness);
+
+
+        patientSpinner.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+            }
+        });
 
         return rootView;
     }

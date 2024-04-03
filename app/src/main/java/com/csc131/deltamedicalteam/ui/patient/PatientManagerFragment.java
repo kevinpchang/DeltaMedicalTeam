@@ -87,9 +87,9 @@ public class PatientManagerFragment extends Fragment {
                     public void onItemClick(View view, Patient obj, int position) {
                         // Inside the click listener where you navigate to ProfilePatientFragment
                         Patient selectedPatient = items.get(position);
-                        PatientManagerFragmentDirections.ActionPatientManagerFragmentToNavProfilePatient action =
+                        /*PatientManagerFragmentDirections.ActionPatientManagerFragmentToNavProfilePatient action =
                                 PatientManagerFragmentDirections.actionPatientManagerFragmentToNavProfilePatient(selectedPatient);
-                        Navigation.findNavController(view).navigate(action);
+                        Navigation.findNavController(view).navigate(action);*/
                     }
                 });
             } else {
