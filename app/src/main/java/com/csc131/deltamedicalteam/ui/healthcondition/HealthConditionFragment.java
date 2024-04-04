@@ -46,13 +46,6 @@ public class HealthConditionFragment extends Fragment {
         currIllnessTab = rootView.findViewById(R.id.currentIllness);
 
 
-        patientSpinner.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-            }
-        });
-
         return rootView;
     }
 
