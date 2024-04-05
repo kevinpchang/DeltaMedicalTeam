@@ -26,6 +26,10 @@ public class HealthConditions implements Parcelable {
         this.currentIllnesses = currentIllnesses;
     }
 
+    public void setSpecificAllergies(String specificAllergies) {
+        this.specificAllergies = specificAllergies;
+    }
+
     protected HealthConditions(Parcel in) {
         //currentIllnesses = in.readString();
         // Read map from parcel
@@ -69,4 +73,6 @@ public class HealthConditions implements Parcelable {
     public String getSpecificAllergies() {
         return specificAllergies;
     }
+
+
 }
