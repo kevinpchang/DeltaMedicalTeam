@@ -2,6 +2,7 @@ package com.csc131.deltamedicalteam.ui.healthcondition;
 
 import static android.content.ContentValues.TAG;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -9,20 +10,27 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.csc131.deltamedicalteam.Login;
 import com.csc131.deltamedicalteam.R;
+import com.csc131.deltamedicalteam.adapter.CurrentAllergiesList;
 import com.csc131.deltamedicalteam.adapter.CurrentIllnessList;
 import com.csc131.deltamedicalteam.adapter.PatientList;
 import com.csc131.deltamedicalteam.model.HealthConditions;
 import com.csc131.deltamedicalteam.model.Patient;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
@@ -43,10 +51,12 @@ public class HealthConditionFragment extends Fragment {
 
     // Reference to the "patients" collection
     private CollectionReference patientsRef = db.collection("patients");
+    private Button mAddEditButton;
     private Spinner patientSpinner;
     RecyclerView recyclerViewCurrentIllness, recyclerViewMedicalHistory, recyclerViewSpecificAllergies;
     TabLayout tabLayout;
     private CurrentIllnessList mAdapter;
+    private CurrentAllergiesList mAllergiesAdapter;
     List<Patient> patientNames = new ArrayList<>();
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -61,10 +71,14 @@ public class HealthConditionFragment extends Fragment {
         recyclerViewMedicalHistory = rootView.findViewById(R.id.RecyclerView_medical_history);
         recyclerViewSpecificAllergies = rootView.findViewById(R.id.RecyclerView_specific_allergies);
 
+        //button
+        mAddEditButton = rootView.findViewById(R.id.health_condition_edit);
+
         // Find TabLayout
         tabLayout = rootView.findViewById(R.id.healConditionTabs);
 
         recyclerViewCurrentIllness.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerViewSpecificAllergies.setLayoutManager(new LinearLayoutManager(getActivity()));
 
       //detects when spinner item is selected
         patientSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -90,6 +104,21 @@ public class HealthConditionFragment extends Fragment {
 
                         mAdapter = new CurrentIllnessList(getActivity(), items);
                         recyclerViewCurrentIllness.setAdapter(mAdapter);
+
+                        //currentAllegies
+
+                        List<String> currAllergies = (List<String>) documentSnapshot.get("specificAllergies");
+                        List<HealthConditions> allergiesitems = new ArrayList<>();
+                        //used to check if array is empty or not
+                        if (currAllergies != null) {
+                            for (int i = 0; i < currAllergies.size(); i++) {
+                                HealthConditions hCons = new HealthConditions();
+                                hCons.setSpecificAllergies(currAllergies.get(i));
+                                allergiesitems.add(hCons);
+                            }
+                        }
+                        mAllergiesAdapter = new CurrentAllergiesList(getActivity(), allergiesitems);
+                        recyclerViewSpecificAllergies.setAdapter(mAllergiesAdapter);
                     }
                 });
             }
@@ -134,6 +163,48 @@ public class HealthConditionFragment extends Fragment {
                 // No action needed
             }
         });
+
+        //health_condition_edit button onClick
+//        mAddEditButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                EditText resetMail = new EditText(v.getContext());
+//                AlertDialog.Builder passwordResetDialog = new AlertDialog.Builder(v.getContext());
+//                passwordResetDialog.setTitle("Add more field");
+//                passwordResetDialog.setMessage("Enter email address to receive reset link");
+//                passwordResetDialog.setView(resetMail);
+//
+//                passwordResetDialog.setPositiveButton("Add", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        //extract email and send reset link
+//                        String mail = resetMail.getText().toString();
+//                        fAuth.sendPasswordResetEmail(mail).addOnSuccessListener(new OnSuccessListener<Void>() {
+//                            @Override
+//                            public void onSuccess(Void aVoid) {
+//                                Toast.makeText(Login.this, "Reset Link Sent to Your Email.", Toast.LENGTH_SHORT).show();
+//                            }
+//                        }).addOnFailureListener(new OnFailureListener() {
+//                            @Override
+//                            public void onFailure(@NonNull Exception e) {
+//                                Toast.makeText(Login.this, "Error ! Reset Link is Not Sent" + e.getMessage(), Toast.LENGTH_SHORT).show();
+//                            }
+//                        });
+//
+//                    }
+//                });
+//
+//
+//                passwordResetDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        //Close
+//
+//                    }
+//                });
+//                passwordResetDialog.create().show();
+//            }
+//        });
 
         return rootView;
     }
