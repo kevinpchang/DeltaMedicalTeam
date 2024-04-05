@@ -19,8 +19,6 @@ public class Patient implements Parcelable {
     private int imageResource;
     private String documentId;
     private String address;
-
-
     private String ageFormat;
     private String bloodGroup;
     // private String dob; // Temporarily disable dob field
@@ -28,7 +26,6 @@ public class Patient implements Parcelable {
     private HealthConditions healthConditions;
     private String lName;
     private String maritalStatus;
-
     private String cellPhone;
     private Medication medication;
     private String rhFactor;
@@ -113,9 +110,10 @@ public class Patient implements Parcelable {
         return lName;
     }
 
-    public String getName() {
-        return fName + " " + lName;
-    }
+    public String getName() {  return fName + " " + lName;}
+
+    @Override
+    public String toString() {  return fName + " " + lName;}
 
     public String getMaritalStatus() {
         return maritalStatus;
@@ -138,6 +136,10 @@ public class Patient implements Parcelable {
 
     public void setImage(int imageResource) {
         this.imageResource = imageResource;
+    }
+
+    public void setDocumentId(String documentId) {
+        this.documentId = documentId;
     }
 
     public void fromDocumentSnapshot(DocumentSnapshot document) {
