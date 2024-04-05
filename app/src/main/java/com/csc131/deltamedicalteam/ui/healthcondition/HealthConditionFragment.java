@@ -44,7 +44,8 @@ public class HealthConditionFragment extends Fragment {
     // Reference to the "patients" collection
     private CollectionReference patientsRef = db.collection("patients");
     private Spinner patientSpinner;
-    private RecyclerView recyclerView;
+    RecyclerView recyclerViewCurrentIllness, recyclerViewMedicalHistory, recyclerViewSpecificAllergies;
+    TabLayout tabLayout;
     private CurrentIllnessList mAdapter;
     List<Patient> patientNames = new ArrayList<>();
 
@@ -55,8 +56,15 @@ public class HealthConditionFragment extends Fragment {
         patientSpinner = rootView.findViewById(R.id.healthcondition_patient_list_spinner);
         getPatientList();
 
-        recyclerView = rootView.findViewById(R.id.RecyclerView_current_illness);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        // Find RecyclerViews
+        recyclerViewCurrentIllness = rootView.findViewById(R.id.RecyclerView_current_illness);
+        recyclerViewMedicalHistory = rootView.findViewById(R.id.RecyclerView_medical_history);
+        recyclerViewSpecificAllergies = rootView.findViewById(R.id.RecyclerView_specific_allergies);
+
+        // Find TabLayout
+        tabLayout = rootView.findViewById(R.id.healConditionTabs);
+
+        recyclerViewCurrentIllness.setLayoutManager(new LinearLayoutManager(getActivity()));
 
       //detects when spinner item is selected
         patientSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -81,7 +89,7 @@ public class HealthConditionFragment extends Fragment {
                         }
 
                         mAdapter = new CurrentIllnessList(getActivity(), items);
-                        recyclerView.setAdapter(mAdapter);
+                        recyclerViewCurrentIllness.setAdapter(mAdapter);
                     }
                 });
             }
@@ -89,6 +97,41 @@ public class HealthConditionFragment extends Fragment {
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
 
+            }
+        });
+
+        // Set up OnTabSelectedListener
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                // Show corresponding RecyclerView and hide others
+                switch (tab.getPosition()) {
+                    case 0:
+                        recyclerViewCurrentIllness.setVisibility(View.VISIBLE);
+                        recyclerViewMedicalHistory.setVisibility(View.GONE);
+                        recyclerViewSpecificAllergies.setVisibility(View.GONE);
+                        break;
+                    case 1:
+                        recyclerViewCurrentIllness.setVisibility(View.GONE);
+                        recyclerViewMedicalHistory.setVisibility(View.VISIBLE);
+                        recyclerViewSpecificAllergies.setVisibility(View.GONE);
+                        break;
+                    case 2:
+                        recyclerViewCurrentIllness.setVisibility(View.GONE);
+                        recyclerViewMedicalHistory.setVisibility(View.GONE);
+                        recyclerViewSpecificAllergies.setVisibility(View.VISIBLE);
+                        break;
+                }
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+                // No action needed
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+                // No action needed
             }
         });
 
