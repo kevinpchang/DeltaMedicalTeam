@@ -112,6 +112,9 @@ public class Patient implements Parcelable {
 
     public String getName() {  return fName + " " + lName;}
 
+    @Override
+    public String toString() {  return fName + " " + lName;}
+
     public String getMaritalStatus() {
         return maritalStatus;
     }
@@ -133,6 +136,10 @@ public class Patient implements Parcelable {
 
     public void setImage(int imageResource) {
         this.imageResource = imageResource;
+    }
+
+    public void setDocumentID(String documentId) {
+        this.documentId = documentId;
     }
 
     public void fromDocumentSnapshot(DocumentSnapshot document) {
