@@ -104,7 +104,7 @@ public class HealthConditionFragment extends Fragment {
                         // Get patient id from DocumentSnapshot
                         Patient patient = documentSnapshot.toObject(Patient.class);
                         String documentId = documentSnapshot.getId();
-                        patient.setDocumentID(documentId);
+                        patient.setDocumentId(documentId);
 
                         // Add patient name to the list
                         patientNames.add(patient);

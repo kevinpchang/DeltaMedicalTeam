@@ -138,7 +138,7 @@ public class Patient implements Parcelable {
         this.imageResource = imageResource;
     }
 
-    public void setDocumentID(String documentId) {
+    public void setDocumentId(String documentId) {
         this.documentId = documentId;
     }
 
