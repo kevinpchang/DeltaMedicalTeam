@@ -2,7 +2,6 @@ package com.csc131.deltamedicalteam.ui.healthcondition;
 
 import static android.content.ContentValues.TAG;
 
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,28 +10,19 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.csc131.deltamedicalteam.Login;
 import com.csc131.deltamedicalteam.R;
 import com.csc131.deltamedicalteam.adapter.CurrentAllergiesList;
 import com.csc131.deltamedicalteam.adapter.CurrentIllnessList;
-import com.csc131.deltamedicalteam.adapter.PatientList;
 import com.csc131.deltamedicalteam.model.HealthConditions;
 import com.csc131.deltamedicalteam.model.Patient;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -51,7 +41,7 @@ public class HealthConditionFragment extends Fragment {
 
     // Reference to the "patients" collection
     private CollectionReference patientsRef = db.collection("patients");
-    private Button mAddEditButton;
+    private Button mCurrentIllnessAddEditButton, mMedicalHistoryAddEditButton, mAllergiesAddEditButton;
     private Spinner patientSpinner;
     RecyclerView recyclerViewCurrentIllness, recyclerViewMedicalHistory, recyclerViewSpecificAllergies;
     TabLayout tabLayout;
@@ -72,7 +62,9 @@ public class HealthConditionFragment extends Fragment {
         recyclerViewSpecificAllergies = rootView.findViewById(R.id.RecyclerView_specific_allergies);
 
         //button
-        mAddEditButton = rootView.findViewById(R.id.health_condition_edit);
+        mCurrentIllnessAddEditButton = rootView.findViewById(R.id.current_illness_addbutton);
+        mMedicalHistoryAddEditButton = rootView.findViewById(R.id.medical_history_addbutton);
+        mAllergiesAddEditButton = rootView.findViewById(R.id.allergies_addbutton);
 
         // Find TabLayout
         tabLayout = rootView.findViewById(R.id.healConditionTabs);
@@ -139,16 +131,28 @@ public class HealthConditionFragment extends Fragment {
                         recyclerViewCurrentIllness.setVisibility(View.VISIBLE);
                         recyclerViewMedicalHistory.setVisibility(View.GONE);
                         recyclerViewSpecificAllergies.setVisibility(View.GONE);
+
+                        mCurrentIllnessAddEditButton.setVisibility(View.VISIBLE);
+                        mMedicalHistoryAddEditButton.setVisibility(View.GONE);
+                        mAllergiesAddEditButton.setVisibility(View.GONE);
                         break;
                     case 1:
                         recyclerViewCurrentIllness.setVisibility(View.GONE);
                         recyclerViewMedicalHistory.setVisibility(View.VISIBLE);
                         recyclerViewSpecificAllergies.setVisibility(View.GONE);
+
+                        mCurrentIllnessAddEditButton.setVisibility(View.GONE);
+                        mMedicalHistoryAddEditButton.setVisibility(View.VISIBLE);
+                        mAllergiesAddEditButton.setVisibility(View.GONE);
                         break;
                     case 2:
                         recyclerViewCurrentIllness.setVisibility(View.GONE);
                         recyclerViewMedicalHistory.setVisibility(View.GONE);
                         recyclerViewSpecificAllergies.setVisibility(View.VISIBLE);
+
+                        mCurrentIllnessAddEditButton.setVisibility(View.GONE);
+                        mMedicalHistoryAddEditButton.setVisibility(View.GONE);
+                        mAllergiesAddEditButton.setVisibility(View.VISIBLE);
                         break;
                 }
             }
@@ -156,6 +160,13 @@ public class HealthConditionFragment extends Fragment {
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
                 // No action needed
+                recyclerViewCurrentIllness.setVisibility(View.VISIBLE);
+                recyclerViewMedicalHistory.setVisibility(View.GONE);
+                recyclerViewSpecificAllergies.setVisibility(View.GONE);
+
+                mCurrentIllnessAddEditButton.setVisibility(View.VISIBLE);
+                mMedicalHistoryAddEditButton.setVisibility(View.GONE);
+                mAllergiesAddEditButton.setVisibility(View.GONE);
             }
 
             @Override
@@ -242,9 +253,7 @@ public class HealthConditionFragment extends Fragment {
         patientSpinner.setAdapter(adapter);
     }
 
-    private void getPatientID(String ID) {
 
-    }
 
     @Override
     public void onDestroyView() {
