@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.csc131.deltamedicalteam.R;
 import com.csc131.deltamedicalteam.model.Appointment;
-import com.csc131.deltamedicalteam.model.Appointment;
 import com.csc131.deltamedicalteam.utils.Tools;
 
 import java.util.ArrayList;
@@ -48,9 +47,9 @@ public class AppointmentList extends RecyclerView.Adapter<RecyclerView.ViewHolde
         public OriginalViewHolder(View v) {
             super(v);
             image = (ImageView) v.findViewById(R.id.image);
-            name = (TextView) v.findViewById(R.id.appointment_list_item_name);
-            phone = (TextView) v.findViewById(R.id.appointment_list_item_phone);
-            address = (TextView) v.findViewById(R.id.appointment_list_item_address);
+            name = (TextView) v.findViewById(R.id.list_item_name);
+            phone = (TextView) v.findViewById(R.id.list_item_phone);
+            address = (TextView) v.findViewById(R.id.list_item_address);
             lyt_parent = (View) v.findViewById(R.id.lyt_parent);
         }
     }

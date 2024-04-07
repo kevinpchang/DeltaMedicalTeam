@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.csc131.deltamedicalteam.R;
 import com.csc131.deltamedicalteam.model.User;
-import com.csc131.deltamedicalteam.utils.Tools;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,9 +47,9 @@ public class UserList extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         public OriginalViewHolder(View v) {
             super(v);
             image = (ImageView) v.findViewById(R.id.image);
-            name = (TextView) v.findViewById(R.id.appointment_list_item_name);
-            email = (TextView) v.findViewById(R.id.appointment_list_item_address);
-            phone = (TextView) v.findViewById(R.id.appointment_list_item_phone);
+            name = (TextView) v.findViewById(R.id.list_item_name);
+            email = (TextView) v.findViewById(R.id.list_item_address);
+            phone = (TextView) v.findViewById(R.id.list_item_phone);
             permission = (TextView) v.findViewById(R.id.patient_list_item_permission);
             lyt_parent = (View) v.findViewById(R.id.lyt_parent);
         }

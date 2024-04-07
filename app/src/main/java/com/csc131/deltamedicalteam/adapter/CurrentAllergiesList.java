@@ -40,7 +40,7 @@ public class CurrentAllergiesList extends RecyclerView.Adapter<RecyclerView.View
 
         public OriginalViewHolder(View v) {
             super(v);
-            name = (TextView) v.findViewById(R.id.appointment_list_item_name);
+            name = (TextView) v.findViewById(R.id.list_item_name);
             lyt_parent = (View) v.findViewById(R.id.lyt_parent);
         }
     }

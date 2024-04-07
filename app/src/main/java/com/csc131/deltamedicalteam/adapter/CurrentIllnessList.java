@@ -1,18 +1,15 @@
 package com.csc131.deltamedicalteam.adapter;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.csc131.deltamedicalteam.R;
 import com.csc131.deltamedicalteam.model.HealthConditions;
-import com.csc131.deltamedicalteam.utils.Tools;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +40,7 @@ public class CurrentIllnessList extends RecyclerView.Adapter<RecyclerView.ViewHo
 
         public OriginalViewHolder(View v) {
             super(v);
-            name = (TextView) v.findViewById(R.id.appointment_list_item_name);
+            name = (TextView) v.findViewById(R.id.list_item_name);
             lyt_parent = (View) v.findViewById(R.id.lyt_parent);
         }
     }

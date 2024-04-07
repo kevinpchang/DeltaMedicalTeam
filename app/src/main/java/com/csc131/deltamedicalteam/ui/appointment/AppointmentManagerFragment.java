@@ -39,14 +39,14 @@ public class AppointmentManagerFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_appointment_manager, container, false);
 
-        recyclerView = view.findViewById(R.id.appointment_list);
+        recyclerView = view.findViewById(R.id.recycler_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setHasFixedSize(true);
 
         initComponent();
 
         // Find the Button and set its click listener
-        Button btnAddAppointment = view.findViewById(R.id.add_appointment_button);
+        Button btnAddAppointment = view.findViewById(R.id.add_button);
         btnAddAppointment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
