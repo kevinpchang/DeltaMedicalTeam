@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.csc131.deltamedicalteam.R;
 import com.csc131.deltamedicalteam.adapter.CurrentAllergiesList;
 import com.csc131.deltamedicalteam.adapter.CurrentIllnessList;
+import com.csc131.deltamedicalteam.adapter.MedicalHistoryList;
 import com.csc131.deltamedicalteam.model.HealthConditions;
 import com.csc131.deltamedicalteam.model.Patient;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -45,7 +46,8 @@ public class HealthConditionFragment extends Fragment {
     private Spinner patientSpinner;
     RecyclerView recyclerViewCurrentIllness, recyclerViewMedicalHistory, recyclerViewSpecificAllergies;
     TabLayout tabLayout;
-    private CurrentIllnessList mAdapter;
+    private CurrentIllnessList mCurrentIllnessAdapter;
+    private MedicalHistoryList mMedicalHistoryAdapter;
     private CurrentAllergiesList mAllergiesAdapter;
     List<Patient> patientNames = new ArrayList<>();
 
@@ -71,6 +73,7 @@ public class HealthConditionFragment extends Fragment {
 
         recyclerViewCurrentIllness.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerViewSpecificAllergies.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerViewMedicalHistory.setLayoutManager(new LinearLayoutManager(getActivity()));
 
       //detects when spinner item is selected
         patientSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -84,18 +87,30 @@ public class HealthConditionFragment extends Fragment {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                         List<String> currIllness = (List<String>) documentSnapshot.get("currentIllnesses");
-                        List<HealthConditions> items = new ArrayList<>();
+                        List<HealthConditions> currIllnessItems = new ArrayList<>();
                         //used to check if array is empty or not
                         if (currIllness != null) {
                             for (int i = 0; i < currIllness.size(); i++) {
                                 HealthConditions hCons = new HealthConditions();
                                 hCons.setCurrentIllnesses(currIllness.get(i));
-                                items.add(hCons);
+                                currIllnessItems.add(hCons);
                             }
                         }
+                        mCurrentIllnessAdapter = new CurrentIllnessList(getActivity(), currIllnessItems);
+                        recyclerViewCurrentIllness.setAdapter(mCurrentIllnessAdapter);
 
-                        mAdapter = new CurrentIllnessList(getActivity(), items);
-                        recyclerViewCurrentIllness.setAdapter(mAdapter);
+                        //Medical History
+                        List<String> prevIllness = (List<String>) documentSnapshot.get("previousIllnesses");
+                        List<HealthConditions> prevIllnessItems = new ArrayList<>();
+                        if (prevIllness != null) {
+                            for (int i = 0; i < prevIllness.size(); i++) {
+                                HealthConditions hCons = new HealthConditions();
+                                hCons.setPreviousIllnesses(prevIllness.get(i));
+                                prevIllnessItems.add(hCons);
+                            }
+                        }
+                        mMedicalHistoryAdapter = new MedicalHistoryList(getActivity(), prevIllnessItems);
+                        recyclerViewMedicalHistory.setAdapter(mMedicalHistoryAdapter);
 
                         //currentAllegies
 
