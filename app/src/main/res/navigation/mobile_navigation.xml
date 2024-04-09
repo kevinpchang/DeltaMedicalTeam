@@ -47,15 +47,19 @@
         android:id="@+id/nav_appointment"
         android:name="com.csc131.deltamedicalteam.ui.appointment.AppointmentManagerFragment"
         android:label="@string/menu_appointment"
-        tools:layout="@layout/fragment_appointment" >
+        tools:layout="@layout/fragment_appointment_manager">
         <action
             android:id="@+id/action_appointmentManagerFragment_to_nav_add_appointment"
             app:destination="@id/nav_add_appointment" />
+
+        <action
+            android:id="@+id/action_appointmentManagerFragment_to_nav_profile_appointment"
+            app:destination="@id/nav_profile_appointment" />
     </fragment>
 
     <fragment
         android:id="@+id/nav_add_appointment"
-        android:name="com.csc131.deltamedicalteam.ui.appointment.AppointmentFragment"
+        android:name="com.csc131.deltamedicalteam.ui.appointment.AddAppointmentFragment"
         android:label="@string/menu_add_appointment"
         tools:layout="@layout/fragment_addappointment" />
 
@@ -83,6 +87,16 @@
     <argument
         android:name="patient"
         app:argType="com.csc131.deltamedicalteam.model.Patient" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_profile_appointment"
+        android:name="com.csc131.deltamedicalteam.ui.profile.ProfileAppointmentFragment"
+        android:label="Appointment Detail"
+        tools:layout="@layout/fragment_profile_appointment" >
+        <argument
+            android:name="appointment"
+            app:argType="com.csc131.deltamedicalteam.model.Appointment" />
     </fragment>
 
     <fragment

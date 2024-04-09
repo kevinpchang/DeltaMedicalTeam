@@ -3,7 +3,9 @@ package com.csc131.deltamedicalteam.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Map;
 
@@ -67,6 +69,29 @@ public class User implements Parcelable {
 
     public String getPhone() {
         return phone;
+    }
+
+    public static void getUserFromId(String userId, OnSuccessListener<User> onSuccessListener) {
+        // Initialize Firestore
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        // Reference to the collection where users are stored
+        db.collection("users").document(userId).get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        // Convert the document snapshot to a User object
+                        User user = documentSnapshot.toObject(User.class);
+                        // Invoke the success listener with the user object
+                        onSuccessListener.onSuccess(user);
+                    } else {
+                        // Document with the given ID does not exist
+                        onSuccessListener.onSuccess(null);
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    // Handle errors by returning null
+                    onSuccessListener.onSuccess(null);
+                });
     }
 
     public void fromDocumentSnapshot(DocumentSnapshot document) {
