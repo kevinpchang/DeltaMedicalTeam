@@ -8,7 +8,7 @@ import java.util.Map;
 
 public class HealthConditions implements Parcelable {
     private String currentIllnesses;
-    private Map<String, String> previousIllnesses;
+    private String previousIllnesses;
     private String specificAllergies;
 
 
@@ -16,7 +16,7 @@ public class HealthConditions implements Parcelable {
     public HealthConditions() {
         // Default constructor required for Firestore deserialization
     }
-    public HealthConditions(String currentIllnesses, Map<String, String> previousIllnesses, String specificAllergies) {
+    public HealthConditions(String currentIllnesses, String previousIllnesses, String specificAllergies) {
         this.currentIllnesses = currentIllnesses;
         this.previousIllnesses = previousIllnesses;
         this.specificAllergies = specificAllergies;
@@ -24,6 +24,9 @@ public class HealthConditions implements Parcelable {
 
     public void setCurrentIllnesses(String currentIllnesses) {
         this.currentIllnesses = currentIllnesses;
+    }
+    public void setPreviousIllnesses(String previousIllnesses) {
+        this.previousIllnesses = previousIllnesses;
     }
 
     public void setSpecificAllergies(String specificAllergies) {
@@ -66,9 +69,7 @@ public class HealthConditions implements Parcelable {
 
     public String getCurrentIllnesses() { return currentIllnesses; }
 
-    public Map<String, String> getPreviousIllnesses() {
-        return previousIllnesses;
-    }
+    public String getPreviousIllnesses() { return previousIllnesses; }
 
     public String getSpecificAllergies() {
         return specificAllergies;
