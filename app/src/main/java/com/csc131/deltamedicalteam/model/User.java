@@ -62,6 +62,22 @@ public class User implements Parcelable {
         return fName + " " + lName;
     }
 
+    public String getfName() {
+        return fName;
+    }
+
+    public String getlName() {
+        return lName;
+    }
+
+    public void setlName(String lName) {
+        this.lName = lName;
+    }
+
+    public void setfName(String fName) {
+        this.fName = fName;
+    }
+
     @NonNull
     @Override
     public String toString() {  return fName + " " + lName;}

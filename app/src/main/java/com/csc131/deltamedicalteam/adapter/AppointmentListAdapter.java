@@ -142,9 +142,8 @@ public class AppointmentListAdapter extends RecyclerView.Adapter<AppointmentList
         // Fetch user name and patient name asynchronously
         User.getUserFromId(userID, user -> {
             // Display user name
-            if (user != null) {
-                holder.doctorIdTextView.setText(user.getName());
-            } else {
+            if (user != null) holder.doctorIdTextView.setText(user.getName());
+            else {
                 holder.doctorIdTextView.setText("No User");
             }
         });
