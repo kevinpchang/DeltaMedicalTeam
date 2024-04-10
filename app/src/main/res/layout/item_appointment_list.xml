@@ -85,16 +85,27 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Time" />
+                        android:text="Time - Date" />
 
                     <TextView
                         android:id="@+id/appointment_time"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
                         android:layout_marginEnd="@dimen/spacing_middle"
                         android:layout_marginRight="@dimen/spacing_middle"
-                        android:text="Appointment Time"
+                        android:layout_weight="1"
+                        android:text="Time"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textColor="@color/grey_90" />
+
+                    <TextView
+                        android:id="@+id/appointment_date"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="@dimen/spacing_middle"
+                        android:layout_marginRight="@dimen/spacing_middle"
+                        android:layout_weight="1"
+                        android:text="Date"
                         android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                         android:textColor="@color/grey_90" />
                 </LinearLayout>

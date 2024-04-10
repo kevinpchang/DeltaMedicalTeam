@@ -71,7 +71,7 @@ public class UserList extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             OriginalViewHolder viewHolder = (OriginalViewHolder) holder;
 
             User user = items.get(position);
-            viewHolder.name.setText(user.getfName());
+            viewHolder.name.setText(user.getName());
             viewHolder.email.setText(user.getEmail()); // Assuming you have added an email TextView
             viewHolder.phone.setText(user.getPhone()); // Assuming you have added a phone TextView
             viewHolder.permission.setText(user.getPermission()); // Assuming you have added a permission TextView

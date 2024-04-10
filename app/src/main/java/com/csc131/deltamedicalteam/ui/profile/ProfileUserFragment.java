@@ -44,7 +44,7 @@ public class ProfileUserFragment extends Fragment {
         TextView phoneTextView = view.findViewById(R.id.profile_phone);
         // Add more TextViews for other user information
 
-        nameTextView.setText(user.getfName());
+        nameTextView.setText(user.getName());
         emailTextView.setText(user.getEmail());
         permissionTextView.setText(user.getPermission());
         phoneTextView.setText(user.getPhone());

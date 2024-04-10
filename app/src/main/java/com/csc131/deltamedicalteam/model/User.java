@@ -59,9 +59,12 @@ public class User implements Parcelable {
         return email;
     }
 
-    public String getfName() {
+    public String getName() {
         return fName + " " + lName;
     }
+
+    @Override
+    public String toString() {  return fName + " " + lName;}
 
     public String getPermission() {
         return permission;
@@ -69,6 +72,10 @@ public class User implements Parcelable {
 
     public String getPhone() {
         return phone;
+    }
+
+    public void setDocumentId(String documentId) {
+        this.documentId = documentId;
     }
 
     public static void getUserFromId(String userId, OnSuccessListener<User> onSuccessListener) {

@@ -37,6 +37,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.TimeZone;
 
 public class AddAppointmentFragment extends Fragment {
@@ -181,7 +182,7 @@ public class AddAppointmentFragment extends Fragment {
 
     private void checkAvailability(String selectedDate, String selectedTime) {
         // Get the user's document ID
-        String userDocumentId = FirebaseAuth.getInstance().getCurrentUser().getUid();// Replace this with the actual user's document ID
+        String userDocumentId = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();// Replace this with the actual user's document ID
 
         // Assuming you have a collection named "appointments" in your Firestore database
         db.collection("appointments")

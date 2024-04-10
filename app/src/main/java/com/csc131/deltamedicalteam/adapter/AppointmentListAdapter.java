@@ -1,10 +1,15 @@
 package com.csc131.deltamedicalteam.adapter;
 
 
+
+
 import android.content.Context;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -16,18 +21,29 @@ import com.csc131.deltamedicalteam.model.Patient;
 import com.csc131.deltamedicalteam.model.User;
 import com.google.android.gms.tasks.OnSuccessListener;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class AppointmentListAdapter extends RecyclerView.Adapter<AppointmentListAdapter.ViewHolder> {
 
     private List<Appointment> appointments;
+    private List<Appointment> originalAppointments = new ArrayList<>();
     private Context context;
     private OnItemClickListener listener;
+    private String currentPatientFilter = ""; // Default filter value for patient name
+    private String currentUserFilter = ""; // Default filter value for user name
+    private String currentPurposeFilter = ""; // Default filter value for purpose
+
+    private List<Appointment> filteredAppointments; // To hold filtered appointments
 
     public AppointmentListAdapter(Context context, List<Appointment> appointments) {
         this.context = context;
         this.appointments = appointments;
+        this.originalAppointments.addAll(appointments); // Save the original list
+        this.filteredAppointments = new ArrayList<>(appointments); // Initialize filteredAppointments with all appointments
     }
+
+
 
     public interface OnItemClickListener {
         void onItemClick(Appointment appointment, int position);
@@ -42,6 +58,8 @@ public class AppointmentListAdapter extends RecyclerView.Adapter<AppointmentList
         TextView doctorIdTextView;
         TextView purposeTextView;
         TextView timeTextView;
+        TextView dateTextView;
+
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -49,6 +67,7 @@ public class AppointmentListAdapter extends RecyclerView.Adapter<AppointmentList
             doctorIdTextView = itemView.findViewById(R.id.appointment_user_id);
             purposeTextView = itemView.findViewById(R.id.appointment_purpose);
             timeTextView = itemView.findViewById(R.id.appointment_time);
+            dateTextView = itemView.findViewById(R.id.appointment_date);
         }
     }
 
@@ -59,10 +78,70 @@ public class AppointmentListAdapter extends RecyclerView.Adapter<AppointmentList
         return new ViewHolder(view);
     }
 
+    // Method to filter appointments based on patient name
+    // Method to filter appointments based on patient name
+    public void filterByPatientID(String ID) {
+        currentPatientFilter = ID.trim(); // Update current filter value
+        applyFilters();
+    }
+
+    // Method to filter appointments based on user name
+    public void filterByUserID(String ID) {
+        currentUserFilter = ID.trim(); // Update current filter value
+        applyFilters();
+    }
+
+    // Method to filter appointments based on purpose
+    public void filterByPurpose(String purpose) {
+        currentPurposeFilter = purpose.trim(); // Update current filter value
+        applyFilters();
+    }
+
+    public void resetFilterByPatientID() {
+        currentPatientFilter = ""; // Reset the filter value
+        applyFilters(); // Apply filters again
+    }
+
+    public void resetFilterByUserID() {
+        currentUserFilter = ""; // Reset the filter value
+        applyFilters(); // Apply filters again
+    }
+
+    public void resetFilterByPurpose() {
+        currentPurposeFilter = ""; // Reset the filter value
+        applyFilters(); // Apply filters again
+    }
+
+
+    private void applyFilters() {
+        filteredAppointments.clear(); // Clear previous filtered results
+        for (Appointment appointment : appointments) {
+            boolean matchesPatient = currentPatientFilter.isEmpty() ||
+                    appointment.getPatientDocumentId().equalsIgnoreCase(currentPatientFilter);
+//            boolean matchesUser = currentUserFilter.isEmpty() ||
+//                    appointment.getUserName().equalsIgnoreCase(currentUserFilter);
+//            boolean matchesPurpose = currentPurposeFilter.isEmpty() ||
+//                    appointment.getPurpose().equalsIgnoreCase(currentPurposeFilter);
+            if (matchesPatient) {
+                filteredAppointments.add(appointment); // Add appointments that match all filters
+            }
+        }
+
+
+        notifyDataSetChanged(); // Notify the adapter that data set has changed
+    }
+
+    public void setDefaultList() {
+        appointments.clear(); // Clear any filtered appointments
+        appointments.addAll(originalAppointments); // Restore the original list
+        notifyDataSetChanged(); // Notify the adapter that the data has changed
+    }
+
+
+
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Appointment appointment = appointments.get(position);
-
+        Appointment appointment = filteredAppointments.get(position);
         // Fetch user ID and patient ID
         String userID = appointment.getUserDocumentId();
         String patientID = appointment.getPatientDocumentId();
@@ -71,7 +150,7 @@ public class AppointmentListAdapter extends RecyclerView.Adapter<AppointmentList
         User.getUserFromId(userID, user -> {
             // Display user name
             if (user != null) {
-                holder.doctorIdTextView.setText(user.getfName());
+                holder.doctorIdTextView.setText(user.getName());
             } else {
                 holder.doctorIdTextView.setText("No User");
             }
@@ -87,8 +166,14 @@ public class AppointmentListAdapter extends RecyclerView.Adapter<AppointmentList
         });
 
         // Set other appointment details
-        holder.purposeTextView.setText(appointment.getPurpose());
+        if (appointment.getPurpose() != null) {
+            holder.purposeTextView.setText(appointment.getPurpose());
+        } else {
+            holder.purposeTextView.setText("Unknown Purpose");
+        }
+
         holder.timeTextView.setText(appointment.getTime());
+        holder.dateTextView.setText(appointment.getDate());
 
         // Set click listener
         holder.itemView.setOnClickListener(v -> {
@@ -102,8 +187,9 @@ public class AppointmentListAdapter extends RecyclerView.Adapter<AppointmentList
 
 
 
+
     @Override
     public int getItemCount() {
-        return appointments.size();
+        return filteredAppointments.size(); // Return the size of the filtered list
     }
 }

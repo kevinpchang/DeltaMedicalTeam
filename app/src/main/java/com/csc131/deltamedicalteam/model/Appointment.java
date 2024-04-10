@@ -14,6 +14,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
 public class Appointment implements Parcelable {
 
@@ -108,6 +109,7 @@ public class Appointment implements Parcelable {
     public int describeContents() {
         return 0;
     }
+
 
 }
 
