@@ -1,15 +1,10 @@
 package com.csc131.deltamedicalteam.adapter;
 
 
-
-
 import android.content.Context;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -19,16 +14,14 @@ import com.csc131.deltamedicalteam.R;
 import com.csc131.deltamedicalteam.model.Appointment;
 import com.csc131.deltamedicalteam.model.Patient;
 import com.csc131.deltamedicalteam.model.User;
-import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class AppointmentListAdapter extends RecyclerView.Adapter<AppointmentListAdapter.ViewHolder> {
 
-    private List<Appointment> appointments;
-    private List<Appointment> originalAppointments = new ArrayList<>();
-    private Context context;
+    private final List<Appointment> appointments;
+    private final List<Appointment> originalAppointments = new ArrayList<>();
     private OnItemClickListener listener;
     private String currentPatientFilter = ""; // Default filter value for patient name
     private String currentUserFilter = ""; // Default filter value for user name
@@ -37,7 +30,6 @@ public class AppointmentListAdapter extends RecyclerView.Adapter<AppointmentList
     private List<Appointment> filteredAppointments; // To hold filtered appointments
 
     public AppointmentListAdapter(Context context, List<Appointment> appointments) {
-        this.context = context;
         this.appointments = appointments;
         this.originalAppointments.addAll(appointments); // Save the original list
         this.filteredAppointments = new ArrayList<>(appointments); // Initialize filteredAppointments with all appointments
@@ -118,11 +110,12 @@ public class AppointmentListAdapter extends RecyclerView.Adapter<AppointmentList
         for (Appointment appointment : appointments) {
             boolean matchesPatient = currentPatientFilter.isEmpty() ||
                     appointment.getPatientDocumentId().equalsIgnoreCase(currentPatientFilter);
-//            boolean matchesUser = currentUserFilter.isEmpty() ||
-//                    appointment.getUserName().equalsIgnoreCase(currentUserFilter);
-//            boolean matchesPurpose = currentPurposeFilter.isEmpty() ||
-//                    appointment.getPurpose().equalsIgnoreCase(currentPurposeFilter);
-            if (matchesPatient) {
+            boolean matchesUser = currentUserFilter.isEmpty() ||
+                    appointment.getUserDocumentId().equalsIgnoreCase(currentUserFilter);
+            boolean matchesPurpose = currentPurposeFilter.isEmpty() ||
+                    appointment.getPurpose().equalsIgnoreCase(currentPurposeFilter);
+            // Check if the appointment matches all filters
+            if (matchesPatient && matchesUser && matchesPurpose) {
                 filteredAppointments.add(appointment); // Add appointments that match all filters
             }
         }

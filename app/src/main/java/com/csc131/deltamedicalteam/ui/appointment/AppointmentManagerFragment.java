@@ -180,6 +180,19 @@ public class AppointmentManagerFragment extends Fragment {
             }
         });
 
+        purposeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String purpose = (String) parent.getItemAtPosition(position);
+                mAdapter.filterByPurpose(purpose);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // Do nothing
+            }
+        });
+
 
 
 
@@ -264,15 +277,15 @@ public class AppointmentManagerFragment extends Fragment {
                     for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
                         // Get user name from DocumentSnapshot
                         // Get user id from DocumentSnapshot
-                        User luser = documentSnapshot.toObject(User.class);
+                        User user = documentSnapshot.toObject(User.class);
                         String documentId = documentSnapshot.getId();
-                        luser.setDocumentId(documentId);
+                        user.setDocumentId(documentId);
 
-                        // Add user name to the list
-                        userNames.add(luser);
+                        // Add user to the list
+                        userNames.add(user);
                     }
 
-                    // Pass the list of user names to populate the spinner
+                    // Pass the list of users to populate the spinner
                     populateUserSpinner(userNames);
                 })
                 .addOnFailureListener(e -> Log.e(TAG, "Error fetching documents: " + e.getMessage()));

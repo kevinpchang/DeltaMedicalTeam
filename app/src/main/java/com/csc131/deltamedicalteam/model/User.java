@@ -3,11 +3,10 @@ package com.csc131.deltamedicalteam.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
+import androidx.annotation.NonNull;
 
-import java.util.Map;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class User implements Parcelable {
     private String documentId;
@@ -63,6 +62,7 @@ public class User implements Parcelable {
         return fName + " " + lName;
     }
 
+    @NonNull
     @Override
     public String toString() {  return fName + " " + lName;}
 
@@ -99,22 +99,6 @@ public class User implements Parcelable {
                     // Handle errors by returning null
                     onSuccessListener.onSuccess(null);
                 });
-    }
-
-    public void fromDocumentSnapshot(DocumentSnapshot document) {
-        documentId = document.getId();
-        email = document.getString("email");
-        fName = document.getString("fName");
-        lName = document.getString("lName");
-        permission = document.getString("permission");
-        phone = document.getString("phone");
-    }
-
-    // Add method to convert to Map for Firestore
-    public Map<String, Object> toMap() {
-        // Convert all fields to a Map
-        // You need to implement this according to your document structure
-        return null;
     }
 
     // Parcelable methods
