@@ -86,7 +86,7 @@
                             android:id="@+id/filter_by_user_switch"
                             android:layout_width="120dp"
                             android:layout_height="wrap_content"
-                            android:text="by User" />
+                            android:text="by Doctor" />
 
 
                         <Spinner
