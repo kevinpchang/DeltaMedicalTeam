@@ -3,17 +3,12 @@ package com.csc131.deltamedicalteam.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.google.firebase.Timestamp;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.util.Map;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class Patient implements Parcelable {
     private int imageResource;
@@ -26,7 +21,6 @@ public class Patient implements Parcelable {
     private HealthConditions healthConditions;
     private String lName;
     private String maritalStatus;
-
     private String cellPhone;
     private Medication medication;
     private String rhFactor;
@@ -113,7 +107,10 @@ public class Patient implements Parcelable {
         return lName;
     }
 
-    public String toString(){ return fName + " " + lName;}
+    public String getName() {  return fName + " " + lName;}
+
+    @Override
+    public String toString() {  return fName + " " + lName;}
 
     public String getMaritalStatus() {
         return maritalStatus;
@@ -138,7 +135,32 @@ public class Patient implements Parcelable {
         this.imageResource = imageResource;
     }
 
-    // Getter and setter for documentId
+    public void setDocumentId(String documentId) {
+        this.documentId = documentId;
+    }
+
+    public static void getPatientFromId(String patientId, OnSuccessListener<Patient> onSuccessListener) {
+        // Initialize Firestore
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        // Reference to the collection where patients are stored
+        db.collection("patients").document(patientId).get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        // Convert the document snapshot to a Patient object
+                        Patient patient = documentSnapshot.toObject(Patient.class);
+                        // Invoke the success listener with the patient object
+                        onSuccessListener.onSuccess(patient);
+                    } else {
+                        // Document with the given ID does not exist
+                        onSuccessListener.onSuccess(null);
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    // Handle errors
+                    onSuccessListener.onSuccess(null);
+                });
+    }
 
     public void fromDocumentSnapshot(DocumentSnapshot document) {
         documentId = document.getId();

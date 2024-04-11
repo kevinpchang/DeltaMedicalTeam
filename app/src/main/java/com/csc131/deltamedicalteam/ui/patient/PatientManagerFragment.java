@@ -35,14 +35,14 @@ public class PatientManagerFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_patient_manager, container, false);
 
-        recyclerView = view.findViewById(R.id.appointment_list);
+        recyclerView = view.findViewById(R.id.recycler_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setHasFixedSize(true);
 
         initComponent();
 
         // Find the Button and set its click listener
-        Button btnAddPatient = view.findViewById(R.id.add_appointment_redirect_button);
+        Button btnAddPatient = view.findViewById(R.id.add_button);
         btnAddPatient.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -79,8 +79,15 @@ public class PatientManagerFragment extends Fragment {
                 recyclerView.setAdapter(mAdapter);
 
                 // On item list clicked
-                mAdapter.setOnItemClickListener((view, obj, position) -> {
-                    Snackbar.make(view, "Item " + obj.getfName() + " " + obj.getlName() + " clicked", Snackbar.LENGTH_SHORT).show();
+                mAdapter.setOnItemClickListener(new PatientList.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(View view, Patient obj, int position) {
+                        // Inside the click listener where you navigate to ProfilePatientFragment
+                        Patient selectedPatient = items.get(position);
+                        PatientManagerFragmentDirections.ActionPatientManagerFragmentToNavProfilePatient action =
+                                PatientManagerFragmentDirections.actionPatientManagerFragmentToNavProfilePatient(selectedPatient);
+                        Navigation.findNavController(view).navigate(action);
+                    }
                 });
             } else {
                 Log.d(TAG, "No documents found.");

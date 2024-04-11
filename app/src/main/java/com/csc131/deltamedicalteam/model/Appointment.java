@@ -1,43 +1,117 @@
 package com.csc131.deltamedicalteam.model;
 
-import android.graphics.drawable.Drawable;
+import android.os.Parcel;
+import android.os.Parcelable;
 
-public class Appointment {
+import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.DocumentSnapshot;
 
-    public String patientId;
-    public String date;
-    public String time;
-    public String purpose;
+import java.util.Map;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CountDownLatch;
+
+public class Appointment implements Parcelable {
+
+    private String patientDocumentId;
+    private String userDocumentId;
+    private String purpose;
+    private String time;
+    private String date;
 
 
     public Appointment() {
         // Default constructor required for Firestore
     }
 
-    public Appointment(String patientId, String date, String time, String purpose) {
-        this.patientId = patientId;
-        this.date = date;
-        this.time = time;
+    public Appointment(String patientDocumentId, String userDocumentId, String purpose, String time, String date) {
+        this.patientDocumentId = patientDocumentId;
+        this.userDocumentId = userDocumentId;
         this.purpose = purpose;
+        this.time = time;
+        this.date = date;
+
     }
 
-    public String getDate(){return date;}
-    public String getTime(){return time;}
-    public String getPurpose(){return purpose;}
-    public String getPatient(){return patientId;}
+    protected Appointment(Parcel in) {
+        patientDocumentId = in.readString();
+        userDocumentId = in.readString();
+        purpose = in.readString();
+        time = in.readString();
+        date = in.readString();
 
-    public void setDate(String date){
-        this.date = date;
     }
-    public void setTime(String time){
-        this.time = time;
+
+    public static final Creator<Appointment> CREATOR = new Creator<Appointment>() {
+        @Override
+        public Appointment createFromParcel(Parcel in) {
+            return new Appointment(in);
+        }
+
+        @Override
+        public Appointment[] newArray(int size) {
+            return new Appointment[size];
+        }
+    };
+
+    public String getPatientDocumentId() {
+        return patientDocumentId;
     }
-    public void setPurpose(String purpose){
-        this.purpose = purpose;
+
+    public String getUserDocumentId() {
+        return userDocumentId;
     }
-    public void setPatient(String patientId){
-        this.patientId = patientId;
+
+    public String getPurpose() {
+        return purpose;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+
+//    public void fromDocumentSnapshot(DocumentSnapshot document) {
+//        patient_id = document.getString("patient_id");
+//        user_id = document.getString("user_id");
+//        purpose = document.getString("purpose");
+//        time = document.getString("time");
+//
+//    }
+//
+//    // Add method to convert to Map for Firestore
+//    public Map<String, Object> toMap() {
+//        // Convert all fields to a Map
+//        // You need to implement this according to your document structure
+//        return null;
+//    }
+
+    // Parcelable methods
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(patientDocumentId);
+        dest.writeString(userDocumentId);
+        dest.writeString(purpose);
+        dest.writeString(time);
+        dest.writeString(date);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
 
 }
+
+
+

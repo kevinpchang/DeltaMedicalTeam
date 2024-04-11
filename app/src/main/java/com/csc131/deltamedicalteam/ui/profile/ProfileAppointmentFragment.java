@@ -14,7 +14,7 @@ import androidx.fragment.app.Fragment;
 import com.csc131.deltamedicalteam.R;
 import com.csc131.deltamedicalteam.model.Patient;
 
-public class ProfilePatientFragment extends Fragment {
+public class ProfileAppointmentFragment extends Fragment {
     private com.csc131.deltamedicalteam.databinding.FragmentProfileBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
