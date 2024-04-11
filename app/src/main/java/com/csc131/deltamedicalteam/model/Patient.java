@@ -3,12 +3,13 @@ package com.csc131.deltamedicalteam.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.annotation.NonNull;
+
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
-
-import java.util.Map;
-
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.List;
 
 public class Patient implements Parcelable {
     private int imageResource;
@@ -24,12 +25,13 @@ public class Patient implements Parcelable {
     private String cellPhone;
     private Medication medication;
     private String rhFactor;
+    private List specificAllergies;;
 
     public Patient() {
         // Default constructor required for Firestore
     }
 
-    public Patient(String documentId, String address, String ageFormat, String bloodGroup, /* String dob, */ String fName, HealthConditions healthConditions, String lName, String maritalStatus, Medication medication, String cell, String rhFactor, int imageResource) {
+    public Patient(String documentId, String address, String ageFormat, String bloodGroup, /* String dob, */ String fName, HealthConditions healthConditions, String lName, String maritalStatus, Medication medication, String cell, String rhFactor, int imageResource,List<String> specificAllergies) {
         this.documentId = documentId;
         this.address = address;
         this.ageFormat = ageFormat;
@@ -43,6 +45,7 @@ public class Patient implements Parcelable {
         this.cellPhone = cell;
         this.rhFactor = rhFactor;
         this.imageResource = imageResource;
+        this.specificAllergies = specificAllergies;
     }
 
     protected Patient(Parcel in) {
@@ -59,6 +62,7 @@ public class Patient implements Parcelable {
         cellPhone = in.readString();
         rhFactor = in.readString();
         imageResource = in.readInt();
+        specificAllergies = in.createStringArrayList();
     }
 
     public static final Creator<Patient> CREATOR = new Creator<Patient>() {
@@ -73,7 +77,7 @@ public class Patient implements Parcelable {
         }
     };
 
-    public /*static*/ String getDocumentId() {
+    public  String getDocumentId() {
         return documentId;
     }
 
@@ -83,13 +87,13 @@ public class Patient implements Parcelable {
         return address;
     }
 
-    public String getAgeFormat() {
-        return ageFormat;
-    }
+//    public String getAgeFormat() {
+//        return ageFormat;
+//    }
 
-    public String getBloodGroup() {
-        return bloodGroup;
-    }
+//    public String getBloodGroup() {
+//        return bloodGroup;
+//    }
 
     // public String getDob() {
     //     return dob;
@@ -99,9 +103,9 @@ public class Patient implements Parcelable {
         return fName;
     }
 
-    public HealthConditions getHealthConditions() {
-        return healthConditions;
-    }
+//    public HealthConditions getHealthConditions() {
+//        return healthConditions;
+//    }
 
     public String getlName() {
         return lName;
@@ -109,22 +113,23 @@ public class Patient implements Parcelable {
 
     public String getName() {  return fName + " " + lName;}
 
+    @NonNull
     @Override
     public String toString() {  return fName + " " + lName;}
 
-    public String getMaritalStatus() {
-        return maritalStatus;
-    }
+//    public String getMaritalStatus() {
+//        return maritalStatus;
+//    }
 
-    public Medication getMedication() {
-        return medication;
-    }
+//    public Medication getMedication() {
+//        return medication;
+//    }
 
     public String getCellPhone() { return cellPhone;}
 
-    public String getRhFactor() {
-        return rhFactor;
-    }
+//    public String getRhFactor() {
+//        return rhFactor;
+//    }
 
     // Getter and setter for imageResource
     public int getImage() {
@@ -135,7 +140,13 @@ public class Patient implements Parcelable {
         this.imageResource = imageResource;
     }
 
+    public List<String> getSpecificAllergies() {
+        return specificAllergies;
+    }
 
+    public void setSpecificAllergies(List<String> specificAllergies) {
+        this.specificAllergies = specificAllergies;
+    }
 
     public static void getPatientFromId(String patientId, OnSuccessListener<Patient> onSuccessListener) {
         // Initialize Firestore
@@ -169,18 +180,21 @@ public class Patient implements Parcelable {
         lName = document.getString("lName");
         maritalStatus = document.getString("maritalStatus");
         rhFactor = document.getString("rhFactor");
+// Get specificAllergies as a List<String> instead of String[]
+        specificAllergies = document.get("specificAllergies", List.class);
 
+        
         // Extract nested objects
         healthConditions = document.toObject(HealthConditions.class);
         medication = document.toObject(Medication.class);
     }
 
     // Add method to convert to Map for Firestore
-    public Map<String, Object> toMap() {
-        // Convert all fields to a Map
-        // You need to implement this according to your document structure
-        return null;
-    }
+//    public Map<String, Object> toMap() {
+//        // Convert all fields to a Map
+//        // You need to implement this according to your document structure
+//        return null;
+//    }
 
     // Parcelable methods
     @Override
@@ -198,6 +212,8 @@ public class Patient implements Parcelable {
         dest.writeString(cellPhone);
         dest.writeString(rhFactor);
         dest.writeInt(imageResource);
+        // Convert specificAllergies List<String> to String array before writing to parcel
+        dest.writeStringArray(specificAllergies != null ? (String[]) specificAllergies.toArray(new String[0]) : null);
     }
 
     @Override

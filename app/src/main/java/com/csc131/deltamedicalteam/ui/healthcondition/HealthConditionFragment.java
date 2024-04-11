@@ -2,7 +2,10 @@ package com.csc131.deltamedicalteam.ui.healthcondition;
 
 import static android.content.ContentValues.TAG;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,7 +13,9 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -23,10 +28,13 @@ import com.csc131.deltamedicalteam.adapter.CurrentIllnessList;
 import com.csc131.deltamedicalteam.adapter.MedicalHistoryList;
 import com.csc131.deltamedicalteam.model.HealthConditions;
 import com.csc131.deltamedicalteam.model.Patient;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -42,13 +50,15 @@ public class HealthConditionFragment extends Fragment {
 
     // Reference to the "patients" collection
     private CollectionReference patientsRef = db.collection("patients");
-    private Button mCurrentIllnessAddEditButton, mMedicalHistoryAddEditButton, mAllergiesAddEditButton;
+    private Button mCurrentIllnessAddEditButton, mAllergiesAddEditButton;
     private Spinner patientSpinner;
     RecyclerView recyclerViewCurrentIllness, recyclerViewMedicalHistory, recyclerViewSpecificAllergies;
     TabLayout tabLayout;
     private CurrentIllnessList mCurrentIllnessAdapter;
     private MedicalHistoryList mMedicalHistoryAdapter;
     private CurrentAllergiesList mAllergiesAdapter;
+
+    private Patient mCurrentPatient;
     List<Patient> patientNames = new ArrayList<>();
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -65,7 +75,6 @@ public class HealthConditionFragment extends Fragment {
 
         //button
         mCurrentIllnessAddEditButton = rootView.findViewById(R.id.current_illness_addbutton);
-        mMedicalHistoryAddEditButton = rootView.findViewById(R.id.medical_history_addbutton);
         mAllergiesAddEditButton = rootView.findViewById(R.id.allergies_addbutton);
 
         // Find TabLayout
@@ -80,8 +89,8 @@ public class HealthConditionFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 //retrieves the patient at the given spinner position
-                Patient patient = (Patient) parent.getItemAtPosition(position);
-                String ID = patient.getDocumentId();
+                mCurrentPatient = (Patient) parent.getItemAtPosition(position);
+                String ID = mCurrentPatient.getDocumentId();
                 //uses patient id from spinner and to display current illnesses
                 patientsRef.document(ID).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
@@ -115,19 +124,32 @@ public class HealthConditionFragment extends Fragment {
                         //currentAllegies
 
                         List<String> currAllergies = (List<String>) documentSnapshot.get("specificAllergies");
-                        List<HealthConditions> allergiesitems = new ArrayList<>();
-                        //used to check if array is empty or not
-                        if (currAllergies != null) {
-                            for (int i = 0; i < currAllergies.size(); i++) {
-                                HealthConditions hCons = new HealthConditions();
-                                hCons.setSpecificAllergies(currAllergies.get(i));
-                                allergiesitems.add(hCons);
-                            }
+
+// Check if the list of allergies is not null and not empty
+                        if (currAllergies != null && !currAllergies.isEmpty()) {
+                            // Create the adapter with the list of allergies
+                            mAllergiesAdapter = new CurrentAllergiesList(currAllergies);
+
+                            // Set the adapter to the RecyclerView
+                            recyclerViewSpecificAllergies.setAdapter(mAllergiesAdapter);
+                        } else {
+                            // Create a dummy string to indicate no allergies were found
+                            String dummyAllergy = "No allergies found";
+
+                            // Create a list containing the dummy string
+                            List<String> dummyList = new ArrayList<>();
+                            dummyList.add(dummyAllergy);
+
+                            // Create the adapter with the dummy list
+                            mAllergiesAdapter = new CurrentAllergiesList(dummyList);
+
+                            // Set the adapter to the RecyclerView
+                            recyclerViewSpecificAllergies.setAdapter(mAllergiesAdapter);
                         }
-                        mAllergiesAdapter = new CurrentAllergiesList(getActivity(), allergiesitems);
-                        recyclerViewSpecificAllergies.setAdapter(mAllergiesAdapter);
                     }
                 });
+
+
             }
 
             @Override
@@ -148,7 +170,6 @@ public class HealthConditionFragment extends Fragment {
                         recyclerViewSpecificAllergies.setVisibility(View.GONE);
 
                         mCurrentIllnessAddEditButton.setVisibility(View.VISIBLE);
-                        mMedicalHistoryAddEditButton.setVisibility(View.GONE);
                         mAllergiesAddEditButton.setVisibility(View.GONE);
                         break;
                     case 1:
@@ -157,7 +178,6 @@ public class HealthConditionFragment extends Fragment {
                         recyclerViewSpecificAllergies.setVisibility(View.GONE);
 
                         mCurrentIllnessAddEditButton.setVisibility(View.GONE);
-                        mMedicalHistoryAddEditButton.setVisibility(View.VISIBLE);
                         mAllergiesAddEditButton.setVisibility(View.GONE);
                         break;
                     case 2:
@@ -166,7 +186,6 @@ public class HealthConditionFragment extends Fragment {
                         recyclerViewSpecificAllergies.setVisibility(View.VISIBLE);
 
                         mCurrentIllnessAddEditButton.setVisibility(View.GONE);
-                        mMedicalHistoryAddEditButton.setVisibility(View.GONE);
                         mAllergiesAddEditButton.setVisibility(View.VISIBLE);
                         break;
                 }
@@ -180,7 +199,6 @@ public class HealthConditionFragment extends Fragment {
                 recyclerViewSpecificAllergies.setVisibility(View.GONE);
 
                 mCurrentIllnessAddEditButton.setVisibility(View.VISIBLE);
-                mMedicalHistoryAddEditButton.setVisibility(View.GONE);
                 mAllergiesAddEditButton.setVisibility(View.GONE);
             }
 
@@ -190,47 +208,76 @@ public class HealthConditionFragment extends Fragment {
             }
         });
 
-        //health_condition_edit button onClick
-//        mAddEditButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                EditText resetMail = new EditText(v.getContext());
-//                AlertDialog.Builder passwordResetDialog = new AlertDialog.Builder(v.getContext());
-//                passwordResetDialog.setTitle("Add more field");
-//                passwordResetDialog.setMessage("Enter email address to receive reset link");
-//                passwordResetDialog.setView(resetMail);
-//
-//                passwordResetDialog.setPositiveButton("Add", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//                        //extract email and send reset link
-//                        String mail = resetMail.getText().toString();
-//                        fAuth.sendPasswordResetEmail(mail).addOnSuccessListener(new OnSuccessListener<Void>() {
-//                            @Override
-//                            public void onSuccess(Void aVoid) {
-//                                Toast.makeText(Login.this, "Reset Link Sent to Your Email.", Toast.LENGTH_SHORT).show();
-//                            }
-//                        }).addOnFailureListener(new OnFailureListener() {
-//                            @Override
-//                            public void onFailure(@NonNull Exception e) {
-//                                Toast.makeText(Login.this, "Error ! Reset Link is Not Sent" + e.getMessage(), Toast.LENGTH_SHORT).show();
-//                            }
-//                        });
-//
-//                    }
-//                });
-//
-//
-//                passwordResetDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//                        //Close
-//
-//                    }
-//                });
-//                passwordResetDialog.create().show();
-//            }
-//        });
+        mAllergiesAddEditButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EditText allergiesInput = new EditText(v.getContext());
+                AlertDialog.Builder addAllergiesDialog = new AlertDialog.Builder(v.getContext());
+                addAllergiesDialog.setTitle("Add Allergies");
+                addAllergiesDialog.setMessage("Enter the allergy you want to add:");
+                addAllergiesDialog.setView(allergiesInput);
+
+                addAllergiesDialog.setPositiveButton("Add", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Extract the allergy entered by the user
+                        String allergy = allergiesInput.getText().toString().trim();
+
+                        // Perform validation
+                        if (TextUtils.isEmpty(allergy)) {
+                            Toast.makeText(v.getContext(), "Allergy cannot be empty", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+
+                        // Check if the allergy already exists in the database
+                        boolean allergyExists = false;
+                        for (String existingAllergy : mCurrentPatient.getSpecificAllergies()) {
+                            if (existingAllergy.equals(allergy)) {
+                                allergyExists = true;
+                                break;
+                            }
+                        }
+
+                        if (allergyExists) {
+                            Toast.makeText(v.getContext(), "Allergy already exists", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+
+                        // Update the specificAllergies field in Firestore
+                        FirebaseFirestore db = FirebaseFirestore.getInstance();
+                        DocumentReference patientRef = db.collection("patients").document(mCurrentPatient.getDocumentId());
+                        patientRef.update("specificAllergies", FieldValue.arrayUnion(allergy))
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        Toast.makeText(v.getContext(), "Allergy Added: " + allergy, Toast.LENGTH_SHORT).show();
+                                        // Refresh the list of specific allergies
+                                        refreshSpecificAllergies();
+
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Toast.makeText(v.getContext(), "Failed to add allergy: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                    }
+                });
+
+                addAllergiesDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Close the dialog
+                    }
+                });
+
+                addAllergiesDialog.create().show();
+            }
+
+
+        });
+
 
         return rootView;
     }
@@ -266,6 +313,29 @@ public class HealthConditionFragment extends Fragment {
 
         // Apply the adapter to the spinner
         patientSpinner.setAdapter(adapter);
+    }
+
+    // Method to refresh the list of specific allergies in the RecyclerView
+    private void refreshSpecificAllergies() {
+        // Retrieve the updated list of specific allergies from the database
+        FirebaseFirestore.getInstance().collection("patients").document(mCurrentPatient.getDocumentId())
+                .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        // Get the list of specific allergies from the document snapshot
+                        List<String> updatedAllergies = (List<String>) documentSnapshot.get("specificAllergies");
+
+                        // Update the adapter with the updated list of allergies
+                        if (updatedAllergies != null && !updatedAllergies.isEmpty()) {
+                            mAllergiesAdapter.updateAllergies(updatedAllergies);
+                        } else {
+                            // Create a dummy list if allergies are empty
+                            List<String> dummyList = new ArrayList<>();
+                            dummyList.add("No allergies found");
+                            mAllergiesAdapter.updateAllergies(dummyList);
+                        }
+                    }
+                });
     }
 
 

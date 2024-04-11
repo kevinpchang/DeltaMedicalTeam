@@ -85,10 +85,8 @@ public class MainActivity extends AppCompatActivity {
                     if (!isAdmin) {
                         // Remove the userManagerFragment item from the menu
                         userManagerItem.setVisible(false);
+                        Log.e(TAG, "userManagerFragment is hidden in menu");
 
-                    } else {
-                        // Handle case where userManagerFragment item is not found
-                        Log.e(TAG, "userManagerFragment item not found in menu");
                     }
             }
         });

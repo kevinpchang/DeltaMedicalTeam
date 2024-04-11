@@ -1,90 +1,81 @@
 package com.csc131.deltamedicalteam.adapter;
 
-import android.content.Context;
+import android.annotation.SuppressLint;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.csc131.deltamedicalteam.R;
-import com.csc131.deltamedicalteam.model.HealthConditions;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class CurrentAllergiesList extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class CurrentAllergiesList extends RecyclerView.Adapter<CurrentAllergiesList.OriginalViewHolder> {
 
-    private List<HealthConditions> items = new ArrayList<>();
+    private final List<String> allergies;
 
-    private Context ctx;
     private OnItemClickListener mOnItemClickListener;
 
     public interface OnItemClickListener {
-        void onItemClick(View view, HealthConditions obj, int position);
+        void onItemClick(View view, String allergy, int position);
     }
 
     public void setOnItemClickListener(final OnItemClickListener mItemClickListener) {
         this.mOnItemClickListener = mItemClickListener;
     }
 
-    public CurrentAllergiesList(Context context, List<HealthConditions> items) {
-        this.items = items;
-        ctx = context;
+    public CurrentAllergiesList(List<String> allergies) {
+        this.allergies = allergies;
     }
 
-    public class OriginalViewHolder extends RecyclerView.ViewHolder {
+    // Method to update the list of allergies
+    public void updateAllergies(List<String> updatedAllergies) {
+        allergies.clear();
+        allergies.addAll(updatedAllergies);
+        notifyDataSetChanged();
+    }
+
+    public static class OriginalViewHolder extends RecyclerView.ViewHolder {
         public TextView name;
         public View lyt_parent;
 
         public OriginalViewHolder(View v) {
             super(v);
-            name = (TextView) v.findViewById(R.id.list_item_name);
-            lyt_parent = (View) v.findViewById(R.id.lyt_parent);
+            name = v.findViewById(R.id.list_item_name);
+            lyt_parent = v.findViewById(R.id.lyt_parent);
         }
     }
 
-
+    @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        RecyclerView.ViewHolder vh;
+    public OriginalViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_health_current_list, parent, false);
-        vh = new OriginalViewHolder(v);
-        return vh;
+        return new OriginalViewHolder(v);
     }
 
-    // Replace the contents of a view (invoked by the layout manager)
-
+    @SuppressLint("SetTextI18n")
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
-        if (holder instanceof OriginalViewHolder) {
-            OriginalViewHolder viewHolder = (OriginalViewHolder) holder;
-
-            HealthConditions p = items.get(position);
-            //used to check if array is empty or not
-            if (p.getSpecificAllergies() != null) {
-                viewHolder.name.setText(p.getSpecificAllergies());
-            } else {
-                viewHolder.name.setText("No current allergies");
-            }
-
-            viewHolder.lyt_parent.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    int adapterPosition = holder.getAdapterPosition();
-                    if (adapterPosition != RecyclerView.NO_POSITION && mOnItemClickListener != null) {
-                        mOnItemClickListener.onItemClick(view, items.get(adapterPosition), adapterPosition);
-                    }
-                }
-            });
+    public void onBindViewHolder(@NonNull OriginalViewHolder holder, final int position) {
+        String allergy = allergies.get(position);
+        if (allergy != null && !allergy.isEmpty()) {
+            holder.name.setText(allergy);
+        } else {
+            holder.name.setText("No current allergies");
         }
-    }
 
+        holder.lyt_parent.setOnClickListener(view -> {
+            if (mOnItemClickListener != null) {
+                mOnItemClickListener.onItemClick(view, allergy, position);
+            }
+        });
+    }
 
     @Override
     public int getItemCount() {
-        return items.size();
+        return allergies.size();
     }
-
 }
