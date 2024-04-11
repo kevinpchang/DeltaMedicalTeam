@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/health_condition_edit"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.healthcondition.HealthConditionFragment">
@@ -25,13 +26,15 @@
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
 
             <com.google.android.material.tabs.TabLayout
+                android:id="@+id/healConditionTabs"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
                 <com.google.android.material.tabs.TabItem
+                    android:id="@+id/currentIllness"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Current Illness" />
@@ -51,7 +54,62 @@
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="wrap_content">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/RecyclerView_current_illness"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="visible" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/RecyclerView_medical_history"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/RecyclerView_specific_allergies"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone" />
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <Button
+                android:id="@+id/current_illness_addbutton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="16dp"
+                android:text="Add/Edit"
+                android:visibility="visible"
+                tools:ignore="MissingConstraints,DuplicateClickableBoundsCheck" />
+
+            <Button
+                android:id="@+id/allergies_addbutton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="16dp"
+                android:text="Add/Edit"
+                android:visibility="gone"
+                tools:ignore="MissingConstraints" />
+
+            <Button
+                android:id="@+id/medical_history_addbutton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="16dp"
+                android:text="Add/Edit"
+                android:visibility="gone"
+                tools:ignore="MissingConstraints" />
+
+        </androidx.cardview.widget.CardView>
 
     </LinearLayout>
 

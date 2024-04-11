@@ -56,5 +56,15 @@
 
     <!--  String for profile screen-->
     <string name="middle_lorem_ipsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam efficitur ipsum in placerat molestie.  Fusce quis mauris a enim sollicitudin</string>
+    <string name="patient_name">Patient Name</string>
+    <string name="patient">Patient</string>
+    <string name="user">User</string>
+    <string name="purpose">Purpose</string>
+    <string name="analysis">Analysis</string>
+    <string name="x_rays">X-Rays</string>
+    <string name="doctor_visits">Doctor Visits</string>
+    <string name="vaccinations">Vaccinations</string>
+    <string name="add_appointment">Add Appointment</string>
+    <string name="filter">Filter</string>
 
 </resources>

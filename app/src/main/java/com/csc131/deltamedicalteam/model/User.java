@@ -3,9 +3,10 @@ package com.csc131.deltamedicalteam.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.google.firebase.firestore.DocumentSnapshot;
+import androidx.annotation.NonNull;
 
-import java.util.Map;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class User implements Parcelable {
     private String documentId;
@@ -57,9 +58,29 @@ public class User implements Parcelable {
         return email;
     }
 
-    public String getfName() {
+    public String getName() {
         return fName + " " + lName;
     }
+
+    public String getfName() {
+        return fName;
+    }
+
+    public String getlName() {
+        return lName;
+    }
+
+    public void setlName(String lName) {
+        this.lName = lName;
+    }
+
+    public void setfName(String fName) {
+        this.fName = fName;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {  return fName + " " + lName;}
 
     public String getPermission() {
         return permission;
@@ -69,20 +90,31 @@ public class User implements Parcelable {
         return phone;
     }
 
-    public void fromDocumentSnapshot(DocumentSnapshot document) {
-        documentId = document.getId();
-        email = document.getString("email");
-        fName = document.getString("fName");
-        lName = document.getString("lName");
-        permission = document.getString("permission");
-        phone = document.getString("phone");
+    public void setDocumentId(String documentId) {
+        this.documentId = documentId;
     }
 
-    // Add method to convert to Map for Firestore
-    public Map<String, Object> toMap() {
-        // Convert all fields to a Map
-        // You need to implement this according to your document structure
-        return null;
+    public static void getUserFromId(String userId, OnSuccessListener<User> onSuccessListener) {
+        // Initialize Firestore
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        // Reference to the collection where users are stored
+        db.collection("users").document(userId).get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        // Convert the document snapshot to a User object
+                        User user = documentSnapshot.toObject(User.class);
+                        // Invoke the success listener with the user object
+                        onSuccessListener.onSuccess(user);
+                    } else {
+                        // Document with the given ID does not exist
+                        onSuccessListener.onSuccess(null);
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    // Handle errors by returning null
+                    onSuccessListener.onSuccess(null);
+                });
     }
 
     // Parcelable methods
