@@ -4,44 +4,54 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Adapter;
+import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.csc131.deltamedicalteam.R;
-import com.csc131.deltamedicalteam.model.HealthConditions;
+import com.csc131.deltamedicalteam.model.Appointment;
+import com.csc131.deltamedicalteam.model.Appointment;
+import com.csc131.deltamedicalteam.utils.Tools;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class CurrentAllergiesList extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class AppointmentList extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private List<HealthConditions> items = new ArrayList<>();
+    private List<Appointment> items = new ArrayList<>();
 
     private Context ctx;
     private OnItemClickListener mOnItemClickListener;
 
     public interface OnItemClickListener {
-        void onItemClick(View view, HealthConditions obj, int position);
+        void onItemClick(View view, Appointment obj, int position);
     }
 
     public void setOnItemClickListener(final OnItemClickListener mItemClickListener) {
         this.mOnItemClickListener = mItemClickListener;
     }
 
-    public CurrentAllergiesList(Context context, List<HealthConditions> items) {
+    public AppointmentList(Context context, List<Appointment> items) {
         this.items = items;
         ctx = context;
     }
 
     public class OriginalViewHolder extends RecyclerView.ViewHolder {
-        public TextView name;
-        public View lyt_parent;
+        public TextView patientId;
+        public TextView date;
+        public TextView time;
+        public TextView purpose;
+        public AdapterView<Adapter> OriginalViewHolder;
 
         public OriginalViewHolder(View v) {
             super(v);
-            name = (TextView) v.findViewById(R.id.list_item_name);
-            lyt_parent = (View) v.findViewById(R.id.lyt_parent);
+       //     patientId = (TextView) v.findViewById(R.id`.TextViewPatientIdHolder);
+       //    date = (TextView) v.findViewById(R.id.TextViewDateHolder);
+       //     time = (TextView) v.findViewById(R.id.TextViewTimeHolder);
+       //     purpose = (TextView) v.findViewById(R.id.TextViewPurposeHolder);
         }
     }
 
@@ -49,7 +59,7 @@ public class CurrentAllergiesList extends RecyclerView.Adapter<RecyclerView.View
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         RecyclerView.ViewHolder vh;
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_health_current_list, parent, false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_appointment_list, parent, false);
         vh = new OriginalViewHolder(v);
         return vh;
     }
@@ -61,15 +71,10 @@ public class CurrentAllergiesList extends RecyclerView.Adapter<RecyclerView.View
         if (holder instanceof OriginalViewHolder) {
             OriginalViewHolder viewHolder = (OriginalViewHolder) holder;
 
-            HealthConditions p = items.get(position);
-            //used to check if array is empty or not
-            if (p.getSpecificAllergies() != null) {
-                viewHolder.name.setText(p.getSpecificAllergies());
-            } else {
-                viewHolder.name.setText("No current allergies");
-            }
+            Appointment p = items.get(position);
+           // viewHolder.TextViewPatientIdHolder.setText(p.patientId );
 
-            viewHolder.lyt_parent.setOnClickListener(new View.OnClickListener() {
+            viewHolder.OriginalViewHolder.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     int adapterPosition = holder.getAdapterPosition();

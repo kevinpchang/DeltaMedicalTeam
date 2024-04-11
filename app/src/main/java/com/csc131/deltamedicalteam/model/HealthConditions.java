@@ -3,12 +3,11 @@ package com.csc131.deltamedicalteam.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.util.ArrayList;
 import java.util.Map;
 
-public class HealthConditions implements Parcelable {
+class HealthConditions implements Parcelable {
     private String currentIllnesses;
-    private String previousIllnesses;
+    private Map<String, String> previousIllnesses;
     private String specificAllergies;
 
 
@@ -16,25 +15,14 @@ public class HealthConditions implements Parcelable {
     public HealthConditions() {
         // Default constructor required for Firestore deserialization
     }
-    public HealthConditions(String currentIllnesses, String previousIllnesses, String specificAllergies) {
+    public HealthConditions(String currentIllnesses, Map<String, String> previousIllnesses, String specificAllergies) {
         this.currentIllnesses = currentIllnesses;
         this.previousIllnesses = previousIllnesses;
-        this.specificAllergies = specificAllergies;
-    }
-
-    public void setCurrentIllnesses(String currentIllnesses) {
-        this.currentIllnesses = currentIllnesses;
-    }
-    public void setPreviousIllnesses(String previousIllnesses) {
-        this.previousIllnesses = previousIllnesses;
-    }
-
-    public void setSpecificAllergies(String specificAllergies) {
         this.specificAllergies = specificAllergies;
     }
 
     protected HealthConditions(Parcel in) {
-        //currentIllnesses = in.readString();
+        currentIllnesses = in.readString();
         // Read map from parcel
         // You need to implement this part
         // For simplicity, let's skip this part
@@ -43,7 +31,7 @@ public class HealthConditions implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        //dest.writeString(currentIllnesses);
+        dest.writeString(currentIllnesses);
         // Write map to parcel
         // You need to implement this part
         // For simplicity, let's skip this part
@@ -67,13 +55,15 @@ public class HealthConditions implements Parcelable {
         }
     };
 
-    public String getCurrentIllnesses() { return currentIllnesses; }
+    public String getCurrentIllnesses() {
+        return currentIllnesses;
+    }
 
-    public String getPreviousIllnesses() { return previousIllnesses; }
+    public Map<String, String> getPreviousIllnesses() {
+        return previousIllnesses;
+    }
 
     public String getSpecificAllergies() {
         return specificAllergies;
     }
-
-
 }
