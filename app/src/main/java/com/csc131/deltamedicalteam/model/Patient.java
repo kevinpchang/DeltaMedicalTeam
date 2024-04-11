@@ -135,9 +135,7 @@ public class Patient implements Parcelable {
         this.imageResource = imageResource;
     }
 
-    public void setDocumentId(String documentId) {
-        this.documentId = documentId;
-    }
+
 
     public static void getPatientFromId(String patientId, OnSuccessListener<Patient> onSuccessListener) {
         // Initialize Firestore

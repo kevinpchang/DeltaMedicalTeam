@@ -33,7 +33,7 @@
                 android:paddingTop="@dimen/spacing_middle"
                 android:paddingBottom="@dimen/spacing_middle">
 
-                    android:layout_width="match_parent"
+
 
 
                     <TextView
@@ -84,7 +84,6 @@
         </LinearLayout>
 
 
-    </LinearLayout>
 
 
 </com.balysv.materialripple.MaterialRippleLayout>

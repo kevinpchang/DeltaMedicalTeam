@@ -14,13 +14,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.DeltaMedicalTeam"
-        android:appComponentFactory="android.support.v4.app.CoreComponentFactory"
         tools:replace="android:appComponentFactory"
         tools:ignore="UnusedAttribute">
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:theme="@style/Theme.DeltaMedicalTeam.NoActionBar"></activity>
+            android:theme="@style/Theme.DeltaMedicalTeam.NoActionBar">
+
+        </activity>
         <activity
             android:name=".splash.SplashMoving"
             android:exported="true"
@@ -36,7 +38,9 @@
         <activity
             android:name=".Login"
             android:exported="true"
-            android:theme="@style/Theme.DeltaMedicalTeam.NoActionBar"></activity>
+            android:theme="@style/Theme.DeltaMedicalTeam.NoActionBar">
+
+        </activity>
     </application>
 
 </manifest>
