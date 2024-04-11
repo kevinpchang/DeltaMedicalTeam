@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -46,18 +47,19 @@ public class AppointmentManagerFragment extends Fragment {
         initComponent();
 
         // Find the Button and set its click listener
-        Button btnAddAppointment = view.findViewById(R.id.add_appointment_button);
+        Button btnAddAppointment = view.findViewById(R.id.add_appointment_redirect_button);
         btnAddAppointment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Navigate to the destination fragment
-                Navigation.findNavController(v).navigate(R.id.action_appointmentManagerFragment_to_nav_add_appointment);
+             //   Navigation.findNavController(v).navigate(R.id.add_appointment_redirect_button);
             }
         });
 
 
         return view;
     }
+
 
     private void initComponent() {
         // Initialize Firestore
@@ -129,7 +131,7 @@ public class AppointmentManagerFragment extends Fragment {
                     mAdapter.setOnItemClickListener(new AppointmentList.OnItemClickListener() {
                         @Override
                         public void onItemClick(View view, Appointment obj, int position) {
-                            Snackbar.make(view, "Item " + obj.patient + " clicked", Snackbar.LENGTH_SHORT).show();
+                            Snackbar.make(view, "Item " + obj.patientId + " clicked", Snackbar.LENGTH_SHORT).show();
                         }
                     });
                 } else {
@@ -143,5 +145,6 @@ public class AppointmentManagerFragment extends Fragment {
             }
         });
     }
+
 
 }

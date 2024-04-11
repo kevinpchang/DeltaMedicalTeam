@@ -6,10 +6,12 @@
     android:layout_height="match_parent"
     tools:context=".ui.healthcondition.HealthConditionFragment">
 
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
+
 
         <TextView
             android:id="@+id/textView"
@@ -17,38 +19,88 @@
             android:layout_height="wrap_content"
             android:text="Choose Your Patient" />
 
+
         <Spinner
             android:id="@+id/medication_patient_list_spinner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:minHeight="48dp" />
 
+
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
+
 
             <com.google.android.material.tabs.TabLayout
+                android:id="@+id/medicationTabs"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
+
+
                 <com.google.android.material.tabs.TabItem
+                    android:id="@+id/currentMedication"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Current Medication" />
 
                 <com.google.android.material.tabs.TabItem
+                    android:id="@+id/pastMedication"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Past Medication" />
 
+
+
             </com.google.android.material.tabs.TabLayout>
+
 
         </androidx.cardview.widget.CardView>
 
+
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="wrap_content">
+
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/RecyclerView_current_medication"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/RecyclerView_past_medication"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </androidx.cardview.widget.CardView>
+
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+
+            <Button
+                android:id="@+id/current_medication_edit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="16dp"
+                android:minHeight="48dp"
+                android:text="Edit"
+                android:visibility="visible"
+                tools:ignore="MissingConstraints"
+                tools:visibility="visible" />
+        </androidx.cardview.widget.CardView>
+
 
     </LinearLayout>
 
+
 </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+

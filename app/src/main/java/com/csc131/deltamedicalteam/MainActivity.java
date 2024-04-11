@@ -9,6 +9,8 @@ import android.view.View;
 import android.view.Menu;
 import android.content.Intent;
 import android.widget.TextView;
+
+import com.csc131.deltamedicalteam.ui.appointment.AddAppointmentFragment;
 import com.csc131.deltamedicalteam.utils.Tools;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -253,6 +255,9 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
+
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -301,7 +306,6 @@ public class MainActivity extends AppCompatActivity {
     public interface PermissionCallback {
         void onPermissionCheck(boolean isAdmin);
     }
-
 
 
     @Override

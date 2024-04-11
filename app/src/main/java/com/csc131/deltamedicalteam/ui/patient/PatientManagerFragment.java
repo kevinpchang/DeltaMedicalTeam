@@ -6,7 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import java.util.Map;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -17,13 +17,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.csc131.deltamedicalteam.R;
 import com.csc131.deltamedicalteam.adapter.PatientList;
 import com.csc131.deltamedicalteam.model.Patient;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +42,7 @@ public class PatientManagerFragment extends Fragment {
         initComponent();
 
         // Find the Button and set its click listener
-        Button btnAddPatient = view.findViewById(R.id.add_appointment_button);
+        Button btnAddPatient = view.findViewById(R.id.add_appointment_redirect_button);
         btnAddPatient.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

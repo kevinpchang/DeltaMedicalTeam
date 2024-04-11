@@ -79,9 +79,11 @@ public class Patient implements Parcelable {
         }
     };
 
-    public String getDocumentId() {
+    public /*static*/ String getDocumentId() {
         return documentId;
     }
+
+    public void setDocumentId(String documentId) { this.documentId = documentId;}
 
     public String getAddress() {
         return address;
@@ -111,6 +113,8 @@ public class Patient implements Parcelable {
         return lName;
     }
 
+    public String toString(){ return fName + " " + lName;}
+
     public String getMaritalStatus() {
         return maritalStatus;
     }
@@ -133,6 +137,8 @@ public class Patient implements Parcelable {
     public void setImage(int imageResource) {
         this.imageResource = imageResource;
     }
+
+    // Getter and setter for documentId
 
     public void fromDocumentSnapshot(DocumentSnapshot document) {
         documentId = document.getId();
@@ -178,6 +184,8 @@ public class Patient implements Parcelable {
     public int describeContents() {
         return 0;
     }
+
+
 }
 
 
