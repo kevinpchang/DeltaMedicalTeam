@@ -213,7 +213,7 @@ public class AddPatientFragment extends Fragment {
 //        patientData.put("bloodGroup", bloodGroup);
 //        patientData.put("rhFactor", rhFactor);
         patientData.put("maritalStatus", maritalStatus);
-        patientData.put("phone number", phone2);
+        patientData.put("cellPhone", phone2);
         patientData.put("email", email);
         patientData.put("emergencyName", emergencyName);
         patientData.put("emergencyPhone", emergencyPhone);

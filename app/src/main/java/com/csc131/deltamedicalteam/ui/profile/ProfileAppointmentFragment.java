@@ -12,15 +12,9 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.csc131.deltamedicalteam.R;
-import com.csc131.deltamedicalteam.model.User;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.csc131.deltamedicalteam.model.Patient;
 
-public class ProfileUserFragment extends Fragment {
+public class ProfileAppointmentFragment extends Fragment {
     private com.csc131.deltamedicalteam.databinding.FragmentProfileBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -33,26 +27,37 @@ public class ProfileUserFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // Retrieve the passed user information
-        ProfileUserFragmentArgs args = ProfileUserFragmentArgs.fromBundle(getArguments());
-        User user = args.getUser();
+        // Retrieve the passed patient information
+        ProfilePatientFragmentArgs args = ProfilePatientFragmentArgs.fromBundle(getArguments());
+        Patient patient = args.getPatient();
 
-        // Display the user information
+        // Display the patient information
         TextView nameTextView = view.findViewById(R.id.profile_name);
-        TextView emailTextView = view.findViewById(R.id.profile_email);
-        TextView permissionTextView = view.findViewById(R.id.profile_permission);
+//        TextView addressTextView = view.findViewById(R.id.profile_address);
         TextView phoneTextView = view.findViewById(R.id.profile_phone);
-        // Add more TextViews for other user information
 
-        nameTextView.setText(user.getName());
-        emailTextView.setText(user.getEmail());
-        permissionTextView.setText(user.getPermission());
-        phoneTextView.setText(user.getPhone());
-        // Set other TextViews with user information
+        // Add more TextViews for other patient information
+
+        if (nameTextView != null) {
+            nameTextView.setText(patient.getName());
+        } else {
+            Log.e("TextView Error", "nameTextView is null");
+        }
+
+//        if (addressTextView != null) {
+//            addressTextView.setText(patient.getAddress());
+//        } else {
+//            Log.e("TextView Error", "addressTextView is null");
+//        }
+
+        if (phoneTextView != null) {
+            phoneTextView.setText(patient.getCellPhone());
+        } else {
+            Log.e("TextView Error", "phoneTextView is null");
+        }
+
+
     }
-
-
-
     @Override
     public void onDestroyView() {
         super.onDestroyView();

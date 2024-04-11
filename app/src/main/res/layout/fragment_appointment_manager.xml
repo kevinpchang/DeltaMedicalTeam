@@ -2,41 +2,186 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/autoCompleteTextViewPatient"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.patient.PatientManagerFragment">
 
 
+    <!--    <androidx.recyclerview.widget.RecyclerView-->
+    <!--        android:id="@+id/recyclerView"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="match_parent"-->
+    <!--        android:scrollbars="vertical"-->
+    <!--        android:scrollingCache="true" />-->
 
-<!--    <androidx.recyclerview.widget.RecyclerView-->
-<!--        android:id="@+id/recyclerView"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent"-->
-<!--        android:scrollbars="vertical"-->
-<!--        android:scrollingCache="true" />-->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="42dp">
+
+            <ImageButton
+                android:id="@+id/appointment_filter_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/filter"
+                android:src="@drawable/ic_filter_alt" />
+
+            <TextView
+                android:id="@+id/textView13"
+                android:layout_width="match_parent"
+                android:layout_height="42dp"
+                android:text="@string/filter"
+                android:textAlignment="center" />
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/appointment_filter_option"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <RadioGroup
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal">
+
+                        <Switch
+                            android:id="@+id/filter_by_patient_switch"
+                            android:layout_width="120dp"
+                            android:layout_height="wrap_content"
+                            android:text="by Patient" />
+
+                        <Spinner
+                            android:id="@+id/spinner_patient"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:minHeight="48dp"
+                            android:visibility="gone" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal">
+
+                        <Switch
+                            android:id="@+id/filter_by_user_switch"
+                            android:layout_width="120dp"
+                            android:layout_height="wrap_content"
+                            android:text="by User" />
+
+
+                        <Spinner
+                            android:id="@+id/spinner_user"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:minHeight="48dp"
+                            android:visibility="gone" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal">
+
+                        <Switch
+                            android:id="@+id/filter_by_purpose_switch"
+                            android:layout_width="120dp"
+                            android:layout_height="wrap_content"
+                            android:text="by Purpose" />
+
+                        <Spinner
+                            android:id="@+id/spinner_appointment_purpose"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:minHeight="48dp"
+                            android:visibility="gone" />
+                    </LinearLayout>
+
+                </RadioGroup>
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone">
+
+                <com.google.android.material.tabs.TabLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent">
+
+                    <com.google.android.material.tabs.TabItem
+                        android:layout_width="800dp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/analysis" />
+
+                    <com.google.android.material.tabs.TabItem
+                        android:layout_width="800dp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/x_rays" />
+
+                    <com.google.android.material.tabs.TabItem
+                        android:layout_width="800dp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/doctor_visits" />
+
+                    <com.google.android.material.tabs.TabItem
+                        android:id="@+id/tabItem"
+                        android:layout_width="800dp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/vaccinations" />
+                </com.google.android.material.tabs.TabLayout>
+            </HorizontalScrollView>
+
+        </androidx.cardview.widget.CardView>
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/appointment_list"
+            android:id="@+id/recycler_list"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
             android:padding="16dp"
-            tools:ignore="MissingConstraints" />
+            android:visibility="visible"
+            tools:ignore="MissingConstraints">
+
+        </androidx.recyclerview.widget.RecyclerView>
 
         <Button
-            android:id="@+id/add_appointment_button"
+            android:id="@+id/add_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_margin="16dp"
-            android:text="Add Appointment"
+            android:text="@string/add_appointment"
             android:visibility="visible"
             tools:ignore="MissingConstraints"
             tools:visibility="visible" />
+
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
