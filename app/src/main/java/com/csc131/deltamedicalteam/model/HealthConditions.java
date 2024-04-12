@@ -71,9 +71,6 @@ public class HealthConditions implements Parcelable {
 
     public String getPreviousIllnesses() { return previousIllnesses; }
 
-    public String getSpecificAllergies() {
-        return specificAllergies;
-    }
 
 
 }
