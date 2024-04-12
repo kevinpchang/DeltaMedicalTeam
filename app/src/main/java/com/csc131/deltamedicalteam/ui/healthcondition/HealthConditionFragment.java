@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -26,6 +27,7 @@ import com.csc131.deltamedicalteam.R;
 import com.csc131.deltamedicalteam.adapter.CurrentAllergiesList;
 import com.csc131.deltamedicalteam.adapter.CurrentIllnessList;
 import com.csc131.deltamedicalteam.adapter.MedicalHistoryList;
+import com.csc131.deltamedicalteam.helper.SwipeItemTouchHelper;
 import com.csc131.deltamedicalteam.model.HealthConditions;
 import com.csc131.deltamedicalteam.model.Patient;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -83,6 +85,7 @@ public class HealthConditionFragment extends Fragment {
         recyclerViewCurrentIllness.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerViewSpecificAllergies.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerViewMedicalHistory.setLayoutManager(new LinearLayoutManager(getActivity()));
+
 
       //detects when spinner item is selected
         patientSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -148,6 +151,45 @@ public class HealthConditionFragment extends Fragment {
                         }
                     }
                 });
+
+
+// Create an instance of SwipeItemTouchHelper with the adapter
+                SwipeItemTouchHelper swipeItemTouchHelper = new SwipeItemTouchHelper(mAllergiesAdapter);
+
+                swipeItemTouchHelper.setSwipeListener(new SwipeItemTouchHelper.SwipeListener() {
+                    @Override
+                    public void onItemDismiss(int position) {
+                        // Remove the item from the list
+                        String removedAllergy = mAllergiesAdapter.getAllergies().get(position);
+                        mAllergiesAdapter.getAllergies().remove(position);
+                        mAllergiesAdapter.notifyItemRemoved(position);
+
+                        // Remove the item from the database
+                        FirebaseFirestore db = FirebaseFirestore.getInstance();
+                        DocumentReference patientRef = db.collection("patients").document(mCurrentPatient.getDocumentId());
+                        patientRef.update("specificAllergies", FieldValue.arrayRemove(removedAllergy))
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        Toast.makeText(getContext(), "Allergy Removed: " + removedAllergy, Toast.LENGTH_SHORT).show();
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Log.e(TAG, "Failed to remove allergy: " + e.getMessage());
+                                        // If removal from database fails, add the item back to the list and notify the adapter
+                                        mAllergiesAdapter.getAllergies().add(position, removedAllergy);
+                                        mAllergiesAdapter.notifyItemInserted(position);
+                                        Toast.makeText(getContext(), "Failed to remove allergy: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                    }
+                });
+
+// Create an instance of ItemTouchHelper and attach SwipeItemTouchHelper to it
+                ItemTouchHelper itemTouchHelper = new ItemTouchHelper(swipeItemTouchHelper);
+                itemTouchHelper.attachToRecyclerView(recyclerViewSpecificAllergies);
 
 
             }

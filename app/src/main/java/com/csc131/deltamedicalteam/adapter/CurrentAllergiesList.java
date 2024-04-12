@@ -1,16 +1,24 @@
 package com.csc131.deltamedicalteam.adapter;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.csc131.deltamedicalteam.R;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.List;
 
@@ -19,6 +27,8 @@ public class CurrentAllergiesList extends RecyclerView.Adapter<CurrentAllergiesL
     private final List<String> allergies;
 
     private OnItemClickListener mOnItemClickListener;
+
+
 
     public interface OnItemClickListener {
         void onItemClick(View view, String allergy, int position);
@@ -30,6 +40,10 @@ public class CurrentAllergiesList extends RecyclerView.Adapter<CurrentAllergiesL
 
     public CurrentAllergiesList(List<String> allergies) {
         this.allergies = allergies;
+    }
+
+    public List<String> getAllergies() {
+        return allergies;
     }
 
     // Method to update the list of allergies
@@ -78,4 +92,18 @@ public class CurrentAllergiesList extends RecyclerView.Adapter<CurrentAllergiesL
     public int getItemCount() {
         return allergies.size();
     }
+
+
+
+    public void onItemDismiss(int position) {
+        // Remove the item from the list
+        String removedAllergy = allergies.remove(position);
+
+        // Notify the adapter about the removal
+        notifyItemRemoved(position);
+
+        // Remove the item from the database
+
+    }
+
 }
