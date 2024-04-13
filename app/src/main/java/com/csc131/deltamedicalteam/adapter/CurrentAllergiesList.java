@@ -1,25 +1,19 @@
 package com.csc131.deltamedicalteam.adapter;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.csc131.deltamedicalteam.R;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FieldValue;
-import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CurrentAllergiesList extends RecyclerView.Adapter<CurrentAllergiesList.OriginalViewHolder> {
@@ -27,6 +21,7 @@ public class CurrentAllergiesList extends RecyclerView.Adapter<CurrentAllergiesL
     private final List<String> allergies;
 
     private OnItemClickListener mOnItemClickListener;
+    private final List<String> items_swiped = new ArrayList<>(); // Keep track of swiped items
 
 
 
@@ -47,6 +42,7 @@ public class CurrentAllergiesList extends RecyclerView.Adapter<CurrentAllergiesL
     }
 
     // Method to update the list of allergies
+    @SuppressLint("NotifyDataSetChanged")
     public void updateAllergies(List<String> updatedAllergies) {
         allergies.clear();
         allergies.addAll(updatedAllergies);
@@ -55,19 +51,28 @@ public class CurrentAllergiesList extends RecyclerView.Adapter<CurrentAllergiesL
 
     public static class OriginalViewHolder extends RecyclerView.ViewHolder {
         public TextView name;
+        public ImageButton bt_move;
+        public Button bt_undo;
+        public boolean swiped; // Added field to track swiped state
+
         public View lyt_parent;
 
         public OriginalViewHolder(View v) {
             super(v);
             name = v.findViewById(R.id.list_item_name);
             lyt_parent = v.findViewById(R.id.lyt_parent);
+            bt_move = v.findViewById(R.id.bt_move);
+            bt_undo = v.findViewById(R.id.bt_undo);
+            swiped = false; // Initialize swiped state to false
         }
     }
+
+
 
     @NonNull
     @Override
     public OriginalViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_health_current_list, parent, false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_health_allergies_list, parent, false);
         return new OriginalViewHolder(v);
     }
 
@@ -86,7 +91,28 @@ public class CurrentAllergiesList extends RecyclerView.Adapter<CurrentAllergiesL
                 mOnItemClickListener.onItemClick(view, allergy, position);
             }
         });
+
     }
+
+//    @Override
+//    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+//        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+//            @Override
+//            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+//                for (String item : items_swiped) {
+//                    int index_removed = allergies.indexOf(item);
+//                    if (index_removed != -1) {
+//                        allergies.remove(index_removed);
+//                        notifyItemRemoved(index_removed);
+//                    }
+//                }
+//                items_swiped.clear();
+//                super.onScrollStateChanged(recyclerView, newState);
+//            }
+//        });
+//        super.onAttachedToRecyclerView(recyclerView);
+//    }
+
 
     @Override
     public int getItemCount() {
@@ -95,15 +121,6 @@ public class CurrentAllergiesList extends RecyclerView.Adapter<CurrentAllergiesL
 
 
 
-    public void onItemDismiss(int position) {
-        // Remove the item from the list
-        String removedAllergy = allergies.remove(position);
 
-        // Notify the adapter about the removal
-        notifyItemRemoved(position);
-
-        // Remove the item from the database
-
-    }
 
 }

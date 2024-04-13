@@ -2,8 +2,8 @@ package com.csc131.deltamedicalteam.ui.healthcondition;
 
 import static android.content.ContentValues.TAG;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -35,7 +35,6 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -45,13 +44,11 @@ import java.util.List;
 
 public class HealthConditionFragment extends Fragment {
 
-    private com.csc131.deltamedicalteam.databinding.FragmentHealthConditionBinding binding;
-
     // Initialize Firestore
-    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     // Reference to the "patients" collection
-    private CollectionReference patientsRef = db.collection("patients");
+    private final CollectionReference patientsRef = db.collection("patients");
     private Button mCurrentIllnessAddEditButton, mAllergiesAddEditButton;
     private Spinner patientSpinner;
     RecyclerView recyclerViewCurrentIllness, recyclerViewMedicalHistory, recyclerViewSpecificAllergies;
@@ -95,104 +92,107 @@ public class HealthConditionFragment extends Fragment {
                 mCurrentPatient = (Patient) parent.getItemAtPosition(position);
                 String ID = mCurrentPatient.getDocumentId();
                 //uses patient id from spinner and to display current illnesses
-                patientsRef.document(ID).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        List<String> currIllness = (List<String>) documentSnapshot.get("currentIllnesses");
-                        List<HealthConditions> currIllnessItems = new ArrayList<>();
-                        //used to check if array is empty or not
-                        if (currIllness != null) {
-                            for (int i = 0; i < currIllness.size(); i++) {
-                                HealthConditions hCons = new HealthConditions();
-                                hCons.setCurrentIllnesses(currIllness.get(i));
-                                currIllnessItems.add(hCons);
-                            }
+                patientsRef.document(ID).get().addOnSuccessListener(documentSnapshot -> {
+                    List<String> currIllness = (List<String>) documentSnapshot.get("currentIllnesses");
+                    List<HealthConditions> currIllnessItems = new ArrayList<>();
+                    //used to check if array is empty or not
+                    if (currIllness != null) {
+                        for (int i = 0; i < currIllness.size(); i++) {
+                            HealthConditions hCons = new HealthConditions();
+                            hCons.setCurrentIllnesses(currIllness.get(i));
+                            currIllnessItems.add(hCons);
                         }
-                        mCurrentIllnessAdapter = new CurrentIllnessList(getActivity(), currIllnessItems);
-                        recyclerViewCurrentIllness.setAdapter(mCurrentIllnessAdapter);
+                    }
+                    mCurrentIllnessAdapter = new CurrentIllnessList(getActivity(), currIllnessItems);
+                    recyclerViewCurrentIllness.setAdapter(mCurrentIllnessAdapter);
 
-                        //Medical History
-                        List<String> prevIllness = (List<String>) documentSnapshot.get("previousIllnesses");
-                        List<HealthConditions> prevIllnessItems = new ArrayList<>();
-                        if (prevIllness != null) {
-                            for (int i = 0; i < prevIllness.size(); i++) {
-                                HealthConditions hCons = new HealthConditions();
-                                hCons.setPreviousIllnesses(prevIllness.get(i));
-                                prevIllnessItems.add(hCons);
-                            }
+                    //Medical History
+                    List<String> prevIllness = (List<String>) documentSnapshot.get("previousIllnesses");
+                    List<HealthConditions> prevIllnessItems = new ArrayList<>();
+                    if (prevIllness != null) {
+                        for (int i = 0; i < prevIllness.size(); i++) {
+                            HealthConditions hCons = new HealthConditions();
+                            hCons.setPreviousIllnesses(prevIllness.get(i));
+                            prevIllnessItems.add(hCons);
                         }
-                        mMedicalHistoryAdapter = new MedicalHistoryList(getActivity(), prevIllnessItems);
-                        recyclerViewMedicalHistory.setAdapter(mMedicalHistoryAdapter);
+                    }
+                    mMedicalHistoryAdapter = new MedicalHistoryList(getActivity(), prevIllnessItems);
+                    recyclerViewMedicalHistory.setAdapter(mMedicalHistoryAdapter);
 
-                        //currentAllegies
+                    //currentAllegies
 
-                        List<String> currAllergies = (List<String>) documentSnapshot.get("specificAllergies");
+                    List<String> currAllergies = (List<String>) documentSnapshot.get("specificAllergies");
 
 // Check if the list of allergies is not null and not empty
-                        if (currAllergies != null && !currAllergies.isEmpty()) {
-                            // Create the adapter with the list of allergies
-                            mAllergiesAdapter = new CurrentAllergiesList(currAllergies);
+                    if (currAllergies != null && !currAllergies.isEmpty()) {
+                        // Create the adapter with the list of allergies
+                        mAllergiesAdapter = new CurrentAllergiesList(currAllergies);
 
-                            // Set the adapter to the RecyclerView
-                            recyclerViewSpecificAllergies.setAdapter(mAllergiesAdapter);
-                        } else {
-                            // Create a dummy string to indicate no allergies were found
-                            String dummyAllergy = "No allergies found";
+                        // Set the adapter to the RecyclerView
+                        recyclerViewSpecificAllergies.setAdapter(mAllergiesAdapter);
+                    } else {
+                        // Create a dummy string to indicate no allergies were found
+                        String dummyAllergy = "No allergies found";
 
-                            // Create a list containing the dummy string
-                            List<String> dummyList = new ArrayList<>();
-                            dummyList.add(dummyAllergy);
+                        // Create a list containing the dummy string
+                        List<String> dummyList = new ArrayList<>();
+                        dummyList.add(dummyAllergy);
 
-                            // Create the adapter with the dummy list
-                            mAllergiesAdapter = new CurrentAllergiesList(dummyList);
+                        // Create the adapter with the dummy list
+                        mAllergiesAdapter = new CurrentAllergiesList(dummyList);
 
-                            // Set the adapter to the RecyclerView
-                            recyclerViewSpecificAllergies.setAdapter(mAllergiesAdapter);
-                        }
+                        // Set the adapter to the RecyclerView
+                        recyclerViewSpecificAllergies.setAdapter(mAllergiesAdapter);
                     }
                 });
 
 
-// Create an instance of SwipeItemTouchHelper with the adapter
                 SwipeItemTouchHelper swipeItemTouchHelper = new SwipeItemTouchHelper(mAllergiesAdapter);
-
+                // Create an instance of ItemTouchHelper and attach SwipeItemTouchHelper to it
+                ItemTouchHelper itemTouchHelper = new ItemTouchHelper(swipeItemTouchHelper);
+                itemTouchHelper.attachToRecyclerView(recyclerViewSpecificAllergies);
                 swipeItemTouchHelper.setSwipeListener(new SwipeItemTouchHelper.SwipeListener() {
+                    @SuppressLint("NotifyDataSetChanged")
                     @Override
                     public void onItemDismiss(int position) {
-                        // Remove the item from the list
-                        String removedAllergy = mAllergiesAdapter.getAllergies().get(position);
-                        mAllergiesAdapter.getAllergies().remove(position);
-                        mAllergiesAdapter.notifyItemRemoved(position);
+                        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                        builder.setTitle("Confirm Deletion");
+                        builder.setMessage("Are you sure you want to remove this allergy?");
+                        builder.setPositiveButton("Yes", (dialog, which) -> {
+                            // Remove the item from the list
+                            String removedAllergy = mAllergiesAdapter.getAllergies().get(position);
+                            mAllergiesAdapter.getAllergies().remove(position);
+                            mAllergiesAdapter.notifyItemRemoved(position);
 
-                        // Remove the item from the database
-                        FirebaseFirestore db = FirebaseFirestore.getInstance();
-                        DocumentReference patientRef = db.collection("patients").document(mCurrentPatient.getDocumentId());
-                        patientRef.update("specificAllergies", FieldValue.arrayRemove(removedAllergy))
-                                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void aVoid) {
+                            // Remove the item from the database
+                            FirebaseFirestore db = FirebaseFirestore.getInstance();
+                            DocumentReference patientRef = db.collection("patients").document(mCurrentPatient.getDocumentId());
+                            patientRef.update("specificAllergies", FieldValue.arrayRemove(removedAllergy))
+                                    .addOnSuccessListener(aVoid -> {
                                         Toast.makeText(getContext(), "Allergy Removed: " + removedAllergy, Toast.LENGTH_SHORT).show();
-                                    }
-                                })
-                                .addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
+                                        dialog.dismiss(); // Dismiss the dialog after successful deletion
+                                    })
+                                    .addOnFailureListener(e -> {
                                         Log.e(TAG, "Failed to remove allergy: " + e.getMessage());
                                         // If removal from database fails, add the item back to the list and notify the adapter
                                         mAllergiesAdapter.getAllergies().add(position, removedAllergy);
                                         mAllergiesAdapter.notifyItemInserted(position);
                                         Toast.makeText(getContext(), "Failed to remove allergy: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                                    }
-                                });
+                                    });
+                        });
+                        builder.setNegativeButton("Cancel", (dialog, which) -> {
+                            dialog.dismiss();
+                            mAllergiesAdapter.notifyDataSetChanged(); // Refresh the list after canceling
+                        });
+                        builder.show();
                     }
                 });
 
-// Create an instance of ItemTouchHelper and attach SwipeItemTouchHelper to it
-                ItemTouchHelper itemTouchHelper = new ItemTouchHelper(swipeItemTouchHelper);
-                itemTouchHelper.attachToRecyclerView(recyclerViewSpecificAllergies);
 
 
             }
+
+
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
@@ -250,74 +250,55 @@ public class HealthConditionFragment extends Fragment {
             }
         });
 
-        mAllergiesAddEditButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                EditText allergiesInput = new EditText(v.getContext());
-                AlertDialog.Builder addAllergiesDialog = new AlertDialog.Builder(v.getContext());
-                addAllergiesDialog.setTitle("Add Allergies");
-                addAllergiesDialog.setMessage("Enter the allergy you want to add:");
-                addAllergiesDialog.setView(allergiesInput);
+        mAllergiesAddEditButton.setOnClickListener(v -> {
+            EditText allergiesInput = new EditText(v.getContext());
+            AlertDialog.Builder addAllergiesDialog = new AlertDialog.Builder(v.getContext());
+            addAllergiesDialog.setTitle("Add Allergies");
+            addAllergiesDialog.setMessage("Enter the allergy you want to add:");
+            addAllergiesDialog.setView(allergiesInput);
 
-                addAllergiesDialog.setPositiveButton("Add", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        // Extract the allergy entered by the user
-                        String allergy = allergiesInput.getText().toString().trim();
+            addAllergiesDialog.setPositiveButton("Add", (dialog, which) -> {
+                // Extract the allergy entered by the user
+                String allergy = allergiesInput.getText().toString().trim();
 
-                        // Perform validation
-                        if (TextUtils.isEmpty(allergy)) {
-                            Toast.makeText(v.getContext(), "Allergy cannot be empty", Toast.LENGTH_SHORT).show();
-                            return;
-                        }
+                // Perform validation
+                if (TextUtils.isEmpty(allergy)) {
+                    Toast.makeText(v.getContext(), "Allergy cannot be empty", Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
-                        // Check if the allergy already exists in the database
-                        boolean allergyExists = false;
-                        for (String existingAllergy : mCurrentPatient.getSpecificAllergies()) {
-                            if (existingAllergy.equals(allergy)) {
-                                allergyExists = true;
-                                break;
-                            }
-                        }
-
-                        if (allergyExists) {
-                            Toast.makeText(v.getContext(), "Allergy already exists", Toast.LENGTH_SHORT).show();
-                            return;
-                        }
-
-                        // Update the specificAllergies field in Firestore
-                        FirebaseFirestore db = FirebaseFirestore.getInstance();
-                        DocumentReference patientRef = db.collection("patients").document(mCurrentPatient.getDocumentId());
-                        patientRef.update("specificAllergies", FieldValue.arrayUnion(allergy))
-                                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void aVoid) {
-                                        Toast.makeText(v.getContext(), "Allergy Added: " + allergy, Toast.LENGTH_SHORT).show();
-                                        // Refresh the list of specific allergies
-                                        refreshSpecificAllergies();
-
-                                    }
-                                })
-                                .addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        Toast.makeText(v.getContext(), "Failed to add allergy: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                                    }
-                                });
+                // Check if the allergy already exists in the database
+                boolean allergyExists = false;
+                for (String existingAllergy : mCurrentPatient.getSpecificAllergies()) {
+                    if (existingAllergy.equals(allergy)) {
+                        allergyExists = true;
+                        break;
                     }
-                });
+                }
 
-                addAllergiesDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        // Close the dialog
-                    }
-                });
+                if (allergyExists) {
+                    Toast.makeText(v.getContext(), "Allergy already exists", Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
-                addAllergiesDialog.create().show();
-            }
+                // Update the specificAllergies field in Firestore
+                FirebaseFirestore db = FirebaseFirestore.getInstance();
+                DocumentReference patientRef = db.collection("patients").document(mCurrentPatient.getDocumentId());
+                patientRef.update("specificAllergies", FieldValue.arrayUnion(allergy))
+                        .addOnSuccessListener(aVoid -> {
+                            Toast.makeText(v.getContext(), "Allergy Added: " + allergy, Toast.LENGTH_SHORT).show();
+                            // Refresh the list of specific allergies
+                            refreshSpecificAllergies();
 
+                        })
+                        .addOnFailureListener(e -> Toast.makeText(v.getContext(), "Failed to add allergy: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+            });
 
+            addAllergiesDialog.setNegativeButton("Cancel", (dialog, which) -> {
+                // Close the dialog
+            });
+
+            addAllergiesDialog.create().show();
         });
 
 
@@ -342,9 +323,7 @@ public class HealthConditionFragment extends Fragment {
                     // Pass the list of patient names to populate the spinner
                     populateSpinner(patientNames);
                 })
-                .addOnFailureListener(e -> {
-                    Log.e(TAG, "Error fetching documents: " + e.getMessage());
-                });
+                .addOnFailureListener(e -> Log.e(TAG, "Error fetching documents: " + e.getMessage()));
     }
 
     // Method to populate the spinner with patient names
@@ -361,21 +340,18 @@ public class HealthConditionFragment extends Fragment {
     private void refreshSpecificAllergies() {
         // Retrieve the updated list of specific allergies from the database
         FirebaseFirestore.getInstance().collection("patients").document(mCurrentPatient.getDocumentId())
-                .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        // Get the list of specific allergies from the document snapshot
-                        List<String> updatedAllergies = (List<String>) documentSnapshot.get("specificAllergies");
+                .get().addOnSuccessListener(documentSnapshot -> {
+                    // Get the list of specific allergies from the document snapshot
+                    List<String> updatedAllergies = (List<String>) documentSnapshot.get("specificAllergies");
 
-                        // Update the adapter with the updated list of allergies
-                        if (updatedAllergies != null && !updatedAllergies.isEmpty()) {
-                            mAllergiesAdapter.updateAllergies(updatedAllergies);
-                        } else {
-                            // Create a dummy list if allergies are empty
-                            List<String> dummyList = new ArrayList<>();
-                            dummyList.add("No allergies found");
-                            mAllergiesAdapter.updateAllergies(dummyList);
-                        }
+                    // Update the adapter with the updated list of allergies
+                    if (updatedAllergies != null && !updatedAllergies.isEmpty()) {
+                        mAllergiesAdapter.updateAllergies(updatedAllergies);
+                    } else {
+                        // Create a dummy list if allergies are empty
+                        List<String> dummyList = new ArrayList<>();
+                        dummyList.add("No allergies found");
+                        mAllergiesAdapter.updateAllergies(dummyList);
                     }
                 });
     }
@@ -385,6 +361,5 @@ public class HealthConditionFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        binding = null;
     }
 }
