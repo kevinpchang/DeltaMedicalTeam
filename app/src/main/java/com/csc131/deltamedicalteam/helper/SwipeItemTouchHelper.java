@@ -4,6 +4,7 @@ import static com.google.android.material.color.MaterialColors.ALPHA_FULL;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.drawable.ColorDrawable;
 import android.view.View;
 
@@ -56,12 +57,28 @@ public class SwipeItemTouchHelper extends ItemTouchHelper.Callback {
             ColorDrawable background = new ColorDrawable();
             background.setColor(getBgColorCode());
 
+            // Define text paint
+            Paint textPaint = new Paint();
+            textPaint.setColor(Color.WHITE);
+            textPaint.setTextSize(50); // Adjust text size as needed
+            textPaint.setTextAlign(Paint.Align.CENTER);
+
+            // Calculate text position
+            float textX;
+            float textY = itemView.getTop() + (itemView.getHeight() / 2);
             if (dX > 0) { // swipe right
                 background.setBounds(itemView.getLeft(), itemView.getTop(), (int) dX, itemView.getBottom());
+                textX = dX / 2;
             } else { // swipe left
                 background.setBounds(itemView.getRight() + (int) dX, itemView.getTop(), itemView.getRight(), itemView.getBottom());
+                textX = itemView.getRight() + dX / 2;
             }
+
+            // Draw background
             background.draw(c);
+
+            // Draw text
+            c.drawText("REMOVE", textX, textY, textPaint);
         }
         super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
     }

@@ -59,23 +59,6 @@
                     android:layout_width="@dimen/spacing_large"
                     android:layout_height="wrap_content" />
 
-                <ImageButton
-                    android:id="@+id/bt_move"
-                    android:layout_width="?android:attr/actionBarSize"
-                    android:layout_height="?android:attr/actionBarSize"
-                    android:background="@android:color/transparent"
-                    android:tint="@color/grey_40"
-                    app:srcCompat="@drawable/ic_swap_horiz" />
-
-                <ImageButton
-                    android:id="@+id/bt_move2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="?android:attr/actionBarSize"
-                    android:layout_weight="1"
-                    android:background="@android:color/transparent"
-                    android:tint="@color/grey_40"
-                    app:srcCompat="@drawable/ic_delete" />
-
             </LinearLayout>
 
             <View
