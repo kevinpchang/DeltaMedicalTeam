@@ -15,6 +15,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -31,9 +32,12 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,6 +58,7 @@ public class MedicationFragment extends Fragment {
     TabLayout tabLayout;
     List<Patient> patientNames = new ArrayList<>();
 
+    Patient mCurrentPatient;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_medication, container, false);
@@ -85,13 +90,14 @@ patientSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         //retrieves the patient at the given spinner position
-        Patient patient = (Patient) parent.getItemAtPosition(position);
-        String ID = patient.getDocumentId();
+        mCurrentPatient = (Patient) parent.getItemAtPosition(position);
+        String ID = mCurrentPatient.getDocumentId();
         //uses patient id from spinner and to display current illnesses
         patientsRef.document(ID).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             //Current Medication prescriebd
             public void onSuccess(DocumentSnapshot documentSnapshot) {
+
                 List<String> currMedication = (List<String>) documentSnapshot.get("currentMedications");
                 List<Medication> currMedicationItems = new ArrayList<>();
                 //used to check if array is empty or not
@@ -113,6 +119,8 @@ patientSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(
                     @SuppressLint("NotifyDataSetChanged")
                     @Override
                     public void onItemDismiss(int position) {
+
+
                         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                         builder.setTitle("Confirm Deletion");
                         builder.setMessage("Are you sure you want to remove this current medication?");
@@ -122,25 +130,31 @@ patientSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(
                             mCurrentMedicationAdapter.getCurrentMedication().remove(position);
                             mCurrentMedicationAdapter.notifyItemRemoved(position);
 
-                            // Remove the item from the database
-                            FirebaseFirestore db = FirebaseFirestore.getInstance();
-                            DocumentReference patientRef = db.collection("patients").document(patient.getDocumentId());
-                            patientRef.update("currentMedications", FieldValue.arrayRemove(removedMedication.getCurrentMedications()))
+                            // Get a reference to your Firestore collection
+                            CollectionReference patientsRef = FirebaseFirestore.getInstance().collection("patients");
+
+                            // Update the Firestore document
+                            patientsRef.document(mCurrentPatient.getDocumentId()) // Update 'yourDocumentId' with the actual document ID
+                                    .update("currentMedications", FieldValue.arrayRemove(removedMedication.getCurrentMedications()))
                                     .addOnSuccessListener(aVoid -> {
+                                        // Show a toast indicating successful removal
                                         Toast.makeText(getContext(), "Medication Removed: " + removedMedication.getCurrentMedications(), Toast.LENGTH_SHORT).show();
-                                        dialog.dismiss(); // Dismiss the dialog after successful deletion
+                                        Toast.makeText(getContext(), "From ID: " + mCurrentPatient.getDocumentId(), Toast.LENGTH_SHORT).show();
+                                        // Dismiss the dialog after successful deletion
+                                        dialog.dismiss();
                                     })
                                     .addOnFailureListener(e -> {
-                                        Log.e(TAG, "Failed to remove Medication: " + e.getMessage());
-                                        // If removal from database fails, add the item back to the list and notify the adapter
+                                        // Show a toast indicating failure
+                                        Toast.makeText(getContext(), "Failed to remove medication", Toast.LENGTH_SHORT).show();
+                                        // Add the removed item back to the list if removal failed
                                         mCurrentMedicationAdapter.getCurrentMedication().add(position, removedMedication);
                                         mCurrentMedicationAdapter.notifyItemInserted(position);
-                                        Toast.makeText(getContext(), "Failed to remove Medication: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                                     });
-                        });
-                        builder.setNegativeButton("Cancel", (dialog, which) -> {
+                        }).setNegativeButton("Cancel", (dialog, which) -> {
+                            // Dismiss the dialog when canceled
                             dialog.dismiss();
-                            mCurrentMedicationAdapter.notifyDataSetChanged(); // Refresh the list after canceling
+                            // Refresh the list after canceling
+                            mCurrentMedicationAdapter.notifyDataSetChanged();
                         });
                         builder.show();
                     }
@@ -158,6 +172,8 @@ patientSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(
                 }
                 mPastMedicationAdapter = new PastMedicationList(getActivity(), prevIllnessItems);
                 recyclerViewPastMedication.setAdapter(mPastMedicationAdapter);
+
+
 
             }
 
