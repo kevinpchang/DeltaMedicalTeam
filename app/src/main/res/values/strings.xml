@@ -66,5 +66,9 @@
     <string name="vaccinations">Vaccinations</string>
     <string name="add_appointment">Add Appointment</string>
     <string name="filter">Filter</string>
+    <string name="current_medication">Current Medication</string>
+    <string name="add_medication">Add Medication</string>
+    <string name="past_medication">Past Medication</string>
+    <string name="choose_your_patient">Choose Your Patient</string>
 
 </resources>
