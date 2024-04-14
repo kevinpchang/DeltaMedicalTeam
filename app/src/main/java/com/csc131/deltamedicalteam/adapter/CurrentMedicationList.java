@@ -23,7 +23,9 @@ public class CurrentMedicationList extends RecyclerView.Adapter<RecyclerView.Vie
     public interface OnItemClickListener {
         void onItemClick(View view, Medication obj, int position);
     }
-
+    public List<Medication> getCurrentMedication() {
+        return items;
+    }
     public void setOnItemClickListener(final OnItemClickListener mItemClickListener) {
         this.mOnItemClickListener = mItemClickListener;
     }

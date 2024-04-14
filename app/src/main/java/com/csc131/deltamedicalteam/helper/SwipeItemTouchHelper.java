@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.csc131.deltamedicalteam.adapter.CurrentAllergiesList;
+import com.csc131.deltamedicalteam.adapter.CurrentMedicationList;
 
 
 public class SwipeItemTouchHelper extends ItemTouchHelper.Callback {
@@ -20,7 +21,8 @@ public class SwipeItemTouchHelper extends ItemTouchHelper.Callback {
 
     public SwipeItemTouchHelper(CurrentAllergiesList mAllergiesAdapter) {
     }
-
+    public SwipeItemTouchHelper(CurrentMedicationList m) {
+    }
     public void setSwipeListener(SwipeListener swipeListener) {
         this.swipeListener = swipeListener;
     }
