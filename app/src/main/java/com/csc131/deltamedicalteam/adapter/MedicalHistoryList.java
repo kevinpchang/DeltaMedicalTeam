@@ -34,6 +34,11 @@ public class MedicalHistoryList extends RecyclerView.Adapter<RecyclerView.ViewHo
         ctx = context;
     }
 
+    public void updateMedicalHitory(List<HealthConditions> updatedItems){
+        items.clear();
+        items.addAll(updatedItems);
+    }
+
     public class OriginalViewHolder extends RecyclerView.ViewHolder {
         public TextView name;
         public View lyt_parent;

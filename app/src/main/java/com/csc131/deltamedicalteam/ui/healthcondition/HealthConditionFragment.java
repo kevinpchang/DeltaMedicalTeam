@@ -18,6 +18,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -35,10 +36,14 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,6 +59,7 @@ public class HealthConditionFragment extends Fragment {
     RecyclerView recyclerViewCurrentIllness, recyclerViewMedicalHistory, recyclerViewSpecificAllergies;
     TabLayout tabLayout;
     private CurrentIllnessList mCurrentIllnessAdapter;
+    private String currentIllnessSelector;
     private MedicalHistoryList mMedicalHistoryAdapter;
     private CurrentAllergiesList mAllergiesAdapter;
 
@@ -82,7 +88,6 @@ public class HealthConditionFragment extends Fragment {
         recyclerViewCurrentIllness.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerViewSpecificAllergies.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerViewMedicalHistory.setLayoutManager(new LinearLayoutManager(getActivity()));
-
 
       //detects when spinner item is selected
         patientSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -145,7 +150,6 @@ public class HealthConditionFragment extends Fragment {
                         recyclerViewSpecificAllergies.setAdapter(mAllergiesAdapter);
                     }
                 });
-
 
                 SwipeItemTouchHelper swipeItemTouchHelper = new SwipeItemTouchHelper(mAllergiesAdapter);
                 // Create an instance of ItemTouchHelper and attach SwipeItemTouchHelper to it
@@ -250,6 +254,57 @@ public class HealthConditionFragment extends Fragment {
             }
         });
 
+        mCurrentIllnessAddEditButton.setOnClickListener(v -> {
+            Spinner illnessSelector = new Spinner(v.getContext());
+            AlertDialog.Builder currentIllnessDialog = new AlertDialog.Builder(v.getContext());
+            currentIllnessDialog.setTitle("Add Illnesses");
+            currentIllnessDialog.setMessage("Select the Illnesses you want to add:");
+            currentIllnessDialog.setView(illnessSelector);
+
+            //populate spinner for dialog
+            CollectionReference ref = db.collection("illnesses");
+            ref.get()
+                    .addOnSuccessListener(queryDocumentSnapshots -> {
+                        List<String> illnessList = new ArrayList<>();
+                        for(QueryDocumentSnapshot documentSnapshot: queryDocumentSnapshots) {
+                            List<String> illnesses = (List<String>) documentSnapshot.get("Illnesses");
+                            if(illnesses != null){
+                                illnessList.addAll(illnesses);
+                            }
+                            ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, illnessList);
+                            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+                            illnessSelector.setAdapter(adapter);
+                        }
+            });
+
+            illnessSelector.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                     currentIllnessSelector = (String) parent.getItemAtPosition(position);
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+
+                }
+            });
+
+            currentIllnessDialog.setPositiveButton("Add", (dialog, which) -> {
+                DocumentReference documentReference = patientsRef.document(mCurrentPatient.getDocumentId());
+                documentReference.get().addOnSuccessListener(documentSnapshot -> {
+                    if(documentSnapshot.exists()){
+                        documentReference.update("currentIllnesses", FieldValue.arrayUnion(currentIllnessSelector));
+                    }
+                    refreshHealthConditions();
+                });
+            });
+            currentIllnessDialog.show();
+            currentIllnessDialog.setNegativeButton("Cancel", (dialog, which) -> {
+               dialog.dismiss();
+            });
+        });
+
         mAllergiesAddEditButton.setOnClickListener(v -> {
             EditText allergiesInput = new EditText(v.getContext());
             AlertDialog.Builder addAllergiesDialog = new AlertDialog.Builder(v.getContext());
@@ -337,6 +392,36 @@ public class HealthConditionFragment extends Fragment {
     }
 
     // Method to refresh the list of specific allergies in the RecyclerView
+
+    private void refreshHealthConditions() {
+        Log.d("DEBUG", "WE MADE IT");
+        // Retrieve the updated list of specific allergies from the database
+        FirebaseFirestore.getInstance().collection("patients").document(mCurrentPatient.getDocumentId())
+                .get().addOnSuccessListener(documentSnapshot -> {
+                    //current illnesses
+                    List<String> currentIllnesses = (List<String>) documentSnapshot.get("currentIllnesses");
+                    List<HealthConditions> updatedCurrentIllnesses = new ArrayList<>();
+                    if (currentIllnesses != null && !currentIllnesses.isEmpty()) {
+                        for (int i = 0; i < currentIllnesses.size(); i++) {
+                            HealthConditions hCons = new HealthConditions();
+                            hCons.setCurrentIllnesses(currentIllnesses.get(i));
+                            updatedCurrentIllnesses.add(hCons);
+                        }
+                        mCurrentIllnessAdapter.updateCurrentIllnesses(updatedCurrentIllnesses);
+                        Log.d("DEBUG", "WE MADE IT");
+                    }else {
+                        // Create a dummy list if allergies are empty
+                        List<String> tempdummyList = new ArrayList<>();
+                        List<HealthConditions> dummyList = new ArrayList<>();
+                        tempdummyList.add("No allergies found");
+                        HealthConditions dummyHCons = new HealthConditions();
+                        dummyHCons.setCurrentIllnesses(tempdummyList.get(0));
+                        dummyList.add(dummyHCons);
+                        mCurrentIllnessAdapter.updateCurrentIllnesses(dummyList);
+                    }
+                });
+    }
+
     private void refreshSpecificAllergies() {
         // Retrieve the updated list of specific allergies from the database
         FirebaseFirestore.getInstance().collection("patients").document(mCurrentPatient.getDocumentId())

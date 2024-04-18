@@ -34,6 +34,13 @@ public class CurrentIllnessList extends RecyclerView.Adapter<RecyclerView.ViewHo
         ctx = context;
     }
 
+    public List<HealthConditions> getHealthConditions() { return this.items; }
+    public void updateCurrentIllnesses(List<HealthConditions> updatedItems){
+        items.clear();
+        items.addAll(updatedItems);
+        notifyDataSetChanged();
+    }
+
     public class OriginalViewHolder extends RecyclerView.ViewHolder {
         public TextView name;
         public View lyt_parent;
