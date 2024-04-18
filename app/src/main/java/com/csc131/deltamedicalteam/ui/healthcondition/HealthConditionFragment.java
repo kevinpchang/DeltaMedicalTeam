@@ -151,6 +151,73 @@ public class HealthConditionFragment extends Fragment {
                     }
                 });
 
+                SwipeItemTouchHelper swipeCurrentIllness = new SwipeItemTouchHelper(mCurrentIllnessAdapter);
+                // Create an instance of ItemTouchHelper and attach SwipeItemTouchHelper to it
+                ItemTouchHelper itemCurrentIllness = new ItemTouchHelper(swipeCurrentIllness);
+                itemCurrentIllness.attachToRecyclerView(recyclerViewCurrentIllness);
+                swipeCurrentIllness.setSwipeListener(new SwipeItemTouchHelper.SwipeListener() {
+                    @SuppressLint("NotifyDataSetChanged")
+                    @Override
+                    public void onItemDismiss(int position) {
+                        HealthConditions hCon = mCurrentIllnessAdapter.getHealthConditions().get(position);
+                        String removedCurrentIllness = mCurrentIllnessAdapter.getHealthConditions().get(position).getCurrentIllnesses();
+                        AlertDialog.Builder confirmDelete = new AlertDialog.Builder(getContext());
+                        confirmDelete.setTitle("Confirm Deletion");
+                        confirmDelete.setMessage("Are you sure you want to remove this illness?");
+                        confirmDelete.setPositiveButton("Yes", (dialog, which) -> {
+                            // Remove the item from the list
+                            mCurrentIllnessAdapter.getHealthConditions().remove(position);
+                            mCurrentIllnessAdapter.notifyItemRemoved(position);
+
+                            // Remove the item from the database
+                            FirebaseFirestore db = FirebaseFirestore.getInstance();
+                            DocumentReference patientRef = db.collection("patients").document(mCurrentPatient.getDocumentId());
+                            patientRef.update("currentIllnesses", FieldValue.arrayRemove(removedCurrentIllness))
+                                    .addOnSuccessListener(aVoid -> {
+                                        Toast.makeText(getContext(), "Allergy Removed: " + removedCurrentIllness, Toast.LENGTH_SHORT).show();
+                                        dialog.dismiss(); // Dismiss the dialog after successful deletion
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        Log.e(TAG, "Failed to remove allergy: " + e.getMessage());
+                                        // If removal from database fails, add the item back to the list and notify the adapter
+                                        mCurrentIllnessAdapter.getHealthConditions().add(position, hCon);
+                                        mCurrentIllnessAdapter.notifyItemInserted(position);
+                                        Toast.makeText(getContext(), "Failed to remove allergy: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                    });
+                            AlertDialog.Builder confirmTransfer = new AlertDialog.Builder(getContext());
+                            confirmTransfer.setTitle("Transfer");
+                            confirmTransfer.setMessage("Would you like to move this to Medical History?");
+                            confirmTransfer.setPositiveButton("Yes", (transferDialog, transferWhich) -> {
+                                patientRef.update("previousIllnesses", FieldValue.arrayUnion(removedCurrentIllness))
+                                        .addOnSuccessListener(aVoid -> {
+                                            Toast.makeText(getContext(), "Allergy Removed: " + removedCurrentIllness, Toast.LENGTH_SHORT).show();
+                                            transferDialog.dismiss(); // Dismiss the dialog after successful deletion
+                                        })
+                                        .addOnFailureListener(e -> {
+                                            Log.e(TAG, "Failed to remove allergy: " + e.getMessage());
+                                            // If removal from database fails, add the item back to the list and notify the adapter
+                                            mAllergiesAdapter.getAllergies().add(position, removedCurrentIllness);
+                                            mAllergiesAdapter.notifyItemInserted(position);
+                                            Toast.makeText(getContext(), "Failed to remove allergy: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                        });
+                                refreshHealthConditions();
+                            });
+                            confirmTransfer.setNegativeButton("No", (transferDialog, transferWhich) -> {
+                                transferDialog.dismiss();
+                            });
+                            confirmTransfer.show();
+                        });
+                        confirmDelete.setNegativeButton("Cancel", (dialog, which) -> {
+                            dialog.dismiss();
+                            mCurrentIllnessAdapter.notifyDataSetChanged(); // Refresh the list after canceling
+                        });
+                        confirmDelete.setOnDismissListener(dialog -> {
+                            mCurrentIllnessAdapter.notifyDataSetChanged();
+                        });
+                        confirmDelete.show();
+                    }
+                });
+
                 SwipeItemTouchHelper swipeItemTouchHelper = new SwipeItemTouchHelper(mAllergiesAdapter);
                 // Create an instance of ItemTouchHelper and attach SwipeItemTouchHelper to it
                 ItemTouchHelper itemTouchHelper = new ItemTouchHelper(swipeItemTouchHelper);
@@ -187,6 +254,9 @@ public class HealthConditionFragment extends Fragment {
                         builder.setNegativeButton("Cancel", (dialog, which) -> {
                             dialog.dismiss();
                             mAllergiesAdapter.notifyDataSetChanged(); // Refresh the list after canceling
+                        });
+                        builder.setOnDismissListener(dialog -> {
+                            mAllergiesAdapter.notifyDataSetChanged();
                         });
                         builder.show();
                     }
@@ -299,10 +369,10 @@ public class HealthConditionFragment extends Fragment {
                     refreshHealthConditions();
                 });
             });
-            currentIllnessDialog.show();
             currentIllnessDialog.setNegativeButton("Cancel", (dialog, which) -> {
                dialog.dismiss();
             });
+            currentIllnessDialog.show();
         });
 
         mAllergiesAddEditButton.setOnClickListener(v -> {
@@ -350,7 +420,7 @@ public class HealthConditionFragment extends Fragment {
             });
 
             addAllergiesDialog.setNegativeButton("Cancel", (dialog, which) -> {
-                // Close the dialog
+                dialog.dismiss();
             });
 
             addAllergiesDialog.create().show();
@@ -394,7 +464,6 @@ public class HealthConditionFragment extends Fragment {
     // Method to refresh the list of specific allergies in the RecyclerView
 
     private void refreshHealthConditions() {
-        Log.d("DEBUG", "WE MADE IT");
         // Retrieve the updated list of specific allergies from the database
         FirebaseFirestore.getInstance().collection("patients").document(mCurrentPatient.getDocumentId())
                 .get().addOnSuccessListener(documentSnapshot -> {
@@ -408,16 +477,35 @@ public class HealthConditionFragment extends Fragment {
                             updatedCurrentIllnesses.add(hCons);
                         }
                         mCurrentIllnessAdapter.updateCurrentIllnesses(updatedCurrentIllnesses);
-                        Log.d("DEBUG", "WE MADE IT");
                     }else {
                         // Create a dummy list if allergies are empty
                         List<String> tempdummyList = new ArrayList<>();
                         List<HealthConditions> dummyList = new ArrayList<>();
-                        tempdummyList.add("No allergies found");
+                        tempdummyList.add("No illnesses found");
                         HealthConditions dummyHCons = new HealthConditions();
                         dummyHCons.setCurrentIllnesses(tempdummyList.get(0));
                         dummyList.add(dummyHCons);
                         mCurrentIllnessAdapter.updateCurrentIllnesses(dummyList);
+                    }
+
+                    List<String> previousIllnesses = (List<String>) documentSnapshot.get("previousIllnesses");
+                    List<HealthConditions> updatedPreviousIllnesses = new ArrayList<>();
+                    if (previousIllnesses != null && !previousIllnesses.isEmpty()) {
+                        for (int i = 0; i < previousIllnesses.size(); i++) {
+                            HealthConditions hCons = new HealthConditions();
+                            hCons.setPreviousIllnesses(previousIllnesses.get(i));
+                            updatedPreviousIllnesses.add(hCons);
+                        }
+                        mMedicalHistoryAdapter.updateMedicalHistory(updatedPreviousIllnesses);
+                    }else {
+                        // Create a dummy list if allergies are empty
+                        List<String> tempdummyList = new ArrayList<>();
+                        List<HealthConditions> dummyList = new ArrayList<>();
+                        tempdummyList.add("No illnesses found");
+                        HealthConditions dummyHCons = new HealthConditions();
+                        dummyHCons.setPreviousIllnesses(tempdummyList.get(0));
+                        dummyList.add(dummyHCons);
+                        mMedicalHistoryAdapter.updateMedicalHistory(dummyList);
                     }
                 });
     }

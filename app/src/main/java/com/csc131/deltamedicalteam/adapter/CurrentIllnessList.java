@@ -16,7 +16,7 @@ import java.util.List;
 
 public class CurrentIllnessList extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private List<HealthConditions> items = new ArrayList<>();
+    private List<HealthConditions> hCons;
 
     private Context ctx;
     private OnItemClickListener mOnItemClickListener;
@@ -29,15 +29,16 @@ public class CurrentIllnessList extends RecyclerView.Adapter<RecyclerView.ViewHo
         this.mOnItemClickListener = mItemClickListener;
     }
 
-    public CurrentIllnessList(Context context, List<HealthConditions> items) {
-        this.items = items;
+    public CurrentIllnessList(Context context, List<HealthConditions> hCons) {
+        this.hCons = hCons;
         ctx = context;
     }
 
-    public List<HealthConditions> getHealthConditions() { return this.items; }
+    public List<HealthConditions> getHealthConditions() { return hCons; }
+
     public void updateCurrentIllnesses(List<HealthConditions> updatedItems){
-        items.clear();
-        items.addAll(updatedItems);
+        hCons.clear();
+        hCons.addAll(updatedItems);
         notifyDataSetChanged();
     }
 
@@ -67,7 +68,7 @@ public class CurrentIllnessList extends RecyclerView.Adapter<RecyclerView.ViewHo
         if (holder instanceof OriginalViewHolder) {
             OriginalViewHolder viewHolder = (OriginalViewHolder) holder;
 
-            HealthConditions p = items.get(position);
+            HealthConditions p = hCons.get(position);
             //used to check if array is empty or not
             if (p.getCurrentIllnesses() != null) {
                 viewHolder.name.setText(p.getCurrentIllnesses());
@@ -80,7 +81,7 @@ public class CurrentIllnessList extends RecyclerView.Adapter<RecyclerView.ViewHo
                 public void onClick(View view) {
                     int adapterPosition = holder.getAdapterPosition();
                     if (adapterPosition != RecyclerView.NO_POSITION && mOnItemClickListener != null) {
-                        mOnItemClickListener.onItemClick(view, items.get(adapterPosition), adapterPosition);
+                        mOnItemClickListener.onItemClick(view, hCons.get(adapterPosition), adapterPosition);
                     }
                 }
             });
@@ -90,7 +91,7 @@ public class CurrentIllnessList extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     @Override
     public int getItemCount() {
-        return items.size();
+        return hCons.size();
     }
 
 }
