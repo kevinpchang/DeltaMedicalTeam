@@ -16,7 +16,7 @@ import java.util.List;
 
 public class MedicalHistoryList extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private List<HealthConditions> items = new ArrayList<>();
+    private List<HealthConditions> hCons = new ArrayList<>();
 
     private Context ctx;
     private OnItemClickListener mOnItemClickListener;
@@ -30,8 +30,15 @@ public class MedicalHistoryList extends RecyclerView.Adapter<RecyclerView.ViewHo
     }
 
     public MedicalHistoryList(Context context, List<HealthConditions> items) {
-        this.items = items;
+        this.hCons = items;
         ctx = context;
+    }
+
+    public List<HealthConditions> getMedicalHistory() { return hCons;}
+
+    public void updateMedicalHistory(List<HealthConditions> updatedItems){
+        hCons.clear();
+        hCons.addAll(updatedItems);
     }
 
     public class OriginalViewHolder extends RecyclerView.ViewHolder {
@@ -60,7 +67,7 @@ public class MedicalHistoryList extends RecyclerView.Adapter<RecyclerView.ViewHo
         if (holder instanceof OriginalViewHolder) {
             OriginalViewHolder viewHolder = (OriginalViewHolder) holder;
 
-            HealthConditions p = items.get(position);
+            HealthConditions p = hCons.get(position);
             //used to check if array is empty or not
             if (p.getPreviousIllnesses() != null) {
                 viewHolder.name.setText(p.getPreviousIllnesses());
@@ -72,7 +79,7 @@ public class MedicalHistoryList extends RecyclerView.Adapter<RecyclerView.ViewHo
                 public void onClick(View view) {
                     int adapterPosition = holder.getAdapterPosition();
                     if (adapterPosition != RecyclerView.NO_POSITION && mOnItemClickListener != null) {
-                        mOnItemClickListener.onItemClick(view, items.get(adapterPosition), adapterPosition);
+                        mOnItemClickListener.onItemClick(view, hCons.get(adapterPosition), adapterPosition);
                     }
                 }
             });
@@ -82,7 +89,7 @@ public class MedicalHistoryList extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     @Override
     public int getItemCount() {
-        return items.size();
+        return hCons.size();
     }
 
 }
