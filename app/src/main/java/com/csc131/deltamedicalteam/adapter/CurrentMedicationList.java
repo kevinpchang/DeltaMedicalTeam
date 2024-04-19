@@ -1,44 +1,38 @@
 package com.csc131.deltamedicalteam.adapter;
+        import android.content.Context;
+        import android.view.LayoutInflater;
+        import android.view.View;
+        import android.view.ViewGroup;
+        import android.widget.TextView;
 
-import android.content.Context;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
+        import androidx.recyclerview.widget.RecyclerView;
 
-import androidx.recyclerview.widget.RecyclerView;
+        import com.csc131.deltamedicalteam.R;
+        import com.csc131.deltamedicalteam.model.Medication;
 
-import com.csc131.deltamedicalteam.R;
-import com.csc131.deltamedicalteam.model.HealthConditions;
+        import java.util.ArrayList;
+        import java.util.List;
 
-import java.util.ArrayList;
-import java.util.List;
+public class CurrentMedicationList extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-public class MedicalHistoryList extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-
-    private List<HealthConditions> hCons = new ArrayList<>();
+    private List<Medication> items = new ArrayList<>();
 
     private Context ctx;
     private OnItemClickListener mOnItemClickListener;
 
     public interface OnItemClickListener {
-        void onItemClick(View view, HealthConditions obj, int position);
+        void onItemClick(View view, Medication obj, int position);
     }
-
+    public List<Medication> getCurrentMedication() {
+        return items;
+    }
     public void setOnItemClickListener(final OnItemClickListener mItemClickListener) {
         this.mOnItemClickListener = mItemClickListener;
     }
 
-    public MedicalHistoryList(Context context, List<HealthConditions> items) {
-        this.hCons = items;
+    public CurrentMedicationList(Context context, List<Medication> items) {
+        this.items = items;
         ctx = context;
-    }
-
-    public List<HealthConditions> getMedicalHistory() { return hCons;}
-
-    public void updateMedicalHistory(List<HealthConditions> updatedItems){
-        hCons.clear();
-        hCons.addAll(updatedItems);
     }
 
     public class OriginalViewHolder extends RecyclerView.ViewHolder {
@@ -47,15 +41,15 @@ public class MedicalHistoryList extends RecyclerView.Adapter<RecyclerView.ViewHo
 
         public OriginalViewHolder(View v) {
             super(v);
-            name = (TextView) v.findViewById(R.id.list_item_name);
-            lyt_parent = (View) v.findViewById(R.id.lyt_parent);
+            name = (TextView) v.findViewById(R.id.list_item_current_medication);
+            lyt_parent = (View) v.findViewById(R.id.lyt_parent_current);
         }
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         RecyclerView.ViewHolder vh;
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_health_history_list, parent, false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_medication_current_list, parent, false);
         vh = new OriginalViewHolder(v);
         return vh;
     }
@@ -67,29 +61,27 @@ public class MedicalHistoryList extends RecyclerView.Adapter<RecyclerView.ViewHo
         if (holder instanceof OriginalViewHolder) {
             OriginalViewHolder viewHolder = (OriginalViewHolder) holder;
 
-            HealthConditions p = hCons.get(position);
+            Medication p = items.get(position);
             //used to check if array is empty or not
-            if (p.getPreviousIllnesses() != null) {
-                viewHolder.name.setText(p.getPreviousIllnesses());
+            if (p.getCurrentMedications() != null) {
+                viewHolder.name.setText(p.getCurrentMedications());
             } else {
-                viewHolder.name.setText("No Medical History Availiable");
+                viewHolder.name.setText("No current Medications");
             }
             viewHolder.lyt_parent.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     int adapterPosition = holder.getAdapterPosition();
                     if (adapterPosition != RecyclerView.NO_POSITION && mOnItemClickListener != null) {
-                        mOnItemClickListener.onItemClick(view, hCons.get(adapterPosition), adapterPosition);
+                        mOnItemClickListener.onItemClick(view, items.get(adapterPosition), adapterPosition);
                     }
                 }
             });
         }
     }
 
-
     @Override
     public int getItemCount() {
-        return hCons.size();
+        return items.size();
     }
-
 }

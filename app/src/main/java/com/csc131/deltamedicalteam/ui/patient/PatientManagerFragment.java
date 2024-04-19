@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.csc131.deltamedicalteam.R;
 import com.csc131.deltamedicalteam.adapter.PatientList;
 import com.csc131.deltamedicalteam.model.Patient;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;

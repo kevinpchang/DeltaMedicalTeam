@@ -205,6 +205,7 @@
                             android:textAppearance="@style/Base.TextAppearance.AppCompat.Body2"
                             android:textColor="@android:color/white" />
 
+
                     </com.balysv.materialripple.MaterialRippleLayout>
 
                 </LinearLayout>
@@ -222,5 +223,4 @@
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>
-
 </RelativeLayout>

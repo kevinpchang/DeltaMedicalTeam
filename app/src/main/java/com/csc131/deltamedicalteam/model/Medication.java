@@ -3,10 +3,8 @@ package com.csc131.deltamedicalteam.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.util.Map;
-
-class Medication implements Parcelable {
-    private Map<String, String> pastMedication;
+public class Medication implements Parcelable {
+    private String pastMedications;
     private String currentMedications;
 
     // Default constructor
@@ -14,17 +12,26 @@ class Medication implements Parcelable {
         // Default constructor required for Firestore deserialization
     }
 
-    public Medication(Map<String, String> pastMedication, String currentMedications) {
-        this.pastMedication = pastMedication;
+    public Medication(String currentMedications, String pastMedications) {
         this.currentMedications = currentMedications;
+        this.pastMedications = pastMedications;
     }
-
+/*
     protected Medication(Parcel in) {
         // Read map from parcel
         // You need to implement this part
         // For simplicity, let's skip this part
-        currentMedications = in.readString();
+        currentMedications = in.readMap(String, String);
+        pastMedication = in.readMap(String, String);
     }
+*/
+    protected Medication(Parcel in) {
+        currentMedications = in.readString();
+        pastMedications = in.readString();
+    }
+
+
+
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
@@ -32,6 +39,7 @@ class Medication implements Parcelable {
         // You need to implement this part
         // For simplicity, let's skip this part
         dest.writeString(currentMedications);
+        dest.writeString(pastMedications);
     }
 
     @Override
@@ -51,11 +59,20 @@ class Medication implements Parcelable {
         }
     };
 
-    public Map<String, String> getPastMedication() {
-        return pastMedication;
-    }
-
     public String getCurrentMedications() {
         return currentMedications;
     }
+    public String getPastMedications() {
+        return pastMedications;
+    }
+
+    public void setCurrentMedications(String currentMedications) {
+        this.currentMedications = currentMedications;
+    }
+    public void setPastMedications(String pastMedications) {
+        this.pastMedications = pastMedications;
+    }
+
+
 }
+

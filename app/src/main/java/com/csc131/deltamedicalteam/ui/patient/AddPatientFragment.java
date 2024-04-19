@@ -37,6 +37,7 @@ public class AddPatientFragment extends Fragment {
 
     private EditText mFname, mMname, mLname, mAddress, mDOB, mBloodGroup, mRHfactor, mPhone, mEmail, mEmergencyName, mEmergencyPhone;
     private Spinner mMaritalStatus;
+
     private MaterialRippleLayout mRegisterBtn;
     private FirebaseAuth fAuth;
     private FirebaseFirestore fstore;

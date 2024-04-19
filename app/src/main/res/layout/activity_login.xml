@@ -63,7 +63,7 @@
             android:textStyle="bold" />
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/add_patient_address"
+            android:id="@+id/email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="-4dp"
@@ -117,7 +117,7 @@
             android:layout_marginTop="@dimen/spacing_medium"
             android:clickable="true"
             android:minHeight="48dp"
-            android:text="Forgot Password?"
+            android:text="Reset / Forgot Password?"
             android:textAlignment="center"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
             android:textColor="@color/blue_grey_400"
@@ -137,7 +137,9 @@
             android:text="Login"
             android:textAllCaps="false"
             android:textColor="@android:color/white"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+
+            />
 
         <View
             android:layout_width="0dp"
