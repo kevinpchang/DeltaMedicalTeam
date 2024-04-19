@@ -4,7 +4,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
-    <include layout="@layout/item_swipe_undo" />
+
 
     <LinearLayout
         android:id="@+id/lyt_parent_current"
