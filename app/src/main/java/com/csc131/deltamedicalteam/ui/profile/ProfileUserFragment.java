@@ -21,11 +21,10 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 
 public class ProfileUserFragment extends Fragment {
-    private com.csc131.deltamedicalteam.databinding.FragmentProfileBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        binding = com.csc131.deltamedicalteam.databinding.FragmentProfileBinding.inflate(inflater, container, false);
+        com.csc131.deltamedicalteam.databinding.FragmentProfileBinding binding = com.csc131.deltamedicalteam.databinding.FragmentProfileBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
         return root;
     }

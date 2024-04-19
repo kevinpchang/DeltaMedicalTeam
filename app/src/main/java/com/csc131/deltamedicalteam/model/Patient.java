@@ -16,7 +16,7 @@ public class Patient implements Parcelable {
     private String address;
     private String ageFormat;
     private String bloodGroup;
-    // private String dob; // Temporarily disable dob field
+     private String dob; // Temporarily disable dob field
     private String fName;
     private HealthConditions healthConditions;
     private String lName;
@@ -24,17 +24,19 @@ public class Patient implements Parcelable {
     private String cellPhone;
     private Medication medication;
     private String rhFactor;
+    private String email;
+
 
     public Patient() {
         // Default constructor required for Firestore
     }
 
-    public Patient(String documentId, String address, String ageFormat, String bloodGroup, /* String dob, */ String fName, HealthConditions healthConditions, String lName, String maritalStatus, Medication medication, String cell, String rhFactor, int imageResource) {
+    public Patient(String documentId, String address, String ageFormat, String bloodGroup, /* String dob, */ String fName, HealthConditions healthConditions, String lName, String maritalStatus, Medication medication, String cell, String rhFactor, int imageResource, String email) {
         this.documentId = documentId;
         this.address = address;
         this.ageFormat = ageFormat;
         this.bloodGroup = bloodGroup;
-        // this.dob = dob; // Temporarily disable dob field
+         this.dob = dob; // Temporarily disable dob field
         this.fName = fName;
         this.healthConditions = healthConditions;
         this.lName = lName;
@@ -43,6 +45,7 @@ public class Patient implements Parcelable {
         this.cellPhone = cell;
         this.rhFactor = rhFactor;
         this.imageResource = imageResource;
+        this.email = email;
     }
 
     protected Patient(Parcel in) {
@@ -50,7 +53,7 @@ public class Patient implements Parcelable {
         address = in.readString();
         ageFormat = in.readString();
         bloodGroup = in.readString();
-        // dob = in.readString(); // Temporarily disable dob field
+         dob = in.readString(); // Temporarily disable dob field
         fName = in.readString();
         healthConditions = in.readParcelable(HealthConditions.class.getClassLoader());
         lName = in.readString();
@@ -59,6 +62,7 @@ public class Patient implements Parcelable {
         cellPhone = in.readString();
         rhFactor = in.readString();
         imageResource = in.readInt();
+        email = in.readString();
     }
 
     public static final Creator<Patient> CREATOR = new Creator<Patient>() {
@@ -89,9 +93,9 @@ public class Patient implements Parcelable {
         return bloodGroup;
     }
 
-    // public String getDob() {
-    //     return dob;
-    // } // Temporarily disable dob field
+     public String getDob() {
+        return dob;
+    } // Temporarily disable dob field
 
     public String getfName() {
         return fName;
@@ -106,7 +110,7 @@ public class Patient implements Parcelable {
     }
 
     public String getName() {  return fName + " " + lName;}
-
+    public String getEmail() { return email; }
     @Override
     public String toString() {  return fName + " " + lName;}
 
