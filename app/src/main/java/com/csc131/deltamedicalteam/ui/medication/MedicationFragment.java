@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -50,6 +51,8 @@ public class MedicationFragment extends Fragment {
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     // Reference to the "patients" collection
     private CollectionReference patientsRef = db.collection("patients");
+
+    private Button mCurrentMedicationAddEditButton;
     private Spinner patientSpinner;
 
     private RecyclerView recyclerViewCurrentMedication, recyclerViewPastMedication;
@@ -71,20 +74,13 @@ public class MedicationFragment extends Fragment {
         recyclerViewPastMedication    = rootView.findViewById(R.id.RecyclerView_past_medication);
 
         //Possibly initialize buttons for modifying and adding stuff to firebase, Using buttons
-            //currentMedsButton
-            //pastMedsButton
+        mCurrentMedicationAddEditButton = rootView.findViewById(R.id.current_medication_edit);
 
         recyclerViewCurrentMedication.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerViewPastMedication.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         tabLayout = rootView.findViewById(R.id.medicationTabs);
         tabLayout.getTabAt(0).select();
-        /*
-        FirebaseFirestore rootRef = FirebaseFirestore.getInstance();
-        Query query = FirebaseFirestore.getInstance()
-                .collection("medicine")
-                .orderBy("timestamp");
-        */
 
 patientSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
     @Override

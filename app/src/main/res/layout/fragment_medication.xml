@@ -82,6 +82,7 @@
             android:text="@string/add_medication"
             android:visibility="visible"
             tools:ignore="VisualLintBounds" />
+
     </androidx.cardview.widget.CardView>
 
 
