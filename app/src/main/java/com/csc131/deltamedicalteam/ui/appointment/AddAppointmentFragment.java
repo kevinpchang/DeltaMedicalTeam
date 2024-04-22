@@ -39,6 +39,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.TimeZone;
+import java.util.UUID;
 
 public class AddAppointmentFragment extends Fragment {
 
@@ -211,6 +212,8 @@ public class AddAppointmentFragment extends Fragment {
     private void addAppointment(String selectedDate, String selectedTime, String userDocumentId) {
         // Assuming you have a collection named "appointments" in your Firestore database
         // You can replace "yourField" with appropriate field names in your Firestore document
+        String newAppointmentId = generateAppointmentId();
+        System.out.println("New Appointment ID: " + newAppointmentId);
         Appointment appointment = new Appointment(((Patient) patientSpinner.getSelectedItem()).getDocumentId(), userDocumentId, mPurpose.getSelectedItem().toString(), selectedTime, selectedDate);
 
         db.collection("appointments")
@@ -234,6 +237,18 @@ public class AddAppointmentFragment extends Fragment {
 
 
 
+    public String generateAppointmentId() {
+        // Generate a UUID (Universally Unique Identifier)
+        String uuid = UUID.randomUUID().toString();
+
+        // Get current timestamp
+        long timestamp = System.currentTimeMillis();
+
+        // Combine UUID and timestamp to create a unique ID
+        String appointmentId = uuid + "_" + timestamp;
+
+        return appointmentId;
+    }
 
 
 }

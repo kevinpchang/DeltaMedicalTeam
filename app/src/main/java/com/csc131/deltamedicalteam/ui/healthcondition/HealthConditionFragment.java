@@ -128,7 +128,7 @@ public class HealthConditionFragment extends Fragment {
 
                     List<String> currAllergies = (List<String>) documentSnapshot.get("specificAllergies");
 
-// Check if the list of allergies is not null and not empty
+                    // Check if the list of allergies is not null and not empty
                     if (currAllergies != null && !currAllergies.isEmpty()) {
                         // Create the adapter with the list of allergies
                         mAllergiesAdapter = new CurrentAllergiesList(currAllergies);
@@ -174,15 +174,15 @@ public class HealthConditionFragment extends Fragment {
                             DocumentReference patientRef = db.collection("patients").document(mCurrentPatient.getDocumentId());
                             patientRef.update("currentIllnesses", FieldValue.arrayRemove(removedCurrentIllness))
                                     .addOnSuccessListener(aVoid -> {
-                                        Toast.makeText(getContext(), "Allergy Removed: " + removedCurrentIllness, Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(getContext(), "Illness Removed: " + removedCurrentIllness, Toast.LENGTH_SHORT).show();
                                         dialog.dismiss(); // Dismiss the dialog after successful deletion
                                     })
                                     .addOnFailureListener(e -> {
-                                        Log.e(TAG, "Failed to remove allergy: " + e.getMessage());
+                                        Log.e(TAG, "Failed to remove illness: " + e.getMessage());
                                         // If removal from database fails, add the item back to the list and notify the adapter
                                         mCurrentIllnessAdapter.getHealthConditions().add(position, hCon);
                                         mCurrentIllnessAdapter.notifyItemInserted(position);
-                                        Toast.makeText(getContext(), "Failed to remove allergy: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(getContext(), "Failed to remove illness: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                                     });
                             AlertDialog.Builder confirmTransfer = new AlertDialog.Builder(getContext());
                             confirmTransfer.setTitle("Transfer");
@@ -190,15 +190,15 @@ public class HealthConditionFragment extends Fragment {
                             confirmTransfer.setPositiveButton("Yes", (transferDialog, transferWhich) -> {
                                 patientRef.update("previousIllnesses", FieldValue.arrayUnion(removedCurrentIllness))
                                         .addOnSuccessListener(aVoid -> {
-                                            Toast.makeText(getContext(), "Allergy Removed: " + removedCurrentIllness, Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(getContext(), "Illness moved: " + removedCurrentIllness, Toast.LENGTH_SHORT).show();
                                             transferDialog.dismiss(); // Dismiss the dialog after successful deletion
                                         })
                                         .addOnFailureListener(e -> {
-                                            Log.e(TAG, "Failed to remove allergy: " + e.getMessage());
+                                            Log.e(TAG, "Failed to move Illness: " + e.getMessage());
                                             // If removal from database fails, add the item back to the list and notify the adapter
                                             mAllergiesAdapter.getAllergies().add(position, removedCurrentIllness);
                                             mAllergiesAdapter.notifyItemInserted(position);
-                                            Toast.makeText(getContext(), "Failed to remove allergy: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(getContext(), "Failed to move Illness: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                                         });
                                 refreshHealthConditions();
                             });

@@ -27,7 +27,7 @@ public class Patient implements Parcelable {
     private String rhFactor;
     private String email;
 
-    private List specificAllergies;;
+    private List<String> specificAllergies;
 
     public Patient() {
         // Default constructor required for Firestore
@@ -38,7 +38,7 @@ public class Patient implements Parcelable {
         this.address = address;
         this.ageFormat = ageFormat;
         this.bloodGroup = bloodGroup;
-         this.dob = dob; // Temporarily disable dob field
+        //this.dob = dob; // Temporarily disable dob field
         this.fName = fName;
         this.healthConditions = healthConditions;
         this.lName = lName;
@@ -91,9 +91,9 @@ public class Patient implements Parcelable {
         return address;
     }
 
-//    public String getAgeFormat() {
-//        return ageFormat;
-//    }
+    public String getAgeFormat() {
+        return ageFormat;
+    }
 
 //    public String getBloodGroup() {
 //        return bloodGroup;
@@ -122,9 +122,9 @@ public class Patient implements Parcelable {
     @Override
     public String toString() {  return fName + " " + lName;}
 
-//    public String getMaritalStatus() {
-//        return maritalStatus;
-//    }
+    public String getMaritalStatus() {
+        return maritalStatus;
+    }
 
 //    public Medication getMedication() {
 //        return medication;
