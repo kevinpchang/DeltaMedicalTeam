@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.csc131.deltamedicalteam.R;
+import com.csc131.deltamedicalteam.model.Appointment;
 import com.csc131.deltamedicalteam.model.User;
 
 import java.util.ArrayList;
@@ -34,6 +35,14 @@ public class UserList extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public UserList(Context context, List<User> items) {
         this.items = items;
         ctx = context;
+    }
+
+
+
+    public void updateUsers(List<User> updatedUsers) {
+        items.clear();
+        items.addAll(updatedUsers);
+        notifyDataSetChanged();
     }
 
     public class OriginalViewHolder extends RecyclerView.ViewHolder {
@@ -61,6 +70,10 @@ public class UserList extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_user_list, parent, false);
         vh = new OriginalViewHolder(v);
         return vh;
+    }
+
+    public List<User> getUsers() {
+        return items;
     }
 
     // Replace the contents of a view (invoked by the layout manager)

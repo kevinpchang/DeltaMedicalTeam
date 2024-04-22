@@ -32,9 +32,11 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -185,35 +187,60 @@ public class AddAppointmentFragment extends Fragment {
         // Get the user's document ID
         String userDocumentId = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();// Replace this with the actual user's document ID
 
-        // Assuming you have a collection named "appointments" in your Firestore database
-        db.collection("appointments")
-                .whereEqualTo("date", selectedDate)
-                .whereEqualTo("time", selectedTime)
-                .get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-                    if (queryDocumentSnapshots.isEmpty()) {
-                        // No existing appointment found for the selected date and time
-                        // Proceed to add the appointment to Firestore
-                        addAppointment(selectedDate, selectedTime, userDocumentId);
-                    } else {
-                        // Appointment already exists for the selected date and time
-                        // Show a message to the user indicating the unavailability
-                        // You can implement this part based on your UI/UX requirement
-                        Log.d(TAG, "Appointment already exists for the selected date and time");
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    // Failed to fetch appointments from Firestore
-                    Log.e(TAG, "Error checking availability: " + e.getMessage());
-                });
+        // Get the current time
+        Calendar currentTime = Calendar.getInstance();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
+        String currentTimeString = dateFormat.format(currentTime.getTime());
+
+        // Compare selected time with current time
+        try {
+            Date selectedDateTime = dateFormat.parse(selectedTime);
+            Date currentDateTime = dateFormat.parse(currentTimeString);
+
+            if (selectedDateTime != null && selectedDateTime.after(currentDateTime)) {
+                // Selected time is in the future, proceed to check availability
+                // Assuming you have a collection named "appointments" in your Firestore database
+                db.collection("appointments")
+                        .whereEqualTo("date", selectedDate)
+                        .whereEqualTo("time", selectedTime)
+                        .get()
+                        .addOnSuccessListener(queryDocumentSnapshots -> {
+                            if (queryDocumentSnapshots.isEmpty()) {
+                                // No existing appointment found for the selected date and time
+                                // Proceed to add the appointment to Firestore
+                                addAppointment(selectedDate, selectedTime, userDocumentId);
+                            } else {
+                                // Appointment already exists for the selected date and time
+                                // Show a message to the user indicating the unavailability
+                                // You can implement this part based on your UI/UX requirement
+                                Log.d(TAG, "Appointment already exists for the selected date and time");
+                                Toast.makeText(requireContext(), "Appointment already exists for the selected date and time", Toast.LENGTH_SHORT).show();
+
+                            }
+                        })
+                        .addOnFailureListener(e -> {
+                            // Failed to fetch appointments from Firestore
+                            Log.e(TAG, "Error checking availability: " + e.getMessage());
+                        });
+            } else {
+                // Selected time is not in the future, show an error message to the user
+                // You can implement this part based on your UI/UX requirement
+                Log.d(TAG, "Selected time is not in the future");
+                Toast.makeText(requireContext(), "Selected time is not in the future", Toast.LENGTH_SHORT).show();
+            }
+        } catch (ParseException e) {
+            // Handle parsing exception
+            Log.e(TAG, "Error parsing time: " + e.getMessage());
+
+        }
     }
+
 
 
     private void addAppointment(String selectedDate, String selectedTime, String userDocumentId) {
         // Assuming you have a collection named "appointments" in your Firestore database
         // You can replace "yourField" with appropriate field names in your Firestore document
-        String newAppointmentId = generateAppointmentId();
-        System.out.println("New Appointment ID: " + newAppointmentId);
+
         Appointment appointment = new Appointment(((Patient) patientSpinner.getSelectedItem()).getDocumentId(), userDocumentId, mPurpose.getSelectedItem().toString(), selectedTime, selectedDate);
 
         db.collection("appointments")
@@ -233,23 +260,6 @@ public class AddAppointmentFragment extends Fragment {
                     Toast.makeText(requireContext(), "Failed to add appointment. Please try again later.", Toast.LENGTH_SHORT).show();
                 });
     }
-
-
-
-
-    public String generateAppointmentId() {
-        // Generate a UUID (Universally Unique Identifier)
-        String uuid = UUID.randomUUID().toString();
-
-        // Get current timestamp
-        long timestamp = System.currentTimeMillis();
-
-        // Combine UUID and timestamp to create a unique ID
-        String appointmentId = uuid + "_" + timestamp;
-
-        return appointmentId;
-    }
-
 
 }
 

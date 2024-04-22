@@ -17,7 +17,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.csc131.deltamedicalteam.R;
 import com.csc131.deltamedicalteam.adapter.PatientList;
 import com.csc131.deltamedicalteam.model.Patient;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -43,12 +42,9 @@ public class PatientManagerFragment extends Fragment {
 
         // Find the Button and set its click listener
         Button btnAddPatient = view.findViewById(R.id.add_button);
-        btnAddPatient.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Navigate to the destination fragment
-                Navigation.findNavController(v).navigate(R.id.action_patientManagerFragment_to_nav_add_patient);
-            }
+        btnAddPatient.setOnClickListener(v -> {
+            // Navigate to the destination fragment
+            Navigation.findNavController(v).navigate(R.id.action_patientManagerFragment_to_nav_add_patient);
         });
 
 
@@ -70,6 +66,9 @@ public class PatientManagerFragment extends Fragment {
                     // Convert DocumentSnapshot to Patient object
                     Patient patient = documentSnapshot.toObject(Patient.class);
 
+                    assert patient != null;
+                    patient.fromDocumentSnapshot(documentSnapshot);
+
                     // Add the patient to the list
                     items.add(patient);
                 }
@@ -79,22 +78,17 @@ public class PatientManagerFragment extends Fragment {
                 recyclerView.setAdapter(mAdapter);
 
                 // On item list clicked
-                mAdapter.setOnItemClickListener(new PatientList.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(View view, Patient obj, int position) {
-                        // Inside the click listener where you navigate to ProfilePatientFragment
-                        Patient selectedPatient = items.get(position);
-                        PatientManagerFragmentDirections.ActionPatientManagerFragmentToNavProfilePatient action =
-                                PatientManagerFragmentDirections.actionPatientManagerFragmentToNavProfilePatient(selectedPatient);
-                        Navigation.findNavController(view).navigate(action);
-                    }
+                mAdapter.setOnItemClickListener((view, obj, position) -> {
+                    // Inside the click listener where you navigate to ProfilePatientFragment
+                    Patient selectedPatient = items.get(position);
+                    PatientManagerFragmentDirections.ActionPatientManagerFragmentToNavProfilePatient action =
+                            PatientManagerFragmentDirections.actionPatientManagerFragmentToNavProfilePatient(selectedPatient);
+                    Navigation.findNavController(view).navigate(action);
                 });
             } else {
                 Log.d(TAG, "No documents found.");
             }
-        }).addOnFailureListener(e -> {
-            Log.e(TAG, "Error fetching documents: " + e.getMessage());
-        });
+        }).addOnFailureListener(e -> Log.e(TAG, "Error fetching documents: " + e.getMessage()));
     }
 
 

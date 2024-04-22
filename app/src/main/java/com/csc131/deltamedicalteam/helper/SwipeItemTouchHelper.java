@@ -16,6 +16,7 @@ import com.csc131.deltamedicalteam.adapter.AppointmentListAdapter;
 import com.csc131.deltamedicalteam.adapter.CurrentAllergiesList;
 import com.csc131.deltamedicalteam.adapter.CurrentIllnessList;
 import com.csc131.deltamedicalteam.adapter.CurrentMedicationList;
+import com.csc131.deltamedicalteam.adapter.UserList;
 
 
 public class SwipeItemTouchHelper extends ItemTouchHelper.Callback {
@@ -31,6 +32,9 @@ public class SwipeItemTouchHelper extends ItemTouchHelper.Callback {
     }
 
     public SwipeItemTouchHelper(AppointmentListAdapter m) {
+    }
+
+    public SwipeItemTouchHelper(UserList m) {
     }
 
     public void setSwipeListener(SwipeListener swipeListener) {
