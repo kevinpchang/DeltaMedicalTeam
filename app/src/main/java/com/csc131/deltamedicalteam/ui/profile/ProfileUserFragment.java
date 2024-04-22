@@ -1,9 +1,12 @@
 package com.csc131.deltamedicalteam.ui.profile;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -33,13 +36,42 @@ public class ProfileUserFragment extends Fragment {
         TextView emailTextView = view.findViewById(R.id.profile_email);
         TextView permissionTextView = view.findViewById(R.id.profile_permission);
         TextView phoneTextView = view.findViewById(R.id.profile_phone);
-        // Add more TextViews for other user information
 
+        // Set user information in TextViews
         nameTextView.setText(user.getName());
         emailTextView.setText(user.getEmail());
         permissionTextView.setText(user.getPermission());
         phoneTextView.setText(user.getPhone());
-        // Set other TextViews with user information
+
+        // Set up call button
+        ImageButton callButton = view.findViewById(R.id.call_btn);
+        if (user.getPhone() == null || user.getPhone().isEmpty()) {
+            callButton.setVisibility(View.GONE); // Hide call button if phone number is empty
+        } else {
+            callButton.setVisibility(View.VISIBLE); // Show call button if phone number is valid
+            callButton.setOnClickListener(v -> makeCall(user.getPhone()));
+        }
+
+        // Set up message button
+        ImageButton messageButton = view.findViewById(R.id.msg_btn);
+        if (user.getPhone() == null || user.getPhone().isEmpty()) {
+            messageButton.setVisibility(View.GONE); // Hide message button if phone number is empty
+        } else {
+            messageButton.setVisibility(View.VISIBLE); // Show message button if phone number is valid
+            messageButton.setOnClickListener(v -> sendMessage(user.getPhone()));
+        }
+    }
+
+    private void makeCall(String phoneNumber) {
+        Intent intent = new Intent(Intent.ACTION_DIAL);
+        intent.setData(Uri.parse("tel:" + phoneNumber));
+        startActivity(intent);
+    }
+
+    private void sendMessage(String phoneNumber) {
+        Intent intent = new Intent(Intent.ACTION_SENDTO);
+        intent.setData(Uri.parse("smsto:" + phoneNumber));
+        startActivity(intent);
     }
 
 

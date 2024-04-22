@@ -181,6 +181,7 @@ public class UserManagerFragment extends Fragment {
                         // Convert DocumentSnapshot to User object
                         User mUser = documentSnapshot.toObject(User.class);
                         // Call fromDocumentSnapshot() method to populate additional fields
+                        assert mUser != null;
                         mUser.fromDocumentSnapshot(documentSnapshot);
                         // Add the User to the list
                         updatedUsers.add(mUser);
