@@ -9,6 +9,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Patient implements Parcelable {
@@ -176,30 +177,8 @@ public class Patient implements Parcelable {
                 });
     }
 
-    public void fromDocumentSnapshot(DocumentSnapshot document) {
-        documentId = document.getId();
-        address = document.getString("address");
-        ageFormat = document.getString("ageFormat");
-        bloodGroup = document.getString("bloodGroup");
-        fName = document.getString("fName");
-        lName = document.getString("lName");
-        maritalStatus = document.getString("maritalStatus");
-        rhFactor = document.getString("rhFactor");
-// Get specificAllergies as a List<String> instead of String[]
-        specificAllergies = document.get("specificAllergies", List.class);
 
-        
-        // Extract nested objects
-        healthConditions = document.toObject(HealthConditions.class);
-        medication = document.toObject(Medication.class);
-    }
 
-    // Add method to convert to Map for Firestore
-//    public Map<String, Object> toMap() {
-//        // Convert all fields to a Map
-//        // You need to implement this according to your document structure
-//        return null;
-//    }
 
     // Parcelable methods
     @Override
