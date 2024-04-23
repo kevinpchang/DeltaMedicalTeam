@@ -6,10 +6,8 @@ import android.os.Parcelable;
 import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Patient implements Parcelable {
@@ -144,6 +142,9 @@ public class Patient implements Parcelable {
 //        return rhFactor;
 //    }
 
+
+
+
     // Getter and setter for imageResource
     public int getImage() {
         return imageResource;
@@ -213,14 +214,7 @@ public class Patient implements Parcelable {
     }
 
 
-    public String getAgeFormat() {
-        String ret = "??";
-        return  ret;
-    }
 
-    public String getMaritalStatus() {
-        return  maritalStatus;
-    }
 }
 
 

@@ -35,7 +35,7 @@ public class SwipeItemTouchHelper extends ItemTouchHelper.Callback {
     public SwipeItemTouchHelper(AppointmentListAdapter m) {
     }
 
-    public SwipeItemTouchHelper(UserList m) {
+    public SwipeItemTouchHelper(UserList m) {}
     public SwipeItemTouchHelper(PatientList mAdapter) {
     }
 
