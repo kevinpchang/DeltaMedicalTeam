@@ -272,7 +272,7 @@ patientSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(
                         // Create a dummy list if allergies are empty
                         List<String> tempdummyList = new ArrayList<>();
                         List<Medication> dummyList = new ArrayList<>();
-                        tempdummyList.add("No illnesses found");
+                        tempdummyList.add("No Medications found");
                         Medication dummyHCons = new Medication();
                         dummyHCons.setCurrentMedications(tempdummyList.get(0));
                         dummyList.add(dummyHCons);
@@ -292,7 +292,7 @@ patientSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(
                         // Create a dummy list if allergies are empty
                         List<String> tempdummyList = new ArrayList<>();
                         List<Medication> dummyList = new ArrayList<>();
-                        tempdummyList.add("No illnesses found");
+                        tempdummyList.add("No Medications found");
                         Medication dummyHCons = new Medication();
                         dummyHCons.setPastMedications(tempdummyList.get(0));
                         dummyList.add(dummyHCons);
