@@ -5,10 +5,6 @@
     android:layout_height="match_parent"
     android:background="@android:color/white">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-
     <androidx.core.widget.NestedScrollView
         android:id="@+id/nested_content"
         android:layout_width="match_parent"
@@ -62,9 +58,9 @@
                     android:id="@+id/image"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
-                    android:src="@drawable/photo_female_5"
                     android:background="@drawable/circle_shape"
-                    android:padding="2dp" />
+                    android:padding="2dp"
+                    android:src="@drawable/photo_female_5" />
 
                 <ImageButton
                     android:id="@+id/call_btn"
@@ -92,8 +88,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:paddingBottom="@dimen/spacing_large"
-                    android:paddingTop="@dimen/spacing_large">
+                    android:paddingTop="@dimen/spacing_large"
+                    android:paddingBottom="@dimen/spacing_large">
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -161,13 +157,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/spacing_xlarge"
-                android:layout_marginRight="@dimen/spacing_xlarge"
                 android:layout_marginTop="@dimen/spacing_large"
+                android:layout_marginRight="@dimen/spacing_xlarge"
                 android:gravity="center"
                 android:lineSpacingExtra="2dp"
                 android:text="@string/middle_lorem_ipsum"
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
-                android:textColor="@color/grey_90" />
+                android:textColor="@color/grey_90"
+                android:visibility="gone" />
 
             <View
                 android:layout_width="match_parent"
@@ -179,8 +176,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/spacing_xlarge"
-                android:layout_marginRight="@dimen/spacing_xlarge"
                 android:layout_marginTop="@dimen/spacing_large"
+                android:layout_marginRight="@dimen/spacing_xlarge"
                 android:orientation="horizontal">
 
                 <LinearLayout
@@ -239,8 +236,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/spacing_xlarge"
-                android:layout_marginRight="@dimen/spacing_xlarge"
                 android:layout_marginTop="@dimen/spacing_large"
+                android:layout_marginRight="@dimen/spacing_xlarge"
                 android:orientation="horizontal">
 
                 <LinearLayout
@@ -298,8 +295,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/spacing_xlarge"
-                android:layout_marginRight="@dimen/spacing_xlarge"
                 android:layout_marginTop="@dimen/spacing_large"
+                android:layout_marginRight="@dimen/spacing_xlarge"
                 android:orientation="horizontal">
 
                 <LinearLayout
@@ -356,21 +353,28 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/spacing_xxlarge" />
 
+            <Button
+                android:id="@+id/reset_pwd_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Reset Password" />
+
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>
 
-<!--    <com.google.android.material.floatingactionbutton.FloatingActionButton-->
-<!--        android:id="@+id/fab_add"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_gravity="bottom|end|right"-->
-<!--        android:layout_margin="@dimen/spacing_smlarge"-->
-<!--        android:clickable="true"-->
-<!--        android:tint="@android:color/white"-->
-<!--        app:backgroundTint="@color/light_green_600"-->
-<!--        app:fabSize="normal"-->
-<!--        app:rippleColor="@android:color/white"-->
-<!--        app:srcCompat="@drawable/ic_person_add" />-->
+    <!--    <com.google.android.material.floatingactionbutton.FloatingActionButton-->
+    <!--        android:id="@+id/fab_add"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_gravity="bottom|end|right"-->
+    <!--        android:layout_margin="@dimen/spacing_smlarge"-->
+    <!--        android:clickable="true"-->
+    <!--        android:tint="@android:color/white"-->
+    <!--        app:backgroundTint="@color/light_green_600"-->
+    <!--        app:fabSize="normal"-->
+    <!--        app:rippleColor="@android:color/white"-->
+    <!--        app:srcCompat="@drawable/ic_person_add" />-->
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

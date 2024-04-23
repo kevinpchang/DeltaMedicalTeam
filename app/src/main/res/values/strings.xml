@@ -70,5 +70,6 @@
     <string name="add_medication">Add Medication</string>
     <string name="past_medication">Past Medication</string>
     <string name="choose_your_patient">Choose Your Patient</string>
+    <string name="email">Email</string>
 
 </resources>
