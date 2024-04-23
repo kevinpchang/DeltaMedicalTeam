@@ -36,6 +36,7 @@ import java.util.Map;
 public class AddPatientFragment extends Fragment {
 
     private EditText mFname, mMname, mLname, mAddress, mDOB, mBloodGroup, mRHfactor, mPhone, mEmail, mEmergencyName, mEmergencyPhone;
+    private Spinner mSex;
     private Spinner mMaritalStatus;
 
     private MaterialRippleLayout mRegisterBtn;
@@ -49,13 +50,19 @@ public class AddPatientFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_addpatient, container, false);
 
         // Prepare the data source (list of suggestions)
-        String[] items = {"Unknown", "Single", "Married"};
+        String[] maritalStatusItems = {"Unknown", "Single", "Married"};
+        String[] sexItems = {"Male", "Female"};
 
         // Create the adapter
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, items);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        ArrayAdapter<String> maritalStatusAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, maritalStatusItems);
+        maritalStatusAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mMaritalStatus = rootView.findViewById(R.id.spinner_marital_status);
-        mMaritalStatus.setAdapter(adapter);
+        mMaritalStatus.setAdapter(maritalStatusAdapter);
+
+        ArrayAdapter<String> sexAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, sexItems);
+        sexAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mSex = rootView.findViewById(R.id.spinner_sex);
+        mSex.setAdapter(sexAdapter);
 
         //initialize input fields and ui
         mFname = rootView.findViewById(R.id.add_patient_fName);
@@ -91,6 +98,7 @@ public class AddPatientFragment extends Fragment {
                 String dob = mDOB.getText().toString();
 //                String bloodGroup = mBloodGroup.getText().toString();
 //                String rhFactor = mRHfactor.getText().toString();
+                String sex = (String) mSex.getSelectedItem();
                 String maritalStatus = (String) mMaritalStatus.getSelectedItem();
 
                 String phone = mPhone.getText().toString();
@@ -171,7 +179,7 @@ public class AddPatientFragment extends Fragment {
                 progressBar.setVisibility(View.VISIBLE);
                 // Register the patient in Firebase
 //                addPatient(fName, mName, lName, address, dob, bloodGroup, rhFactor, maritalStatus, phone, email, emergencyName, emergencyPhone);
-                addPatient(fName, mName, lName, address, dob, maritalStatus, phone, email, emergencyName, emergencyPhone);
+                addPatient(fName, mName, lName, address, sex, dob, maritalStatus, phone, email, emergencyName, emergencyPhone);
 
             }
         });
@@ -203,12 +211,13 @@ public class AddPatientFragment extends Fragment {
     }
 
 //    private void addPatient( String fName, String mName, String lName, String address, String dob, String bloodGroup, String rhFactor, String maritalStatus, String phone2, String email, String emergencyName, String emergencyPhone){
-    private void addPatient( String fName, String mName, String lName, String address, String dob, String maritalStatus, String phone2, String email, String emergencyName, String emergencyPhone){
+    private void addPatient( String fName, String mName, String lName, String address, String sex, String dob, String maritalStatus, String phone2, String email, String emergencyName, String emergencyPhone){
         CollectionReference documentReference = fstore.collection("patients");
         Map<String, Object> patientData = new HashMap<>();
         patientData.put("fName", fName);
         patientData.put("mName", mName);
         patientData.put("lName", lName);
+        patientData.put("sex", sex);
         patientData.put("address", address);
         patientData.put("dob", dob);
 //        patientData.put("bloodGroup", bloodGroup);
