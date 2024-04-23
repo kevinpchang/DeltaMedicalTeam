@@ -38,18 +38,22 @@ public class PatientList extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         ctx = context;
     }
 
+    public List<Patient> getPatients() {
+        return items;
+    }
     public class OriginalViewHolder extends RecyclerView.ViewHolder {
-        public ImageView image;
+        public TextView id;
         public TextView name;
-        public View lyt_parent;
-        public TextView email;
+        public TextView sex;
         public TextView phone;
         public TextView address;
+        public View lyt_parent;
 
         public OriginalViewHolder(View v) {
             super(v);
-            image = (ImageView) v.findViewById(R.id.image);
+            id = (TextView) v.findViewById(R.id.list_item_id);
             name = (TextView) v.findViewById(R.id.list_item_name);
+            sex = (TextView) v.findViewById(R.id.list_item_sex);
             phone = (TextView) v.findViewById(R.id.list_item_phone);
             address = (TextView) v.findViewById(R.id.list_item_address);
             lyt_parent = (View) v.findViewById(R.id.lyt_parent);
@@ -70,20 +74,15 @@ public class PatientList extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
         if (holder instanceof OriginalViewHolder) {
             OriginalViewHolder viewHolder = (OriginalViewHolder) holder;
+            String idSetText = items.get(position).getDocumentId();
+            String idSubString = idSetText.substring(Math.max(idSetText.length()-10,0));
 
             Patient patient = items.get(position);
-            viewHolder.name.setText(patient.getfName() + " " + patient.getlName());
+            viewHolder.id.setText(idSubString);
+            viewHolder.name.setText(patient.toString());
+            viewHolder.sex.setText(patient.getSex());
             viewHolder.phone.setText(patient.getCellPhone());
-
             viewHolder.address.setText(patient.getAddress()); // Assuming you have added an address TextView
-
-            // Check if image is available
-            if (patient.getImage() != 0) {
-                Tools.displayImageRound(ctx, viewHolder.image, patient.getImage());
-            } else {
-                // Load default image
-                viewHolder.image.setImageResource(R.drawable.no_avatar_patient);
-            }
 
             viewHolder.lyt_parent.setOnClickListener(view -> {
                 int adapterPosition = holder.getAdapterPosition();

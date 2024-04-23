@@ -123,6 +123,19 @@
                         android:paddingLeft="@dimen/spacing_large"
                         android:paddingRight="@dimen/spacing_large" />
 
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Assigned Gender at Birth"
+                        android:paddingLeft="@dimen/spacing_large"/>
+
+                    <Spinner
+                        android:id="@+id/spinner_sex"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:minHeight="48dp"
+                        android:paddingLeft="10dp"/>
+
                     <View
                         android:id="@+id/view3"
                         android:layout_width="match_parent"
@@ -221,13 +234,15 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Marital Status" />
+                        android:text="Marital Status"
+                        android:paddingLeft="@dimen/spacing_large"/>
 
                     <Spinner
                         android:id="@+id/spinner_marital_status"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:minHeight="48dp" />
+                        android:minHeight="48dp"
+                        android:paddingLeft="10dp"/>
 
                     <View
                         android:layout_width="match_parent"
