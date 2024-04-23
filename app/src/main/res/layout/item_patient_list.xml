@@ -12,15 +12,6 @@
         android:minHeight="?android:attr/actionBarSize"
         android:orientation="horizontal">
 
-        <ImageView
-            android:id="@+id/image"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_marginLeft="@dimen/spacing_large"
-            android:layout_marginTop="@dimen/spacing_middle"
-            android:layout_marginRight="@dimen/spacing_large"
-            android:src="@drawable/photo_female_1" />
-
         <View
             android:layout_width="@dimen/spacing_medium"
             android:layout_height="0dp" />
@@ -58,6 +49,23 @@
                         android:layout_weight="1" />
 
                     <TextView
+                        android:id="@+id/list_item_sex"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="@dimen/spacing_middle"
+                        android:layout_marginRight="@dimen/spacing_middle"
+                        android:layout_weight="1"
+                        android:text="sex"
+                        android:textAlignment="center"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textColor="@color/grey_90" />
+
+                    <Space
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1" />
+
+                    <TextView
                         android:id="@+id/list_item_phone"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
@@ -82,6 +90,24 @@
                         android:layout_marginRight="@dimen/spacing_middle"
                         android:maxLines="1"
                         android:text="No Address Available"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                        android:textColor="@color/grey_40" />
+
+                    <Space
+                        android:layout_width="148dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1" />
+
+                    <TextView
+                        android:id="@+id/list_item_id"
+                        android:layout_width="146dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_medium"
+                        android:layout_marginEnd="@dimen/spacing_middle"
+                        android:layout_marginRight="@dimen/spacing_middle"
+                        android:layout_weight="1"
+                        android:maxLines="1"
+                        android:text="id"
                         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                         android:textColor="@color/grey_40" />
 

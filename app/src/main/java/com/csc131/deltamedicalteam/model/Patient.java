@@ -19,29 +19,31 @@ public class Patient implements Parcelable {
     private String bloodGroup;
      private String dob; // Temporarily disable dob field
     private String fName;
-    private HealthConditions healthConditions;
     private String lName;
+    private String sex;
     private String maritalStatus;
     private String cellPhone;
     private Medication medication;
     private String rhFactor;
     private String email;
 
+    private HealthConditions healthConditions;
     private List specificAllergies;;
+
 
     public Patient() {
         // Default constructor required for Firestore
     }
 
-    public Patient(String documentId, String address, String ageFormat, String bloodGroup, /* String dob, */ String fName, HealthConditions healthConditions, String lName, String maritalStatus, Medication medication, String cell, String rhFactor, int imageResource,List<String> specificAllergies, String email) {
+    public Patient(String documentId, String address, String ageFormat, String bloodGroup, /* String dob, */ String fName, String lName, String sex, String maritalStatus, Medication medication, String cell, String rhFactor, int imageResource, String email, List<String> specificAllergies, HealthConditions healthConditions) {
         this.documentId = documentId;
         this.address = address;
         this.ageFormat = ageFormat;
         this.bloodGroup = bloodGroup;
          this.dob = dob; // Temporarily disable dob field
         this.fName = fName;
-        this.healthConditions = healthConditions;
         this.lName = lName;
+        this.sex = sex;
         this.maritalStatus = maritalStatus;
         this.medication = medication;
         this.cellPhone = cell;
@@ -49,6 +51,7 @@ public class Patient implements Parcelable {
         this.imageResource = imageResource;
         this.email = email;
         this.specificAllergies = specificAllergies;
+        this.healthConditions = healthConditions;
     }
 
     protected Patient(Parcel in) {
@@ -69,6 +72,10 @@ public class Patient implements Parcelable {
         specificAllergies = in.createStringArrayList();
     }
 
+    public  String getDocumentId() {
+        return documentId;
+    }
+
     public static final Creator<Patient> CREATOR = new Creator<Patient>() {
         @Override
         public Patient createFromParcel(Parcel in) {
@@ -81,9 +88,6 @@ public class Patient implements Parcelable {
         }
     };
 
-    public  String getDocumentId() {
-        return documentId;
-    }
 
     public void setDocumentId(String documentId) { this.documentId = documentId;}
 
@@ -116,6 +120,8 @@ public class Patient implements Parcelable {
     }
 
     public String getName() {  return fName + " " + lName;}
+
+    public String getSex() { return sex;}
     public String getEmail() { return email; }
 
     @NonNull
@@ -227,6 +233,14 @@ public class Patient implements Parcelable {
     }
 
 
+    public String getAgeFormat() {
+        String ret = "??";
+        return  ret;
+    }
+
+    public String getMaritalStatus() {
+        return  maritalStatus;
+    }
 }
 
 
