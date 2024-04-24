@@ -55,6 +55,7 @@ public class MedicationFragment extends Fragment {
 
     private Button mCurrentMedicationAddEditButton;
     private Spinner patientSpinner;
+    String currentMedicationSelector;
 
     private RecyclerView recyclerViewCurrentMedication, recyclerViewPastMedication;
     private CurrentMedicationList mCurrentMedicationAdapter;
@@ -108,6 +109,21 @@ patientSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(
                 mCurrentMedicationAdapter = new CurrentMedicationList(getActivity(), currMedicationItems);
                 recyclerViewCurrentMedication.setAdapter(mCurrentMedicationAdapter);
 
+                //Past medication history prescribed
+                List<String> pastMedication = (List<String>) documentSnapshot.get("pastMedications");
+                List<Medication> pastMedicationItems = new ArrayList<>();
+                if (pastMedication != null) {
+                    for (int i = 0; i < pastMedication.size(); i++) {
+                        Medication nMeds = new Medication();
+                //        nMeds.setPastMedications(pastMedication.get(i));
+                        pastMedicationItems.add(nMeds);
+                    }
+                }
+                mPastMedicationAdapter = new PastMedicationList(getActivity(), pastMedicationItems);
+                recyclerViewPastMedication.setAdapter(mPastMedicationAdapter);
+
+
+
                 SwipeItemTouchHelper swipeCurrentMedication = new SwipeItemTouchHelper(mCurrentMedicationAdapter);
                 // Create an instance of ItemTouchHelper and attach SwipeItemTouchHelper to it
                 ItemTouchHelper itemCurrentMedication = new ItemTouchHelper(swipeCurrentMedication);
@@ -117,6 +133,7 @@ patientSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(
                     @Override
                     public void onItemDismiss(int position) {
 
+                        Medication cMed = mCurrentMedicationAdapter.getHealthConditions().get(position);
                         Medication removedMedication = mCurrentMedicationAdapter.getCurrentMedication().get(position);
                         AlertDialog.Builder confirmDelete = new AlertDialog.Builder(getContext());
                         confirmDelete.setTitle("Confirm Deletion");
@@ -128,14 +145,12 @@ patientSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(
 
                             // Get a reference to your Firestore collection
                            // CollectionReference patientsRef = FirebaseFirestore.getInstance().collection("patients");
+                            FirebaseFirestore db = FirebaseFirestore.getInstance();
+                            DocumentReference patientRef = db.collection("patients").document(mCurrentPatient.getDocumentId());
 
-                            // Update the Firestore document
-
-                            patientsRef.document(mCurrentPatient.getDocumentId()) // Update 'yourDocumentId' with the actual document ID
-                                    .update("currentMedications", FieldValue.arrayRemove(removedMedication.getCurrentMedications()))
+                            patientRef.update("currentMedications", FieldValue.arrayRemove(removedMedication.getCurrentMedications()))
                                     .addOnSuccessListener(aVoid -> {
                                         Toast.makeText(getContext(), "Medication Removed: " + removedMedication.getCurrentMedications(), Toast.LENGTH_SHORT).show();
-                                        Toast.makeText(getContext(), "From ID: " + mCurrentPatient.getDocumentId(), Toast.LENGTH_SHORT).show();
                                         // Dismiss the dialog after successful deletion
                                         dialog.dismiss();
                                     })
@@ -146,29 +161,43 @@ patientSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(
                                         mCurrentMedicationAdapter.getCurrentMedication().add(position, removedMedication);
                                         mCurrentMedicationAdapter.notifyItemInserted(position);
                                     });
-                        }).setNegativeButton("Cancel", (dialog, which) -> {
-                            // Dismiss the dialog when canceled
+
+
+                            AlertDialog.Builder confirmTransfer = new AlertDialog.Builder(getContext());
+                            confirmTransfer.setTitle("Transfer");
+                            confirmTransfer.setMessage("Would you like to move this to Past Medication history?");
+                            confirmTransfer.setPositiveButton("Yes", (transferDialog, transferWhich) -> {
+                                patientRef.update("pastMedications", FieldValue.arrayUnion(removedMedication))
+                                        .addOnSuccessListener(aVoid -> {
+                                            Toast.makeText(getContext(), "Medication Removed: " + removedMedication, Toast.LENGTH_SHORT).show();
+                                            transferDialog.dismiss(); // Dismiss the dialog after successful deletion
+                                        })
+
+
+                                        .addOnFailureListener(e -> {
+                                            Log.e(TAG, "Failed to remove Medication: " + e.getMessage());
+                                            // If removal from database fails, add the item back to the list and notify the adapter
+                                            mCurrentMedicationAdapter.getCurrentMedication().add(position, removedMedication);
+                                            mCurrentMedicationAdapter.notifyItemInserted(position);
+                                            Toast.makeText(getContext(), "Failed to remove medication: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                        });
+                                refreshMedications();
+                            });
+                            confirmTransfer.setNegativeButton("No", (transferDialog, transferWhich) -> {
+                                transferDialog.dismiss();
+                            });
+                            confirmTransfer.show();
+                        });
+                        confirmDelete.setNegativeButton("Cancel", (dialog, which) -> {
                             dialog.dismiss();
-                            // Refresh the list after canceling
+                            mCurrentMedicationAdapter.notifyDataSetChanged(); // Refresh the list after canceling
+                        });
+                        confirmDelete.setOnDismissListener(dialog -> {
                             mCurrentMedicationAdapter.notifyDataSetChanged();
                         });
                         confirmDelete.show();
                     }
                 });
-
-                //Past medication history prescribed
-                List<String> pastMedication = (List<String>) documentSnapshot.get("pastMedications");
-                List<Medication> prevIllnessItems = new ArrayList<>();
-                if (pastMedication != null) {
-                    for (int i = 0; i < pastMedication.size(); i++) {
-                        Medication nMeds = new Medication();
-                        nMeds.setPastMedications(pastMedication.get(i));
-                        prevIllnessItems.add(nMeds);
-                    }
-                }
-                mPastMedicationAdapter = new PastMedicationList(getActivity(), prevIllnessItems);
-                recyclerViewPastMedication.setAdapter(mPastMedicationAdapter);
-
 
 
             }
@@ -214,6 +243,55 @@ patientSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(
                 // No action needed
             }
         });
+
+        mCurrentMedicationAddEditButton.setOnClickListener(v -> {
+            Spinner medicationSelector = new Spinner(v.getContext());
+            AlertDialog.Builder currentMedicationDialog = new AlertDialog.Builder(v.getContext());
+            currentMedicationDialog.setTitle("Add a Medication");
+            currentMedicationDialog.setMessage("Select the Medication you want to add:");
+            currentMedicationDialog.setView(medicationSelector);
+
+
+            //populate spinner for dialog
+            CollectionReference ref = db.collection("medications");
+            ref.get()
+                    .addOnSuccessListener(queryDocumentSnapshots -> {
+                        List<String> medicationList = new ArrayList<>();
+                        for(QueryDocumentSnapshot documentSnapshot: queryDocumentSnapshots) {
+                            List<String> medications = (List<String>) documentSnapshot.get("Medications");
+                            if(medications != null){
+                                medicationList.addAll(medications);
+                            }
+                            ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, medicationList);
+                            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                            medicationSelector.setAdapter(adapter);
+                        }
+                    });
+            medicationSelector.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    currentMedicationSelector = (String) parent.getItemAtPosition(position);
+                }
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+                }
+            });
+            currentMedicationDialog.setPositiveButton("Add", (dialog, which) -> {
+                DocumentReference documentReference = patientsRef.document(mCurrentPatient.getDocumentId());
+                documentReference.get().addOnSuccessListener(documentSnapshot -> {
+                    if(documentSnapshot.exists()){
+                        documentReference.update("currentMedications", FieldValue.arrayUnion(currentMedicationSelector));
+                    }
+                    refreshMedications();
+                });
+            });
+            currentMedicationDialog.setNegativeButton("Cancel", (dialog, which) -> {
+                dialog.dismiss();
+            });
+            currentMedicationDialog.show();
+        });
+
+
         return rootView;
     }
 
@@ -273,19 +351,19 @@ patientSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(
                         List<String> tempdummyList = new ArrayList<>();
                         List<Medication> dummyList = new ArrayList<>();
                         tempdummyList.add("No Medications found");
-                        Medication dummyHCons = new Medication();
-                        dummyHCons.setCurrentMedications(tempdummyList.get(0));
-                        dummyList.add(dummyHCons);
+                        Medication dummycMeds = new Medication();
+                        dummycMeds.setCurrentMedications(tempdummyList.get(0));
+                        dummyList.add(dummycMeds);
                         mCurrentMedicationAdapter.updateCurrentMedication(dummyList);
                     }
 
-                    List<String> previousIllnesses = (List<String>) documentSnapshot.get("pastMedications");
+                    List<String> pastMedications = (List<String>) documentSnapshot.get("pastMedications");
                     List<Medication> updatedPreviousIllnesses = new ArrayList<>();
-                    if (previousIllnesses != null && !previousIllnesses.isEmpty()) {
-                        for (int i = 0; i < previousIllnesses.size(); i++) {
-                            Medication hCons = new Medication();
-                            hCons.setPastMedications(previousIllnesses.get(i));
-                            updatedPreviousIllnesses.add(hCons);
+                    if (pastMedications != null && !pastMedications.isEmpty()) {
+                        for (String meds : pastMedications) {
+                            Medication cMeds = new Medication();
+                            cMeds.setPastMedications(meds);
+                            updatedPreviousIllnesses.add(cMeds);
                         }
                         mPastMedicationAdapter.updatePastMedication(updatedPreviousIllnesses);
                     }else {
@@ -293,9 +371,9 @@ patientSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(
                         List<String> tempdummyList = new ArrayList<>();
                         List<Medication> dummyList = new ArrayList<>();
                         tempdummyList.add("No Medications found");
-                        Medication dummyHCons = new Medication();
-                        dummyHCons.setPastMedications(tempdummyList.get(0));
-                        dummyList.add(dummyHCons);
+                        Medication dummycMeds = new Medication();
+                        dummycMeds.setPastMedications(tempdummyList.get(0));
+                        dummyList.add(dummycMeds);
                         mPastMedicationAdapter.updatePastMedication(dummyList);
                     }
                 });
