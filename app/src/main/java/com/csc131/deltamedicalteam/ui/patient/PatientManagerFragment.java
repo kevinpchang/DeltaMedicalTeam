@@ -1,25 +1,35 @@
 package com.csc131.deltamedicalteam.ui.patient;
 
+import static android.content.ContentValues.TAG;
+
+import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.csc131.deltamedicalteam.R;
 import com.csc131.deltamedicalteam.adapter.PatientList;
+import com.csc131.deltamedicalteam.helper.SwipeItemTouchHelper;
+import com.csc131.deltamedicalteam.model.HealthConditions;
 import com.csc131.deltamedicalteam.model.Patient;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
@@ -51,6 +61,50 @@ public class PatientManagerFragment extends Fragment {
             }
         });
 
+        SwipeItemTouchHelper swipeCurrentIllness = new SwipeItemTouchHelper(mAdapter);
+        // Create an instance of ItemTouchHelper and attach SwipeItemTouchHelper to it
+        ItemTouchHelper itemPatient = new ItemTouchHelper(swipeCurrentIllness);
+        itemPatient.attachToRecyclerView(recyclerView);
+        swipeCurrentIllness.setSwipeListener(new SwipeItemTouchHelper.SwipeListener() {
+            @SuppressLint("NotifyDataSetChanged")
+            @Override
+            public void onItemDismiss(int position) {
+                Patient currentPatient = mAdapter.getPatients().get(position);
+                String patientId = mAdapter.getPatients().get(position).getDocumentId();
+                String removedPatient = mAdapter.getPatients().get(position).toString();
+                AlertDialog.Builder confirmDelete = new AlertDialog.Builder(getContext());
+                confirmDelete.setTitle("Confirm Deletion");
+                confirmDelete.setMessage("Are you sure you want to remove this Patient?");
+                confirmDelete.setPositiveButton("Yes", (dialog, which) -> {
+                    // Remove the item from the list
+                    mAdapter.getPatients().remove(position);
+                    mAdapter.notifyItemRemoved(position);
+                    // Remove the item from the database
+                    FirebaseFirestore db = FirebaseFirestore.getInstance();
+                    DocumentReference patientRef = db.collection("patients").document(patientId);
+                    patientRef.delete()
+                            .addOnSuccessListener(aVoid -> {
+                                Toast.makeText(getContext(), "Allergy Removed: " + removedPatient, Toast.LENGTH_SHORT).show();
+                                dialog.dismiss(); // Dismiss the dialog after successful deletion
+                            })
+                            .addOnFailureListener(e -> {
+                                Log.e(TAG, "Failed to remove allergy: " + e.getMessage());
+                                // If removal from database fails, add the item back to the list and notify the adapter
+                                mAdapter.getPatients().add(position, currentPatient);
+                                mAdapter.notifyItemInserted(position);
+                                Toast.makeText(getContext(), "Failed to remove allergy: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            });
+                });
+                confirmDelete.setNegativeButton("Cancel", (dialog, which) -> {
+                    dialog.dismiss();
+                    mAdapter.notifyDataSetChanged(); // Refresh the list after canceling
+                });
+                confirmDelete.setOnDismissListener(dialog -> {
+                    mAdapter.notifyDataSetChanged();
+                });
+                confirmDelete.show();
+            }
+        });
 
         return view;
     }
@@ -69,6 +123,8 @@ public class PatientManagerFragment extends Fragment {
                 for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
                     // Convert DocumentSnapshot to Patient object
                     Patient patient = documentSnapshot.toObject(Patient.class);
+                    patient.setDocumentId(documentSnapshot.getId());
+
 
                     // Add the patient to the list
                     items.add(patient);

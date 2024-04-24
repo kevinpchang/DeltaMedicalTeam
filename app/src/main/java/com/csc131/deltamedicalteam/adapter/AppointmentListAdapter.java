@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.csc131.deltamedicalteam.R;
 import com.csc131.deltamedicalteam.model.Appointment;
+import com.csc131.deltamedicalteam.model.HealthConditions;
 import com.csc131.deltamedicalteam.model.Patient;
 import com.csc131.deltamedicalteam.model.User;
 
@@ -20,7 +21,7 @@ import java.util.List;
 
 public class AppointmentListAdapter extends RecyclerView.Adapter<AppointmentListAdapter.ViewHolder> {
 
-    private final List<Appointment> appointments;
+    private List<Appointment> appointments;
     private final List<Appointment> originalAppointments = new ArrayList<>();
     private OnItemClickListener listener;
     private String currentPatientFilter = ""; // Default filter value for patient name
@@ -70,6 +71,10 @@ public class AppointmentListAdapter extends RecyclerView.Adapter<AppointmentList
         return new ViewHolder(view);
     }
 
+    public List<Appointment> getAppointments() {
+        return appointments;
+    }
+
     // Method to filter appointments based on patient name
     // Method to filter appointments based on patient name
     public void filterByPatientID(String ID) {
@@ -102,6 +107,15 @@ public class AppointmentListAdapter extends RecyclerView.Adapter<AppointmentList
     public void resetFilterByPurpose() {
         currentPurposeFilter = ""; // Reset the filter value
         applyFilters(); // Apply filters again
+    }
+
+    // Method to set the appointments and notify the adapter
+    // Method to set the appointments and notify the adapter
+    public void updateAppointments(List<Appointment> updatedAppointments) {
+        appointments.clear();
+        appointments.addAll(updatedAppointments);
+        applyFilters(); // Update filtered appointments based on new appointments
+        notifyDataSetChanged();
     }
 
 

@@ -18,7 +18,6 @@ public class PatientRepository {
                 List<Patient> patientList = new ArrayList<>();
                 for (QueryDocumentSnapshot document : task.getResult()) {
                     Patient patient = document.toObject(Patient.class);
-                    patient.fromDocumentSnapshot(document);
                     patientList.add(patient);
                 }
                 callback.onCallback(patientList);

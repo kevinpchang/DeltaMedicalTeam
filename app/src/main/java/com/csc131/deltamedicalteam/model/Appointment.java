@@ -1,20 +1,12 @@
 package com.csc131.deltamedicalteam.model;
 
+import static android.content.ContentValues.TAG;
+
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
-import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
-
-import java.util.Map;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.CountDownLatch;
 
 public class Appointment implements Parcelable {
 
@@ -24,12 +16,25 @@ public class Appointment implements Parcelable {
     private String time;
     private String date;
 
+    private String appointmentId; // Add this field
+
 
     public Appointment() {
         // Default constructor required for Firestore
     }
 
+    public Appointment(String appointmentId,String patientDocumentId, String userDocumentId, String purpose, String time, String date) {
+        this.appointmentId = appointmentId;
+        this.patientDocumentId = patientDocumentId;
+        this.userDocumentId = userDocumentId;
+        this.purpose = purpose;
+        this.time = time;
+        this.date = date;
+
+    }
+
     public Appointment(String patientDocumentId, String userDocumentId, String purpose, String time, String date) {
+        this.appointmentId = appointmentId;
         this.patientDocumentId = patientDocumentId;
         this.userDocumentId = userDocumentId;
         this.purpose = purpose;
@@ -79,14 +84,38 @@ public class Appointment implements Parcelable {
         return date;
     }
 
+    // Getter method for appointmentId
+    public String getAppointmentId() {
+        return appointmentId;
+    }
 
-//    public void fromDocumentSnapshot(DocumentSnapshot document) {
-//        patient_id = document.getString("patient_id");
-//        user_id = document.getString("user_id");
-//        purpose = document.getString("purpose");
-//        time = document.getString("time");
-//
-//    }
+
+    public void fromDocumentSnapshot(DocumentSnapshot document) {
+        // Check if the DocumentSnapshot is valid and contains data
+        if (document != null && document.exists()) {
+            // Retrieve the appointment ID from the DocumentSnapshot
+            appointmentId = document.getId();
+
+            // Check if the appointment ID is not null or empty
+            if (appointmentId != null && !appointmentId.isEmpty()) {
+                // Log the retrieved appointment ID for debugging
+                Log.d(TAG, "Appointment ID retrieved: " + appointmentId);
+            } else {
+                // Log an error message if the appointment ID is null or empty
+                Log.e(TAG, "Appointment ID is null or empty");
+            }
+
+            // Retrieve other appointment fields as before
+            patientDocumentId = document.getString("patientDocumentId");
+            userDocumentId = document.getString("userDocumentId");
+            purpose = document.getString("purpose");
+            time = document.getString("time");
+            date = document.getString("date");
+        } else {
+            // Log an error message if the DocumentSnapshot is invalid or empty
+            Log.e(TAG, "Invalid or empty DocumentSnapshot");
+        }
+    }
 //
 //    // Add method to convert to Map for Firestore
 //    public Map<String, Object> toMap() {
