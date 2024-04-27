@@ -18,11 +18,13 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.csc131.deltamedicalteam.R;
+import com.csc131.deltamedicalteam.adapter.CurrentIllnessList;
 import com.csc131.deltamedicalteam.adapter.CurrentMedicationList;
 import com.csc131.deltamedicalteam.adapter.PastMedicationList;
 import com.csc131.deltamedicalteam.helper.SwipeItemTouchHelper;
@@ -105,6 +107,18 @@ patientSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(
                 }
                 mCurrentMedicationAdapter = new CurrentMedicationList(getActivity(), currMedicationItems);
                 recyclerViewCurrentMedication.setAdapter(mCurrentMedicationAdapter);
+
+                // On item list clicked
+            mCurrentMedicationAdapter.setOnItemClickListener(new CurrentMedicationList.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(View view, Medication obj, int position) {
+                        // Inside the click listener where you navigate to ProfilePatientFragment
+                        Medication Meds = currMedicationItems.get(position);
+                        MedicationFragmentDirections.ActionMedicationManagerFragmentToNavProfileCurrentMedication action =
+                                MedicationFragmentDirections.actionMedicationManagerFragmentToNavProfileCurrentMedication(Meds);
+                        Navigation.findNavController(view).navigate(action);
+                    }
+                });
 
                 //Past medication history prescribed
                 List<String> pastMedication = (List<String>) documentSnapshot.get("pastMedications");

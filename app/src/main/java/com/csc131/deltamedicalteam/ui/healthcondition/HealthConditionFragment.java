@@ -18,8 +18,8 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -31,19 +31,13 @@ import com.csc131.deltamedicalteam.adapter.MedicalHistoryList;
 import com.csc131.deltamedicalteam.helper.SwipeItemTouchHelper;
 import com.csc131.deltamedicalteam.model.HealthConditions;
 import com.csc131.deltamedicalteam.model.Patient;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -110,6 +104,18 @@ public class HealthConditionFragment extends Fragment {
                     }
                     mCurrentIllnessAdapter = new CurrentIllnessList(getActivity(), currIllnessItems);
                     recyclerViewCurrentIllness.setAdapter(mCurrentIllnessAdapter);
+
+                    // On item list clicked
+                    mCurrentIllnessAdapter.setOnItemClickListener(new CurrentIllnessList.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(View view, HealthConditions obj, int position) {
+                            // Inside the click listener where you navigate to ProfilePatientFragment
+                            HealthConditions hCons = currIllnessItems.get(position);
+                            HealthConditionFragmentDirections.ActionHealthManagerFragmentToNavProfileCurrentIllness action =
+                                    HealthConditionFragmentDirections.actionHealthManagerFragmentToNavProfileCurrentIllness(hCons);
+                            Navigation.findNavController(view).navigate(action);
+                        }
+                    });
 
                     //Medical History
                     List<String> prevIllness = (List<String>) documentSnapshot.get("previousIllnesses");
