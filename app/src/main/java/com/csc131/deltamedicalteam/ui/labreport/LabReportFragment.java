@@ -2,6 +2,9 @@ package com.csc131.deltamedicalteam.ui.labreport;
 
 import static android.content.ContentValues.TAG;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,7 +15,10 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -26,13 +32,20 @@ import com.csc131.deltamedicalteam.databinding.FragmentHomeBinding;
 import com.csc131.deltamedicalteam.databinding.FragmentLabReportBinding;
 import com.csc131.deltamedicalteam.model.HealthConditions;
 import com.csc131.deltamedicalteam.model.Patient;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.Firebase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.ListResult;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,15 +55,22 @@ public class LabReportFragment extends Fragment {
 
     // Initialize Firestore
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private FirebaseStorage storage = FirebaseStorage.getInstance();
 
     // Reference to the "patients" collection
     private CollectionReference patientsRef = db.collection("patients");
-    private Button mAddEditButton;
+
+    private StorageReference storageRef = storage.getReference();
+    private ActivityResultLauncher<String> filePicker;
+
+    private Button mUploadButton;
     private Spinner patientSpinner;
     RecyclerView recyclerViewReport, recyclerViewPhoto, recyclerViewVideo;
     TabLayout tabLayout;
-    private CurrentIllnessList mAdapter;
-    private CurrentAllergiesList mAllergiesAdapter;
+    
+    private int tabLayoutPosition;
+    private String tabName;
+    private Patient mCurrentPatient;
     List<Patient> patientNames = new ArrayList<>();
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -59,6 +79,7 @@ public class LabReportFragment extends Fragment {
 
         patientSpinner = rootView.findViewById(R.id.lab_report_patient_list_spinner);
         getPatientList();
+        registerFilePicker();
 
         // Find RecyclerViews
         recyclerViewReport = rootView.findViewById(R.id.RecyclerView_report);
@@ -66,101 +87,81 @@ public class LabReportFragment extends Fragment {
         recyclerViewVideo = rootView.findViewById(R.id.RecyclerView_current_video);
 
         //button
-//        mAddEditButton = rootView.findViewById(R.id.health_condition_edit);
+        mUploadButton = rootView.findViewById(R.id.current_lab_report_edit);
 
         // Find TabLayout
         tabLayout = rootView.findViewById(R.id.labReportTabs);
-
-//        recyclerViewCurrentIllness.setLayoutManager(new LinearLayoutManager(getActivity()));
-//        recyclerViewSpecificAllergies.setLayoutManager(new LinearLayoutManager(getActivity()));
+        tabName = "lab_reports";
 
         //detects when spinner item is selected
-//        patientSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//            @Override
-//            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-//                //retrieves the patient at the given spinner position
-//                Patient patient = (Patient) parent.getItemAtPosition(position);
-//                String ID = patient.getDocumentId();
-//                //uses patient id from spinner and to display current illnesses
-//                patientsRef.document(ID).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-//                    @Override
-//                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-//                        List<String> currIllness = (List<String>) documentSnapshot.get("currentIllnesses");
-//                        List<HealthConditions> items = new ArrayList<>();
-//                        //used to check if array is empty or not
-//                        if (currIllness != null) {
-//                            for (int i = 0; i < currIllness.size(); i++) {
-//                                HealthConditions hCons = new HealthConditions();
-//                                hCons.setCurrentIllnesses(currIllness.get(i));
-//                                items.add(hCons);
-//                            }
-//                        }
-//
-//                        mAdapter = new CurrentIllnessList(getActivity(), items);
-//                        recyclerViewCurrentIllness.setAdapter(mAdapter);
-//
-//                        //currentAllegies
-//
-//                        List<String> currAllergies = (List<String>) documentSnapshot.get("specificAllergies");
-//                        List<HealthConditions> allergiesitems = new ArrayList<>();
-//                        //used to check if array is empty or not
-//                        if (currAllergies != null) {
-//                            for (int i = 0; i < currAllergies.size(); i++) {
-//                                HealthConditions hCons = new HealthConditions();
-//                                hCons.setSpecificAllergies(currAllergies.get(i));
-//                                allergiesitems.add(hCons);
-//                            }
-//                        }
-//                        mAllergiesAdapter = new CurrentAllergiesList(getActivity(), allergiesitems);
-//                        recyclerViewSpecificAllergies.setAdapter(mAllergiesAdapter);
-//                    }
-//                });
-//            }
-//
-//            @Override
-//            public void onNothingSelected(AdapterView<?> parent) {
-//
-//            }
-//        });
-
-        // Set up OnTabSelectedListener
-        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+        patientSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                // Show corresponding RecyclerView and hide others
-                switch (tab.getPosition()) {
-                    case 0:
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                mCurrentPatient = (Patient) parent.getItemAtPosition(position);
+                String docID = mCurrentPatient.getDocumentId();
+
+                //StorageReference patientStorageRef = storageRef.child("patients/"+"test"+"/");
+                //StorageReference folderRef = patientStorageRef.child("profile.jpg");
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        mUploadButton.setOnClickListener(v -> {
+            openFilePicker();
+        });
+
+
+
+                // Set up OnTabSelectedListener
+                tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+                    @Override
+                    public void onTabSelected(TabLayout.Tab tab) {
+                        // Show corresponding RecyclerView and hide others
+                        switch (tab.getPosition()) {
+                            case 0:
+                                recyclerViewReport.setVisibility(View.VISIBLE);
+                                recyclerViewPhoto.setVisibility(View.GONE);
+                                recyclerViewVideo.setVisibility(View.GONE);
+                                tabLayoutPosition = tab.getPosition();
+                                tabName = "lab_reports";
+                                break;
+                            case 1:
+                                recyclerViewReport.setVisibility(View.GONE);
+                                recyclerViewPhoto.setVisibility(View.VISIBLE);
+                                recyclerViewVideo.setVisibility(View.GONE);
+                                tabLayoutPosition = tab.getPosition();
+                                tabName = "photos";
+                                break;
+                            case 2:
+                                recyclerViewReport.setVisibility(View.GONE);
+                                recyclerViewPhoto.setVisibility(View.GONE);
+                                recyclerViewVideo.setVisibility(View.VISIBLE);
+                                tabLayoutPosition = tab.getPosition();
+                                tabName = "radiology";
+                                break;
+                        }
+                    }
+
+                    @Override
+                    public void onTabUnselected(TabLayout.Tab tab) {
+                        // No action needed
                         recyclerViewReport.setVisibility(View.VISIBLE);
                         recyclerViewPhoto.setVisibility(View.GONE);
                         recyclerViewVideo.setVisibility(View.GONE);
-                        break;
-                    case 1:
-                        recyclerViewReport.setVisibility(View.GONE);
-                        recyclerViewPhoto.setVisibility(View.VISIBLE);
-                        recyclerViewVideo.setVisibility(View.GONE);
-                        break;
-                    case 2:
-                        recyclerViewReport.setVisibility(View.GONE);
-                        recyclerViewPhoto.setVisibility(View.GONE);
-                        recyclerViewVideo.setVisibility(View.VISIBLE);
-                        break;
-                }
-            }
+                        tabLayoutPosition = tab.getPosition();
+                        tabName = "lab_reports";
 
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-                // No action needed
-                recyclerViewReport.setVisibility(View.VISIBLE);
-                recyclerViewPhoto.setVisibility(View.GONE);
-                recyclerViewVideo.setVisibility(View.GONE);
+                    }
 
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-                // No action needed
-            }
-        });
+                    @Override
+                    public void onTabReselected(TabLayout.Tab tab) {
+                        // No action needed
+                    }
+                });
 
         //health_condition_edit button onClick
 //        mAddEditButton.setOnClickListener(new View.OnClickListener() {
@@ -238,6 +239,42 @@ public class LabReportFragment extends Fragment {
 
         // Apply the adapter to the spinner
         patientSpinner.setAdapter(adapter);
+    }
+
+    private void registerFilePicker(){
+        filePicker = registerForActivityResult(new ActivityResultContracts.GetContent(), uri -> onPickFile(uri));
+    }
+
+    private void openFilePicker(){
+        switch (tabLayoutPosition){
+            case 0:
+                filePicker.launch("application/pdf");
+                break;
+            case 1:
+                filePicker.launch("image/*");
+                break;
+            case 2:
+                filePicker.launch("video/*");
+                break;
+        }
+    }
+
+    private void onPickFile(Uri uri){
+        if(uri != null){
+            StorageReference tempRef = storageRef.child("patients/"+mCurrentPatient.getDocumentId()+"/"+tabName+"/"+uri.getLastPathSegment());
+            UploadTask uploadTask = tempRef.putFile(uri);
+            uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    Toast.makeText(getActivity(), "File Uploaded Successfully", Toast.LENGTH_SHORT).show();
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Toast.makeText(getActivity(), "An Error Occurred While Uploading", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
     }
 
     @Override
