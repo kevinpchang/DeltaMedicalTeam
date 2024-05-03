@@ -262,15 +262,14 @@ patientSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(
                     .addOnSuccessListener(queryDocumentSnapshots -> {
                         List<String> medicationList = new ArrayList<>();
                         for(QueryDocumentSnapshot documentSnapshot: queryDocumentSnapshots) {
-                            List<String> medications = (List<String>) documentSnapshot.get("Medications");
-                            if(medications != null){
-                                medicationList.addAll(medications);
-                            }
-                            ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, medicationList);
-                            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                            medicationSelector.setAdapter(adapter);
+                            String documentId = documentSnapshot.getId(); // Get the Document ID
+                            medicationList.add(documentId); // Add Document ID to the list
                         }
+                        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, medicationList);
+                        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                        medicationSelector.setAdapter(adapter);
                     });
+
             medicationSelector.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {

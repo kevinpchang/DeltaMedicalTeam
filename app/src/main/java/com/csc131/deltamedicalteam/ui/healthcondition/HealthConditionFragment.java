@@ -343,16 +343,17 @@ public class HealthConditionFragment extends Fragment {
                     .addOnSuccessListener(queryDocumentSnapshots -> {
                         List<String> illnessList = new ArrayList<>();
                         for(QueryDocumentSnapshot documentSnapshot: queryDocumentSnapshots) {
-                            List<String> illnesses = (List<String>) documentSnapshot.get("Illnesses");
-                            if(illnesses != null){
-                                illnessList.addAll(illnesses);
-                            }
+                            String documentId = documentSnapshot.getId(); // Get the Document ID
+                            illnessList.add(documentId); // Add Document ID to the list
+                        }
                             ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, illnessList);
                             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
                             illnessSelector.setAdapter(adapter);
-                        }
+
             });
+
+
 
             illnessSelector.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
