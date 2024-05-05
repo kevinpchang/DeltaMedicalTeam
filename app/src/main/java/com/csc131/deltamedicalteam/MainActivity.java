@@ -77,6 +77,8 @@ public class MainActivity extends AppCompatActivity {
         // Determine the menu items to display based on user's permissions
         Menu navMenu = navigationView.getMenu();
         MenuItem userManagerItem = navMenu.findItem(R.id.userManagerFragment);
+        MenuItem medicationManagerItem = navMenu.findItem(R.id.medicationManagerFragment);
+        MenuItem illnessManagerItem = navMenu.findItem(R.id.illnessManagerFragment);
 
         Tools.checkAdminPermission(new PermissionCallback() {
             @Override
@@ -85,6 +87,8 @@ public class MainActivity extends AppCompatActivity {
                     if (!isAdmin) {
                         // Remove the userManagerFragment item from the menu
                         userManagerItem.setVisible(false);
+                        medicationManagerItem.setVisible(false);
+                        illnessManagerItem.setVisible(false);
                         Log.e(TAG, "userManagerFragment is hidden in menu");
 
                     }
@@ -97,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.patientManagerFragment, R.id.nav_appointment, R.id.userManagerFragment, R.id.nav_lab_report, R.id.nav_medication, R.id.nav_health_condition, R.id.nav_logout)
+                R.id.nav_home, R.id.patientManagerFragment, R.id.nav_appointment, R.id.userManagerFragment, R.id.medicationManagerFragment, R.id.illnessManagerFragment, R.id.nav_lab_report, R.id.nav_medication, R.id.nav_health_condition, R.id.nav_logout)
                 .setOpenableLayout(drawer)
                 .build();
 
@@ -158,6 +162,19 @@ public class MainActivity extends AppCompatActivity {
                     // Navigate to the "nav_appointment" destination
                     NavController navControllerAppointment = Navigation.findNavController(MainActivity.this, R.id.nav_host_fragment_content_main);
                     navControllerAppointment.navigate(R.id.userManagerFragment);
+                    drawer.closeDrawer(GravityCompat.START);
+                    return true;
+                } else if(item.getItemId() == R.id.medicationManagerFragment) {
+                    // Navigate to the "nav_appointment" destination
+                    NavController navControllerAppointment = Navigation.findNavController(MainActivity.this, R.id.nav_host_fragment_content_main);
+                    navControllerAppointment.navigate(R.id.medicationManagerFragment);
+                    drawer.closeDrawer(GravityCompat.START);
+                    return true;
+
+                } else if(item.getItemId() == R.id.illnessManagerFragment) {
+                    // Navigate to the "nav_appointment" destination
+                    NavController navControllerAppointment = Navigation.findNavController(MainActivity.this, R.id.nav_host_fragment_content_main);
+                    navControllerAppointment.navigate(R.id.illnessManagerFragment);
                     drawer.closeDrawer(GravityCompat.START);
                     return true;
 

@@ -71,5 +71,8 @@
     <string name="past_medication">Past Medication</string>
     <string name="choose_your_patient">Choose Your Patient</string>
     <string name="email">Email</string>
+    <string name="medication_database">Medication Database</string>
+    <string name="illness_database">Illness Database</string>
+    <string name="log_out">Log Out</string>
 
 </resources>

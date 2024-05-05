@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
@@ -45,10 +44,20 @@
             android:icon="@drawable/ic_peoples"
             android:title="@string/menu_user" />
 
+        <item
+            android:id="@+id/medicationManagerFragment"
+            android:icon="@drawable/ic_peoples"
+            android:title="@string/medication_database" />
+
+        <item
+            android:id="@+id/illnessManagerFragment"
+            android:icon="@drawable/ic_peoples"
+            android:title="@string/illness_database" />
+
 
         <item
             android:id="@+id/nav_logout"
             android:icon="@drawable/ic_undo"
-            android:title="Log Out" />
+            android:title="@string/log_out" />
     </group>
 </menu>
