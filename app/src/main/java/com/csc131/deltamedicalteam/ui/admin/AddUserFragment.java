@@ -1,4 +1,4 @@
-package com.csc131.deltamedicalteam.ui.user;
+package com.csc131.deltamedicalteam.ui.admin;
 import com.balysv.materialripple.MaterialRippleLayout;
 import com.csc131.deltamedicalteam.R;
 import android.os.Bundle;

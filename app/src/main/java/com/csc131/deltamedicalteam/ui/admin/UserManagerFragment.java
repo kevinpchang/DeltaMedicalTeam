@@ -1,4 +1,4 @@
-package com.csc131.deltamedicalteam.ui.user;
+package com.csc131.deltamedicalteam.ui.admin;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -21,11 +21,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.csc131.deltamedicalteam.R;
 import com.csc131.deltamedicalteam.adapter.UserList;
 import com.csc131.deltamedicalteam.helper.SwipeItemTouchHelper;
-import com.csc131.deltamedicalteam.model.Appointment;
 import com.csc131.deltamedicalteam.model.User;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;

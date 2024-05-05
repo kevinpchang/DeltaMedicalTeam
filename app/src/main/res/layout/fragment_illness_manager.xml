@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.admin.UserManagerFragment">
+    tools:context=".ui.admin.IllnessManagerFragment">
 
 
 
@@ -20,7 +20,7 @@
         android:orientation="vertical">
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/user_list"
+            android:id="@+id/illness_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -28,12 +28,12 @@
             tools:ignore="MissingConstraints" />
 
         <Button
-            android:id="@+id/add_user_button"
+            android:id="@+id/add_illness_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_margin="16dp"
-            android:text="Add User"
+            android:text="Add Illness"
             android:visibility="visible"
             tools:ignore="MissingConstraints"
             tools:visibility="visible" />
