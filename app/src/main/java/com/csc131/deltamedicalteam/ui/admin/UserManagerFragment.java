@@ -22,6 +22,7 @@ import androidx.appcompat.widget.SearchView;
 import com.csc131.deltamedicalteam.R;
 import com.csc131.deltamedicalteam.adapter.UserList;
 import com.csc131.deltamedicalteam.helper.SwipeItemTouchHelper;
+import com.csc131.deltamedicalteam.model.Patient;
 import com.csc131.deltamedicalteam.model.User;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -87,22 +88,28 @@ public class UserManagerFragment extends Fragment {
                 if (!queryDocumentSnapshots.isEmpty()) {
                     items = new ArrayList<>();
                     for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                        User user = documentSnapshot.toObject(User.class);
+//                        patient.setDocumentId(documentSnapshot.getId());
 
-                        // Retrieve user information from Firestore document
-                        String documentId = documentSnapshot.getId();
-                        String fName = documentSnapshot.getString("fName");
-                        String lName = documentSnapshot.getString("lName");
-                        String email = documentSnapshot.getString("email");
-                        String phoneNumber = documentSnapshot.getString("phone");
-                        String permission = documentSnapshot.getString("permission");
-                        String address = documentSnapshot.getString("address");
-                        String location = documentSnapshot.getString("location");
-
-
-
-                        // Create User object with user information
-                        User user = new User(documentId, email, fName, lName, permission, phoneNumber, address, location);
+                        assert user != null;
+                        user.fromDocumentSnapshot(documentSnapshot);
+                        // Add the patient to the list
                         items.add(user);
+//                        // Retrieve user information from Firestore document
+//                        String documentId = documentSnapshot.getId();
+//                        String fName = documentSnapshot.getString("fName");
+//                        String lName = documentSnapshot.getString("lName");
+//                        String email = documentSnapshot.getString("email");
+//                        String phoneNumber = documentSnapshot.getString("phone");
+//                        String permission = documentSnapshot.getString("permission");
+//                        String address = documentSnapshot.getString("address");
+//                        String location = documentSnapshot.getString("location");
+//
+//
+//
+//                        // Create User object with user information
+//                        User user = new User(documentId, email, fName, lName, permission, phoneNumber, address, location);
+//                        items.add(user);
                     }
 
                     // Set data and list adapter

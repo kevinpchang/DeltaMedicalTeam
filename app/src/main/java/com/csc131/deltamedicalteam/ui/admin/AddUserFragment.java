@@ -29,6 +29,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class AddUserFragment extends Fragment {
 
@@ -88,22 +89,31 @@ public class AddUserFragment extends Fragment {
                 if (TextUtils.isEmpty(fName)) {
                     mFname.setError("First name is Required.");
                     return;
+                } else if (fName.length() < 3) {
+                    mFname.setError("First name must be at least 3 chars.");
+                    return;
                 }
 
                 if (TextUtils.isEmpty(lName)) {
                     mLname.setError("Last name is Required.");
                     return;
+                } else if (lName.length() < 3) {
+                    mLname.setError("Last name must be at least 3 chars.");
+                    return;
                 }
 
                 if (TextUtils.isEmpty(phone)) {
-                    mPhone.setError("com.csc131.deltamedicalteam.model.Patient.Phone is Required.");
+                    mPhone.setError("Phone is Required.");
+                    return;
+                } else if (phone.length() != 10) {
+                    mPhone.setError("Phone number must be 10 digits.");
                     return;
                 }
 
 
 
                 progressBar.setVisibility(View.VISIBLE);
-                String password = setPassword(lName,phone);
+                String password = setPassword(fName, lName, phone);
                 // Register the user in Firebase
                 fAuth.createUserWithEmailAndPassword(email, password)
                         .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -134,18 +144,15 @@ public class AddUserFragment extends Fragment {
     private boolean isValidEmail(String email) {
         return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
-    public static String setPassword(String lastname, String phonenumber) {
+    public static String setPassword(String firstName,String lastName, String phoneNumber) {
         // Extract first name and last name
-        String[] names = lastname.split(" ");
-        String firstName = names[0];
-        String lastName = names[names.length - 1];
+
             // Extract last 4 digits of phone number
-            String lastFourDigits = phonenumber.substring(phonenumber.length() - 4);
+            String lastFourDigits = phoneNumber.substring(phoneNumber.length() - 4);
 
             // Generate password
-            String password = firstName.substring(0, 2) + lastName.substring(0, 2) + lastFourDigits;
 
-            return password;
+        return firstName.substring(0, 2) + lastName.substring(0, 2) + lastFourDigits;
 
     }
 
@@ -188,7 +195,7 @@ public class AddUserFragment extends Fragment {
                             // User data saved successfully
                             Toast.makeText(requireContext(), "User Profile created for " + userID, Toast.LENGTH_SHORT).show();
                             fAuth.signInWithEmailAndPassword("admin@csc131.delta", "123456");
-                            Navigation.findNavController(getView()).navigate(R.id.userManagerFragment);
+                            Navigation.findNavController(requireView()).navigate(R.id.userManagerFragment);
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
