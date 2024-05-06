@@ -37,7 +37,7 @@ public class IllnessManagerFragment extends Fragment {
     private static final String TAG = "IllnessManagerFragment";
     private RecyclerView recyclerView;
     private StringList mAdapter;
-    private final List<String> items = new ArrayList<>();
+    private List<String> illnessList = new ArrayList<>();
     private SearchView searchView;
 
     @Nullable
@@ -78,7 +78,7 @@ public class IllnessManagerFragment extends Fragment {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                 if (!queryDocumentSnapshots.isEmpty()) {
-                    List<String> illnessList = new ArrayList<>();
+                    illnessList = new ArrayList<>();
                     for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
                         String documentId = documentSnapshot.getId(); // Get the Document ID
                         illnessList.add(documentId); // Add Document ID to the list
@@ -159,7 +159,7 @@ public class IllnessManagerFragment extends Fragment {
     public void filterList(String text) {
         List<String> filteredList = new ArrayList<>();
 
-        for (String data : items) {
+        for (String data : illnessList) {
             // Check if any field matches the query
             if (data.toLowerCase().contains(text.toLowerCase())) {
                 filteredList.add(data);

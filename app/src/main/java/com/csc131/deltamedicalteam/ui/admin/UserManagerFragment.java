@@ -38,7 +38,7 @@ public class UserManagerFragment extends Fragment {
     private static final String TAG = "UserManagerFragment";
     private RecyclerView recyclerView;
     private UserList mAdapter;
-    private final List<User> items = new ArrayList<>();
+    private List<User> items = new ArrayList<>();
     private SearchView searchView;
 
     @Nullable
@@ -85,7 +85,7 @@ public class UserManagerFragment extends Fragment {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                 if (!queryDocumentSnapshots.isEmpty()) {
-
+                    items = new ArrayList<>();
                     for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
 
                         // Retrieve user information from Firestore document

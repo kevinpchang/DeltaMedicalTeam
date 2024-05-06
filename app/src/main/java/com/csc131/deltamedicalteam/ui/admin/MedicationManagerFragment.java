@@ -39,7 +39,7 @@ public class MedicationManagerFragment extends Fragment {
     private RecyclerView recyclerView;
     private StringList mAdapter;
 
-    private final List<String> items = new ArrayList<>();
+    private List<String> medicationList = new ArrayList<>();
     private SearchView searchView;
     @Nullable
     @Override
@@ -79,7 +79,7 @@ public class MedicationManagerFragment extends Fragment {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                 if (!queryDocumentSnapshots.isEmpty()) {
-                    List<String> medicationList = new ArrayList<>();
+                    medicationList = new ArrayList<>();
                     for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
                         String documentId = documentSnapshot.getId(); // Get the Document ID
                         medicationList.add(documentId); // Add Document ID to the list
@@ -160,7 +160,7 @@ public class MedicationManagerFragment extends Fragment {
     public void filterList(String text) {
         List<String> filteredList = new ArrayList<>();
 
-        for (String data : items) {
+        for (String data : medicationList) {
             // Check if any field matches the query
             if (data.toLowerCase().contains(text.toLowerCase())) {
                 filteredList.add(data);

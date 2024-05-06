@@ -41,7 +41,7 @@ public class PatientManagerFragment extends Fragment {
     private static final String TAG = "PatientManagerFragment";
     private RecyclerView recyclerView;
     private PatientList mAdapter;
-    private final List<Patient> items = new ArrayList<>();
+    private List<Patient> items = new ArrayList<>();
     private SearchView searchView;
 
     @Nullable
@@ -125,7 +125,8 @@ public class PatientManagerFragment extends Fragment {
         // Query to get all documents from the "patients" collection
         patientsRef.get().addOnSuccessListener(queryDocumentSnapshots -> {
             if (!queryDocumentSnapshots.isEmpty()) {
-//                List<Patient> items = new ArrayList<>();
+                items = new ArrayList<>();
+
                 for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
                     // Convert DocumentSnapshot to Patient object
                     Patient patient = documentSnapshot.toObject(Patient.class);
@@ -139,6 +140,21 @@ public class PatientManagerFragment extends Fragment {
                 // Set data and list adapter
                 mAdapter = new PatientList(getActivity(), items);
                 recyclerView.setAdapter(mAdapter);
+
+                searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                    @Override
+                    public boolean onQueryTextSubmit(String query) {
+                        Log.d("PatientManagerFragment", "Query submitted: " + query);
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onQueryTextChange(String newText) {
+                        Log.d("PatientManagerFragment", "Query changed: " + newText);
+                        filterList(newText);
+                        return true;
+                    }
+                });
 
                 // On item list clicked
                 mAdapter.setOnItemClickListener(new PatientList.OnItemClickListener() {
