@@ -85,11 +85,13 @@ public class UserManagerFragment extends Fragment {
                         String email = documentSnapshot.getString("email");
                         String phoneNumber = documentSnapshot.getString("phone");
                         String permission = documentSnapshot.getString("permission");
+                        String address = documentSnapshot.getString("address");
+                        String location = documentSnapshot.getString("location");
 
 
 
                         // Create User object with user information
-                        User user = new User(documentId, email, fName, lName, permission, phoneNumber);
+                        User user = new User(documentId, email, fName, lName, permission, phoneNumber, address, location);
                         items.add(user);
                     }
 

@@ -164,4 +164,19 @@ public class User implements Parcelable {
     public int describeContents() {
         return 0;
     }
+
+    public String getMemberID() {
+        // Ensure permission and userID are not null
+        if (permission != null && documentId != null) {
+            // Extract the first 3 characters of the permission string
+            String permissionPrefix = permission.substring(0, Math.min(permission.length(), 3));
+            // Extract the last 5 characters of the userID string
+            String userIDSuffix = documentId.substring(Math.max(0, documentId.length() - 5));
+            // Concatenate the prefix and suffix and convert to uppercase
+            return (permissionPrefix + userIDSuffix).toUpperCase();
+        } else {
+            // Handle cases where either permission or userID is null
+            return null;
+        }
+    }
 }

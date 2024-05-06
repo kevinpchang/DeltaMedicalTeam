@@ -90,8 +90,6 @@ public class ProfileFragment extends Fragment {
                 mAddressTextView.setText(address);
                 mLocationTextView.setText(location);
 
-//                mNameEditText.setText(fullName);
-//                mPermissionEditText.setText(permission);
                 mEmailEditText.setText(email);
                 mPhoneEditText.setText(phone);
                 mAddressEditText.setText(address);
@@ -101,16 +99,12 @@ public class ProfileFragment extends Fragment {
 
         mEditButton.setOnClickListener(view -> {
             // Show EditText fields and Save button, hide TextViews and Edit button
-            mNameTextView.setVisibility(View.GONE);
-            mMemberIDTextView.setVisibility(View.GONE);
+
             mEmailTextView.setVisibility(View.GONE);
-            mPermissionTextView.setVisibility(View.GONE);
             mPhoneTextView.setVisibility(View.GONE);
             mAddressTextView.setVisibility(View.GONE);
             mLocationTextView.setVisibility(View.GONE);
 
-//            mNameEditText.setVisibility(View.VISIBLE);
-//            mPermissionEditText.setVisibility(View.VISIBLE);
             mEmailEditText.setVisibility(View.VISIBLE);
             mPhoneEditText.setVisibility(View.VISIBLE);
             mAddressEditText.setVisibility(View.VISIBLE);
@@ -123,8 +117,6 @@ public class ProfileFragment extends Fragment {
 
         mSaveButton.setOnClickListener(view -> {
             // Update Firestore with new values
-//            String newName = mNameEditText.getText().toString();
-//            String newPermission = mPermissionEditText.getText().toString();
             String newPhone = mPhoneEditText.getText().toString();
             String newAddress = mAddressEditText.getText().toString();
             String newLocation = mLocationEditText.getText().toString();
@@ -138,24 +130,18 @@ public class ProfileFragment extends Fragment {
                     .addOnSuccessListener(aVoid -> {
                         Toast.makeText(getContext(), "Profile updated successfully", Toast.LENGTH_SHORT).show();
                         // Hide EditText fields and Save button, show TextViews and Edit button
-//                        mNameTextView.setText(newName);
-//                        mPermissionTextView.setText(newPermission);
+
                         mPhoneTextView.setText(newPhone);
-                        mEmailTextView.setText(newPhone);
+                        mEmailTextView.setText(newEmail);
                         mAddressTextView.setText(newAddress);
                         mLocationTextView.setText(newLocation);
 
 
-                        mMemberIDTextView.setVisibility(View.VISIBLE);
-                        mNameTextView.setVisibility(View.VISIBLE);
                         mEmailTextView.setVisibility(View.VISIBLE);
-                        mPermissionTextView.setVisibility(View.VISIBLE);
                         mPhoneTextView.setVisibility(View.VISIBLE);
                         mAddressTextView.setVisibility(View.VISIBLE);
                         mLocationTextView.setVisibility(View.VISIBLE);
 
-//                        mNameEditText.setVisibility(View.GONE);
-//                        mPermissionEditText.setVisibility(View.GONE);
                         mEmailEditText.setVisibility(View.GONE);
                         mPhoneEditText.setVisibility(View.GONE);
                         mAddressEditText.setVisibility(View.GONE);
