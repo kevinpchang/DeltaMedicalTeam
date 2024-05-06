@@ -42,7 +42,7 @@
         tools:layout="@layout/fragment_profile_current_medication" >
         <argument
             android:name="medication"
-            app:argType="com.csc131.deltamedicalteam.model.Medication" />
+            app:argType="java.lang.String" />
     </fragment>
 
     <fragment
@@ -62,7 +62,7 @@
         tools:layout="@layout/fragment_profile_current_illness" >
         <argument
             android:name="healthConditions"
-            app:argType="com.csc131.deltamedicalteam.model.HealthConditions" />
+            app:argType="java.lang.String" />
     </fragment>
 
 
@@ -126,7 +126,7 @@
         tools:layout="@layout/fragment_profile_medication" >
         <argument
             android:name="medication"
-            app:argType="com.csc131.deltamedicalteam.model.Medication" />
+            app:argType="java.lang.String" />
     </fragment>
 
     <fragment
@@ -136,7 +136,7 @@
         tools:layout="@layout/fragment_profile_illness" >
         <argument
             android:name="medication"
-            app:argType="com.csc131.deltamedicalteam.model.Medication" />
+            app:argType="java.lang.String" />
     </fragment>
 
     <fragment

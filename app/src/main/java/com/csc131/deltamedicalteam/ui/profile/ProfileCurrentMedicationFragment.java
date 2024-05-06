@@ -32,7 +32,7 @@ public class ProfileCurrentMedicationFragment extends Fragment {
 
         // Retrieve the passed user information
         ProfileCurrentMedicationFragmentArgs args = ProfileCurrentMedicationFragmentArgs.fromBundle(getArguments());
-        Medication med = args.getMedication();
+        String med = args.getMedication();
 
         // Display the user information
         TextView nameTextView = view.findViewById(R.id.profile_name);

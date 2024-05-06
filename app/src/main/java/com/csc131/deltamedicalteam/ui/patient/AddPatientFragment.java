@@ -18,7 +18,7 @@ import androidx.navigation.Navigation;
 
 import com.balysv.materialripple.MaterialRippleLayout;
 import com.csc131.deltamedicalteam.R;
-import com.csc131.deltamedicalteam.model.Patient;
+import com.csc131.deltamedicalteam.model.Medication;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -28,6 +28,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
@@ -206,20 +207,25 @@ public class AddPatientFragment extends Fragment {
         patientData.put("email", email);
         patientData.put("emergencyName", emergencyName);
         patientData.put("emergencyPhone", emergencyPhone);
-        documentReference.add(patientData)
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+        // Initialize nested objects and arrays
+
+        patientData.put("specificAllergies", new ArrayList<>());
+        patientData.put("currentMedications", new ArrayList<>());
+        patientData.put("pastMedications", new ArrayList<>());
+        patientData.put("currentIllnesses", new ArrayList<>());
+        patientData.put("pastIllnesses", new ArrayList<>());
+        documentReference.add(patientData).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
             @Override
             public void onSuccess(DocumentReference documentReference) {
                 Toast.makeText(requireContext(), "Patient Profile created for " + fName + " " + lName, Toast.LENGTH_SHORT).show();
-                Navigation.findNavController(getView()).navigate(R.id.patientManagerFragment);
+                Navigation.findNavController(requireView()).navigate(R.id.patientManagerFragment);
             }
-        })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(requireContext(), "Failed to create Patient Profile ", Toast.LENGTH_SHORT).show();
-                    }
-                });
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(requireContext(), "Failed to create Patient Profile ", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }
 

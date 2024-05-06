@@ -8,7 +8,6 @@ package com.csc131.deltamedicalteam.adapter;
         import androidx.recyclerview.widget.RecyclerView;
 
         import com.csc131.deltamedicalteam.R;
-        import com.csc131.deltamedicalteam.model.HealthConditions;
         import com.csc131.deltamedicalteam.model.Medication;
 
         import java.util.ArrayList;
@@ -24,7 +23,7 @@ public class CurrentMedicationList extends RecyclerView.Adapter<RecyclerView.Vie
     public interface OnItemClickListener {
         void onItemClick(View view, Medication obj, int position);
     }
-    public List<Medication> getCurrentMedication() {
+    public List<Medication> getItems() {
         return items;
     }
     public void setOnItemClickListener(final OnItemClickListener mItemClickListener) {
@@ -36,7 +35,7 @@ public class CurrentMedicationList extends RecyclerView.Adapter<RecyclerView.Vie
         ctx = context;
     }
 
-    public List<Medication> getHealthConditions() { return items; }
+    public List<Medication> getItem() { return items; }
 
     public void updateCurrentMedication(List<Medication> updatedItems){
         items.clear();
@@ -72,8 +71,8 @@ public class CurrentMedicationList extends RecyclerView.Adapter<RecyclerView.Vie
 
             Medication p = items.get(position);
             //used to check if array is empty or not
-            if (p.getCurrentMedications() != null) {
-                viewHolder.name.setText(p.getCurrentMedications());
+            if (p.getItems() != null) {
+                viewHolder.name.setText(p.getItems());
             } else {
                 viewHolder.name.setText("No current Medications");
             }

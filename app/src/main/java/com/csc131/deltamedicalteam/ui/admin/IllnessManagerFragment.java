@@ -114,9 +114,9 @@ public class IllnessManagerFragment extends Fragment {
                             builder.setMessage("Are you sure you want to remove this Illness?");
                             builder.setPositiveButton("Yes", (dialog, which) -> {
                                 // Remove the item from the list
-                                String removedIllness = mAdapter.getCurrentMedication().get(position); // Get the Illness at the specified position
+                                String removedIllness = mAdapter.getItem().get(position); // Get the Illness at the specified position
                                 Log.d(TAG, "Illness name removed: " + removedIllness);
-                                mAdapter.getCurrentMedication().remove(position); // Remove the Illness from the list
+                                mAdapter.getItem().remove(position); // Remove the Illness from the list
                                 mAdapter.notifyItemRemoved(position); // Notify the adapter about the removal
 
                                 // Additional logic to handle the removal from the database (already implemented in your code)
@@ -130,7 +130,7 @@ public class IllnessManagerFragment extends Fragment {
                                         .addOnFailureListener(e -> {
                                             Log.e(TAG, "Failed to remove Illness: " + e.getMessage());
                                             // If removal from database fails, add the item back to the list and notify the adapter
-                                            mAdapter.getCurrentMedication().add(position, removedIllness);
+                                            mAdapter.getItem().add(position, removedIllness);
                                             mAdapter.notifyItemInserted(position);
                                             Toast.makeText(getContext(), "Failed to remove Illness: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                                         });

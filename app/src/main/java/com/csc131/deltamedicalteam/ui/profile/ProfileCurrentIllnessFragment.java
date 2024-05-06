@@ -16,8 +16,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.csc131.deltamedicalteam.R;
-import com.csc131.deltamedicalteam.model.HealthConditions;
-import com.csc131.deltamedicalteam.model.User;
 
 public class ProfileCurrentIllnessFragment extends Fragment {
 
@@ -32,7 +30,7 @@ public class ProfileCurrentIllnessFragment extends Fragment {
 
         // Retrieve the passed user information
         ProfileCurrentIllnessFragmentArgs args = ProfileCurrentIllnessFragmentArgs.fromBundle(getArguments());
-        HealthConditions health = args.getHealthConditions();
+        String health = args.getHealthConditions();
 
         // Display the user information
         TextView nameTextView = view.findViewById(R.id.profile_name);

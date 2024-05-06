@@ -274,7 +274,7 @@
                     </LinearLayout>
 
                     <TextView
-                        android:id="@+id/patient_cellPhone"
+                        android:id="@+id/patient_phone"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/spacing_medium"

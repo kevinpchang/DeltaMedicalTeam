@@ -78,14 +78,14 @@ public class PatientList extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
         if (holder instanceof OriginalViewHolder) {
             OriginalViewHolder viewHolder = (OriginalViewHolder) holder;
-            String idSetText = items.get(position).getDocumentId();
-            String idSubString = idSetText.substring(Math.max(idSetText.length()-10,0));
+
+
 
             Patient patient = items.get(position);
-            viewHolder.id.setText(idSubString);
-            viewHolder.name.setText(patient.toString());
+            viewHolder.id.setText(patient.getMemberID());
+            viewHolder.name.setText(patient.getName());
             viewHolder.sex.setText(patient.getSex());
-            viewHolder.phone.setText(patient.getCellPhone());
+            viewHolder.phone.setText(patient.getPhone());
             viewHolder.address.setText(patient.getAddress()); // Assuming you have added an address TextView
 
             viewHolder.lyt_parent.setOnClickListener(view -> {

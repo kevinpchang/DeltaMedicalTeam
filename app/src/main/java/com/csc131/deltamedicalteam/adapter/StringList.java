@@ -21,8 +21,14 @@ public class StringList extends RecyclerView.Adapter<StringList.OriginalViewHold
     private Context context;
     private OnItemClickListener onItemClickListener;
 
-    public List<String> getCurrentMedication() {
+    public List<String> getItem() {
         return items;
+    }
+
+    public void updateItems(List<String> updatedItems){
+        items.clear();
+        items.addAll(updatedItems);
+        notifyDataSetChanged();
     }
 
     public interface OnItemClickListener {

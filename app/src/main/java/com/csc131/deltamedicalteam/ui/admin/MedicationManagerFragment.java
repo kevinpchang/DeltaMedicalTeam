@@ -115,9 +115,9 @@ public class MedicationManagerFragment extends Fragment {
                             builder.setMessage("Are you sure you want to remove this Medication?");
                             builder.setPositiveButton("Yes", (dialog, which) -> {
                                 // Remove the item from the list
-                                String removedMedication = mAdapter.getCurrentMedication().get(position); // Get the Medication at the specified position
+                                String removedMedication = mAdapter.getItem().get(position); // Get the Medication at the specified position
                                 Log.d(TAG, "Medication name removed: " + removedMedication);
-                                mAdapter.getCurrentMedication().remove(position); // Remove the Medication from the list
+                                mAdapter.getItem().remove(position); // Remove the Medication from the list
                                 mAdapter.notifyItemRemoved(position); // Notify the adapter about the removal
 
                                 // Additional logic to handle the removal from the database (already implemented in your code)
@@ -131,7 +131,7 @@ public class MedicationManagerFragment extends Fragment {
                                         .addOnFailureListener(e -> {
                                             Log.e(TAG, "Failed to remove Medication: " + e.getMessage());
                                             // If removal from database fails, add the item back to the list and notify the adapter
-                                            mAdapter.getCurrentMedication().add(position, removedMedication);
+                                            mAdapter.getItem().add(position, removedMedication);
                                             mAdapter.notifyItemInserted(position);
                                             Toast.makeText(getContext(), "Failed to remove Medication: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                                         });
