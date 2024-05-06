@@ -11,7 +11,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.csc131.deltamedicalteam.R;
-import com.csc131.deltamedicalteam.model.Appointment;
 import com.csc131.deltamedicalteam.model.User;
 
 import java.util.ArrayList;
@@ -20,6 +19,7 @@ import java.util.List;
 public class UserList extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private List<User> items = new ArrayList<>();
+
 
     private Context ctx;
     private OnItemClickListener mOnItemClickListener;
@@ -77,17 +77,22 @@ public class UserList extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     // Replace the contents of a view (invoked by the layout manager)
+public void setFilteredList(List<User> filteredList ) {
+        this.items = filteredList;
+        notifyDataSetChanged();
+}
+
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof OriginalViewHolder) {
             OriginalViewHolder viewHolder = (OriginalViewHolder) holder;
 
-            User user = items.get(position);
+            User user = items.get(position); // Use dataListFiltered here
             viewHolder.name.setText(user.getName());
-            viewHolder.email.setText(user.getEmail()); // Assuming you have added an email TextView
-            viewHolder.phone.setText(user.getPhone()); // Assuming you have added a phone TextView
-            viewHolder.permission.setText(user.getPermission()); // Assuming you have added a permission TextView
+            viewHolder.email.setText(user.getEmail());
+            viewHolder.phone.setText(user.getPhone());
+            viewHolder.permission.setText(user.getPermission());
 
             viewHolder.lyt_parent.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -100,6 +105,9 @@ public class UserList extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             });
         }
     }
+
+
+
 
 
 

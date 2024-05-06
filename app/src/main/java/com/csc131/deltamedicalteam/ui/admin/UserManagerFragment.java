@@ -17,6 +17,7 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.widget.SearchView;
 
 import com.csc131.deltamedicalteam.R;
 import com.csc131.deltamedicalteam.adapter.UserList;
@@ -37,6 +38,8 @@ public class UserManagerFragment extends Fragment {
     private static final String TAG = "UserManagerFragment";
     private RecyclerView recyclerView;
     private UserList mAdapter;
+    private final List<User> items = new ArrayList<>();
+    private SearchView searchView;
 
     @Nullable
     @Override
@@ -46,6 +49,9 @@ public class UserManagerFragment extends Fragment {
         recyclerView = view.findViewById(R.id.user_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setHasFixedSize(true);
+        searchView = view.findViewById(R.id.searchView);
+        searchView.clearFocus();
+
 
         initComponent();
 
@@ -58,6 +64,10 @@ public class UserManagerFragment extends Fragment {
                 Navigation.findNavController(v).navigate(R.id.action_userManagerFragment_to_nav_add_user);
             }
         });
+
+        // Implement search functionality
+
+
 
 
         return view;
@@ -75,7 +85,7 @@ public class UserManagerFragment extends Fragment {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                 if (!queryDocumentSnapshots.isEmpty()) {
-                    List<User> items = new ArrayList<>();
+
                     for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
 
                         // Retrieve user information from Firestore document
@@ -98,6 +108,23 @@ public class UserManagerFragment extends Fragment {
                     // Set data and list adapter
                     mAdapter = new UserList(getActivity(), items);
                     recyclerView.setAdapter(mAdapter);
+
+                    searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                        @Override
+                        public boolean onQueryTextSubmit(String query) {
+                            Log.d("UserManagerFragment", "Query submitted: " + query);
+                            return false;
+                        }
+
+                        @Override
+                        public boolean onQueryTextChange(String newText) {
+                            Log.d("UserManagerFragment", "Query changed: " + newText);
+                            filterList(newText);
+                            return true;
+                        }
+                    });
+
+
 
                     SwipeItemTouchHelper swipeItemTouchHelper = new SwipeItemTouchHelper(mAdapter);
                     // Create an instance of ItemTouchHelper and attach SwipeItemTouchHelper to it
@@ -170,6 +197,29 @@ public class UserManagerFragment extends Fragment {
                 Log.e(TAG, "Error fetching documents: " + e.getMessage());
             }
         });
+    }
+
+
+
+    public void filterList(String text) {
+        List<User> filteredList = new ArrayList<>();
+
+        for (User data : items) {
+            // Check if any field matches the query
+            if (data.getName().toLowerCase().contains(text.toLowerCase()) ||
+                        data.getEmail().toLowerCase().contains(text.toLowerCase()) ||
+                        data.getPhone().toLowerCase().contains(text.toLowerCase())) {
+                filteredList.add(data);
+            }
+        }
+
+        if (filteredList.isEmpty()) {
+            Toast.makeText(getContext(),"No data found", Toast.LENGTH_SHORT).show();
+        } else {
+            mAdapter.setFilteredList(filteredList);
+
+        }
+
     }
 
     private void refreshUsers() {

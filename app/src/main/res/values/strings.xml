@@ -74,5 +74,6 @@
     <string name="medication_database">Medication Database</string>
     <string name="illness_database">Illness Database</string>
     <string name="log_out">Log Out</string>
+    <string name="add_user">Add User</string>
 
 </resources>
