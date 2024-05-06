@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -25,6 +26,7 @@ import com.csc131.deltamedicalteam.adapter.PatientList;
 import com.csc131.deltamedicalteam.helper.SwipeItemTouchHelper;
 import com.csc131.deltamedicalteam.model.HealthConditions;
 import com.csc131.deltamedicalteam.model.Patient;
+import com.csc131.deltamedicalteam.model.User;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
@@ -39,20 +41,24 @@ public class PatientManagerFragment extends Fragment {
     private static final String TAG = "PatientManagerFragment";
     private RecyclerView recyclerView;
     private PatientList mAdapter;
+    private final List<Patient> items = new ArrayList<>();
+    private SearchView searchView;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_patient_manager, container, false);
 
-        recyclerView = view.findViewById(R.id.recycler_list);
+        recyclerView = view.findViewById(R.id.patient_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setHasFixedSize(true);
+        searchView = view.findViewById(R.id.searchView);
+        searchView.clearFocus();
 
         initComponent();
 
         // Find the Button and set its click listener
-        Button btnAddPatient = view.findViewById(R.id.add_button);
+        Button btnAddPatient = view.findViewById(R.id.add_patient_button);
         btnAddPatient.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -119,7 +125,7 @@ public class PatientManagerFragment extends Fragment {
         // Query to get all documents from the "patients" collection
         patientsRef.get().addOnSuccessListener(queryDocumentSnapshots -> {
             if (!queryDocumentSnapshots.isEmpty()) {
-                List<Patient> items = new ArrayList<>();
+//                List<Patient> items = new ArrayList<>();
                 for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
                     // Convert DocumentSnapshot to Patient object
                     Patient patient = documentSnapshot.toObject(Patient.class);
@@ -151,6 +157,27 @@ public class PatientManagerFragment extends Fragment {
         }).addOnFailureListener(e -> {
             Log.e(TAG, "Error fetching documents: " + e.getMessage());
         });
+    }
+
+    public void filterList(String text) {
+        List<Patient> filteredList = new ArrayList<>();
+
+        for (Patient data : items) {
+            // Check if any field matches the query
+            if (data.getName().toLowerCase().contains(text.toLowerCase()) ||
+                    data.getEmail().toLowerCase().contains(text.toLowerCase()) ||
+                    data.getCellPhone().toLowerCase().contains(text.toLowerCase())) {
+                filteredList.add(data);
+            }
+        }
+
+        if (filteredList.isEmpty()) {
+            Toast.makeText(getContext(),"No data found", Toast.LENGTH_SHORT).show();
+        } else {
+            mAdapter.setFilteredList(filteredList);
+
+        }
+
     }
 
 

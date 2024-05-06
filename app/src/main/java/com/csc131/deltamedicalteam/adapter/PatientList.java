@@ -13,6 +13,7 @@ import com.csc131.deltamedicalteam.R;
 import com.csc131.deltamedicalteam.model.Patient;
 
 
+import com.csc131.deltamedicalteam.model.User;
 import com.csc131.deltamedicalteam.utils.Tools;
 
 import java.util.ArrayList;
@@ -69,7 +70,10 @@ public class PatientList extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     // Replace the contents of a view (invoked by the layout manager)
-
+    public void setFilteredList(List<Patient> filteredList ) {
+        this.items = filteredList;
+        notifyDataSetChanged();
+    }
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
         if (holder instanceof OriginalViewHolder) {

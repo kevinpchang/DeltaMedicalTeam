@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.csc131.deltamedicalteam.R;
+import com.csc131.deltamedicalteam.model.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,11 +45,18 @@ public class StringList extends RecyclerView.Adapter<StringList.OriginalViewHold
         return new OriginalViewHolder(v);
     }
 
+    public void setFilteredList(List<String> filteredList ) {
+        this.items = filteredList;
+        notifyDataSetChanged();
+    }
+
     @Override
     public void onBindViewHolder(@NonNull OriginalViewHolder holder, int position) {
         String medication = items.get(position);
         holder.bind(medication);
     }
+
+
 
     @Override
     public int getItemCount() {

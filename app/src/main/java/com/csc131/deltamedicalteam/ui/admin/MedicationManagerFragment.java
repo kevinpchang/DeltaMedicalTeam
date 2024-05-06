@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -21,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.csc131.deltamedicalteam.R;
 import com.csc131.deltamedicalteam.adapter.StringList;
 import com.csc131.deltamedicalteam.helper.SwipeItemTouchHelper;
+import com.csc131.deltamedicalteam.model.User;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
@@ -37,6 +39,8 @@ public class MedicationManagerFragment extends Fragment {
     private RecyclerView recyclerView;
     private StringList mAdapter;
 
+    private final List<String> items = new ArrayList<>();
+    private SearchView searchView;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -45,6 +49,8 @@ public class MedicationManagerFragment extends Fragment {
         recyclerView = view.findViewById(R.id.medication_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setHasFixedSize(true);
+        searchView = view.findViewById(R.id.searchView);
+        searchView.clearFocus();
 
         initComponent();
 
@@ -80,6 +86,21 @@ public class MedicationManagerFragment extends Fragment {
                     }
                     mAdapter = new StringList(getActivity(), medicationList);
                     recyclerView.setAdapter(mAdapter);
+
+                    searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                        @Override
+                        public boolean onQueryTextSubmit(String query) {
+                            Log.d("MedicationManagerFragment", "Query submitted: " + query);
+                            return false;
+                        }
+
+                        @Override
+                        public boolean onQueryTextChange(String newText) {
+                            Log.d("MedicationManagerFragment", "Query changed: " + newText);
+                            filterList(newText);
+                            return true;
+                        }
+                    });
 
                     SwipeItemTouchHelper swipeItemTouchHelper = new SwipeItemTouchHelper(mAdapter);
                     // Create an instance of ItemTouchHelper and attach SwipeItemTouchHelper to it
@@ -134,5 +155,24 @@ public class MedicationManagerFragment extends Fragment {
                 Log.e(TAG, "Error fetching documents: " + e.getMessage());
             }
         });
+    }
+
+    public void filterList(String text) {
+        List<String> filteredList = new ArrayList<>();
+
+        for (String data : items) {
+            // Check if any field matches the query
+            if (data.toLowerCase().contains(text.toLowerCase())) {
+                filteredList.add(data);
+            }
+        }
+
+        if (filteredList.isEmpty()) {
+            Toast.makeText(getContext(),"No data found", Toast.LENGTH_SHORT).show();
+        } else {
+            mAdapter.setFilteredList(filteredList);
+
+        }
+
     }
 }
