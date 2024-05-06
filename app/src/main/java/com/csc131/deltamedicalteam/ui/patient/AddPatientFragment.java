@@ -66,13 +66,10 @@ public class AddPatientFragment extends Fragment {
 
         //initialize input fields and ui
         mFname = rootView.findViewById(R.id.add_patient_fName);
-        mMname = rootView.findViewById(R.id.add_patient_mName);
         mLname = rootView.findViewById(R.id.add_patient_lName);
 
         mAddress = rootView.findViewById(R.id.add_patient_address);
         mDOB = rootView.findViewById(R.id.add_patient_dob);
-//        mBloodGroup = rootView.findViewById(R.id.add_patient_bloodGroup);
-//        mRHfactor = rootView.findViewById(R.id.add_patient_rhFactor);
 
         mPhone = rootView.findViewById(R.id.add_patient_phone);
         mEmail = rootView.findViewById(R.id.add_patient_email);
@@ -91,13 +88,10 @@ public class AddPatientFragment extends Fragment {
             public void onClick(View v) {
                 // Handle patient add logic
                 String fName = mFname.getText().toString();
-                String mName = mMname.getText().toString();
                 String lName = mLname.getText().toString();
 
                 String address = mAddress.getText().toString();
                 String dob = mDOB.getText().toString();
-//                String bloodGroup = mBloodGroup.getText().toString();
-//                String rhFactor = mRHfactor.getText().toString();
                 String sex = (String) mSex.getSelectedItem();
                 String maritalStatus = (String) mMaritalStatus.getSelectedItem();
 
@@ -111,10 +105,6 @@ public class AddPatientFragment extends Fragment {
                     return;
                 }
 
-                if (TextUtils.isEmpty(mName)) {
-                    mMname.setError("Field is Required.");
-                    return;
-                }
 
                 if (TextUtils.isEmpty(lName)) {
                     mLname.setError("Field is Required.");
@@ -136,15 +126,7 @@ public class AddPatientFragment extends Fragment {
                     return;
                 }
 
-//                if (TextUtils.isEmpty(bloodGroup)) {
-//                    mBloodGroup.setError("Field is Required.");
-//                    return;
-//                }
 //
-//                if (TextUtils.isEmpty(rhFactor)) {
-//                    mRHfactor.setError("Field is Required.");
-//                    return;
-//                }
 
                 if (maritalStatus.equals("Unknown")) {
                     Toast.makeText(requireContext(), "Marital Status is Required" , Toast.LENGTH_SHORT).show();
@@ -179,7 +161,7 @@ public class AddPatientFragment extends Fragment {
                 progressBar.setVisibility(View.VISIBLE);
                 // Register the patient in Firebase
 //                addPatient(fName, mName, lName, address, dob, bloodGroup, rhFactor, maritalStatus, phone, email, emergencyName, emergencyPhone);
-                addPatient(fName, mName, lName, address, sex, dob, maritalStatus, phone, email, emergencyName, emergencyPhone);
+                addPatient(fName, lName, address, sex, dob, maritalStatus, phone, email, emergencyName, emergencyPhone);
 
             }
         });
@@ -211,19 +193,16 @@ public class AddPatientFragment extends Fragment {
     }
 
 //    private void addPatient( String fName, String mName, String lName, String address, String dob, String bloodGroup, String rhFactor, String maritalStatus, String phone2, String email, String emergencyName, String emergencyPhone){
-    private void addPatient( String fName, String mName, String lName, String address, String sex, String dob, String maritalStatus, String phone2, String email, String emergencyName, String emergencyPhone){
+    private void addPatient( String fName, String lName, String address, String sex, String dob, String maritalStatus, String phone, String email, String emergencyName, String emergencyPhone){
         CollectionReference documentReference = fstore.collection("patients");
         Map<String, Object> patientData = new HashMap<>();
         patientData.put("fName", fName);
-        patientData.put("mName", mName);
         patientData.put("lName", lName);
-        patientData.put("sex", sex);
         patientData.put("address", address);
+        patientData.put("sex", sex);
         patientData.put("dob", dob);
-//        patientData.put("bloodGroup", bloodGroup);
-//        patientData.put("rhFactor", rhFactor);
         patientData.put("maritalStatus", maritalStatus);
-        patientData.put("cellPhone", phone2);
+        patientData.put("phone", phone);
         patientData.put("email", email);
         patientData.put("emergencyName", emergencyName);
         patientData.put("emergencyPhone", emergencyPhone);
