@@ -17,17 +17,23 @@ public class User implements Parcelable {
     private String permission;
     private String phone;
 
+    private String address;
+
+    private String location;
+
     public User() {
         // Default constructor required for Firestore deserialization
     }
 
-    public User(String documentId, String email, String fName, String lName, String permission, String phone) {
+    public User(String documentId, String email, String fName, String lName, String permission, String phone, String address, String location) {
         this.documentId = documentId;
         this.email = email;
         this.fName = fName;
         this.lName = lName;
         this.permission = permission;
         this.phone = phone;
+        this.address = address;
+        this.location = location;
     }
 
     protected User(Parcel in) {
@@ -37,6 +43,8 @@ public class User implements Parcelable {
         lName = in.readString();
         permission = in.readString();
         phone = in.readString();
+        address = in.readString();
+        address = in.readString();
     }
 
     public static final Creator<User> CREATOR = new Creator<User>() {
@@ -69,6 +77,13 @@ public class User implements Parcelable {
 
     public String getlName() {
         return lName;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+    public String getLocation() {
+        return location;
     }
 
     public void setlName(String lName) {
@@ -127,6 +142,8 @@ public class User implements Parcelable {
             this.lName = documentSnapshot.getString("lName");
             this.permission = documentSnapshot.getString("permission");
             this.phone = documentSnapshot.getString("phone");
+            this.address = documentSnapshot.getString("address");
+            this.location = documentSnapshot.getString("location");
         }
     }
 
@@ -139,6 +156,8 @@ public class User implements Parcelable {
         dest.writeString(lName);
         dest.writeString(permission);
         dest.writeString(phone);
+        dest.writeString(address);
+        dest.writeString(location);
     }
 
     @Override
