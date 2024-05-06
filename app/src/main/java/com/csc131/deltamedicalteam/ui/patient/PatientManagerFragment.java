@@ -1,7 +1,5 @@
 package com.csc131.deltamedicalteam.ui.patient;
 
-import static android.content.ContentValues.TAG;
-
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.os.Bundle;
@@ -24,14 +22,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.csc131.deltamedicalteam.R;
 import com.csc131.deltamedicalteam.adapter.PatientList;
 import com.csc131.deltamedicalteam.helper.SwipeItemTouchHelper;
-import com.csc131.deltamedicalteam.model.HealthConditions;
 import com.csc131.deltamedicalteam.model.Patient;
-import com.csc131.deltamedicalteam.model.User;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
@@ -59,12 +53,9 @@ public class PatientManagerFragment extends Fragment {
 
         // Find the Button and set its click listener
         Button btnAddPatient = view.findViewById(R.id.add_patient_button);
-        btnAddPatient.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Navigate to the destination fragment
-                Navigation.findNavController(v).navigate(R.id.action_patientManagerFragment_to_nav_add_patient);
-            }
+        btnAddPatient.setOnClickListener(v -> {
+            // Navigate to the destination fragment
+            Navigation.findNavController(v).navigate(R.id.action_patientManagerFragment_to_nav_add_patient);
         });
 
         SwipeItemTouchHelper swipeCurrentIllness = new SwipeItemTouchHelper(mAdapter);
@@ -105,9 +96,7 @@ public class PatientManagerFragment extends Fragment {
                     dialog.dismiss();
                     mAdapter.notifyDataSetChanged(); // Refresh the list after canceling
                 });
-                confirmDelete.setOnDismissListener(dialog -> {
-                    mAdapter.notifyDataSetChanged();
-                });
+                confirmDelete.setOnDismissListener(dialog -> mAdapter.notifyDataSetChanged());
                 confirmDelete.show();
             }
         });
@@ -130,7 +119,10 @@ public class PatientManagerFragment extends Fragment {
                 for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
                     // Convert DocumentSnapshot to Patient object
                     Patient patient = documentSnapshot.toObject(Patient.class);
-                    patient.setDocumentId(documentSnapshot.getId());
+//                    patient.setDocumentId(documentSnapshot.getId());
+
+                    assert patient != null;
+                    patient.fromDocumentSnapshot(documentSnapshot);
 
 
                     // Add the patient to the list
@@ -157,22 +149,17 @@ public class PatientManagerFragment extends Fragment {
                 });
 
                 // On item list clicked
-                mAdapter.setOnItemClickListener(new PatientList.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(View view, Patient obj, int position) {
-                        // Inside the click listener where you navigate to ProfilePatientFragment
-                        Patient selectedPatient = items.get(position);
-                        PatientManagerFragmentDirections.ActionPatientManagerFragmentToNavProfilePatient action =
-                                PatientManagerFragmentDirections.actionPatientManagerFragmentToNavProfilePatient(selectedPatient);
-                        Navigation.findNavController(view).navigate(action);
-                    }
+                mAdapter.setOnItemClickListener((view, obj, position) -> {
+                    // Inside the click listener where you navigate to ProfilePatientFragment
+                    Patient selectedPatient = items.get(position);
+                    PatientManagerFragmentDirections.ActionPatientManagerFragmentToNavProfilePatient action =
+                            PatientManagerFragmentDirections.actionPatientManagerFragmentToNavProfilePatient(selectedPatient);
+                    Navigation.findNavController(view).navigate(action);
                 });
             } else {
                 Log.d(TAG, "No documents found.");
             }
-        }).addOnFailureListener(e -> {
-            Log.e(TAG, "Error fetching documents: " + e.getMessage());
-        });
+        }).addOnFailureListener(e -> Log.e(TAG, "Error fetching documents: " + e.getMessage()));
     }
 
     public void filterList(String text) {
@@ -182,7 +169,7 @@ public class PatientManagerFragment extends Fragment {
             // Check if any field matches the query
             if (data.getName().toLowerCase().contains(text.toLowerCase()) ||
                     data.getEmail().toLowerCase().contains(text.toLowerCase()) ||
-                    data.getCellPhone().toLowerCase().contains(text.toLowerCase())) {
+                    data.getPhone().toLowerCase().contains(text.toLowerCase())) {
                 filteredList.add(data);
             }
         }
