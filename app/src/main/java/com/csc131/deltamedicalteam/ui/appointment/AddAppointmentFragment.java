@@ -108,12 +108,14 @@ public class AddAppointmentFragment extends Fragment {
                         new TimePickerDialog.OnTimeSetListener() {
                             @Override
                             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                                // Round the selected minute to the nearest 15 minutes
+                                minute = roundToNearest15Minutes(minute);
+
                                 // Handle the selected time
                                 String selectedTime = String.format(Locale.getDefault(), "%02d:%02d", hourOfDay, minute);
                                 timePickButton.setText("TIME PICK: " + selectedTime);
                             }
                         }, Calendar.getInstance().get(Calendar.HOUR_OF_DAY), Calendar.getInstance().get(Calendar.MINUTE), true);
-
                 // Show the TimePickerDialog
                 timePickerDialog.show();
             }
@@ -142,6 +144,15 @@ public class AddAppointmentFragment extends Fragment {
 
 
         return rootView;
+    }
+
+    private int roundToNearest15Minutes(int minute) {
+        int remainder = minute % 15;
+        if (remainder < 8) {
+            return minute - remainder;
+        } else {
+            return minute + (15 - remainder);
+        }
     }
 
     // Initialize Firestore
