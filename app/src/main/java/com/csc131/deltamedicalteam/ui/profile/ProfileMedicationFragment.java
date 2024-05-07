@@ -1,15 +1,20 @@
 package com.csc131.deltamedicalteam.ui.profile;
 
+import static android.content.ContentValues.TAG;
+
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,9 +22,15 @@ import androidx.fragment.app.Fragment;
 
 import com.csc131.deltamedicalteam.R;
 import com.csc131.deltamedicalteam.model.User;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class ProfileMedicationFragment extends Fragment {
-
+    FirebaseFirestore fStore;
+    String medDescription, medDosage, medFrequency;
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         com.csc131.deltamedicalteam.databinding.FragmentProfileUserBinding binding = com.csc131.deltamedicalteam.databinding.FragmentProfileUserBinding.inflate(inflater, container, false);
@@ -30,92 +41,130 @@ public class ProfileMedicationFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         // Retrieve the passed user information
-        ProfileUserFragmentArgs args = ProfileUserFragmentArgs.fromBundle(getArguments());
-        User user = args.getUser();
+        ProfileMedicationFragmentArgs args = ProfileMedicationFragmentArgs.fromBundle(getArguments());
+        String med = args.getMedication();
+
+
+        fStore = FirebaseFirestore.getInstance();
+
+//        ImageButton mPrint = view.findViewById(R.id.imageButton_medicationPrint);
 
         // Display the user information
-        TextView nameTextView = view.findViewById(R.id.profile_name);
-        TextView emailTextView = view.findViewById(R.id.profile_email);
-        TextView permissionTextView = view.findViewById(R.id.profile_permission);
-        TextView phoneTextView = view.findViewById(R.id.profile_phone);
+        TextView nameTextView = view.findViewById(R.id.profile_medicaitonName);
+        TextView descriptionTextView = view.findViewById(R.id.textview_description);
+        TextView dosageTextView = view.findViewById(R.id.textview_medicationDosage);
+        TextView frequencyTextView = view.findViewById(R.id.textview_medicationFrequency);
 
-        // Set user information in TextViews
-        nameTextView.setText(user.getName());
-        emailTextView.setText(user.getEmail());
-        permissionTextView.setText(user.getPermission());
-        phoneTextView.setText(user.getPhone());
 
-        // Set up edit buttons click listeners
-        ImageButton editNameButton = view.findViewById(R.id.edit_name_btn);
-        ImageButton editEmailButton = view.findViewById(R.id.edit_email_btn);
-        ImageButton editPhoneButton = view.findViewById(R.id.edit_phone_btn);
+        EditText descriptionEditText = view.findViewById(R.id.editTextTextMultiLine_medicationDescription);
+        EditText dosageEditText = view.findViewById(R.id.editTextTextMultiLine_medicationDosage);
+        EditText frequencyEditText = view.findViewById(R.id.editTextTextMultiLine_medicationFrequency);
+
+
+        Button mEditButton = view.findViewById(R.id.medicationProfile_edit_btn);
+        Button mSaveButton = view.findViewById(R.id.medicationProfile_save_btn);
 
 
 
-        // Set click listeners to allow editing directly in the fields
-        editNameButton.setOnClickListener(v -> showEditDialog("Name", user.getName(), nameTextView));
-        editEmailButton.setOnClickListener(v -> showEditDialog("Email", user.getEmail(), emailTextView));
-        editPhoneButton.setOnClickListener(v -> showEditDialog("Phone", user.getPhone(), phoneTextView));
+        DocumentReference MedRef = fStore.collection("medications").document(med);
+        MedRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                if (documentSnapshot.exists()) {
+                    // Access individual fields
+                    medDescription = documentSnapshot.getString("description");
+                    medDosage = documentSnapshot.getString("dosage");
+                    medFrequency = documentSnapshot.getString("frequency");
 
+                    // Now you can use the retrieved data as needed
+                    // For example, you can display it in your UI or perform further processing
 
-        // Set up call button
-        ImageButton callButton = view.findViewById(R.id.call_btn);
-        if (user.getPhone() == null || user.getPhone().isEmpty()) {
-            callButton.setVisibility(View.GONE); // Hide call button if phone number is empty
-        } else {
-            callButton.setVisibility(View.VISIBLE); // Show call button if phone number is valid
-            callButton.setOnClickListener(v -> makeCall(user.getPhone()));
-        }
+                    // Set user information in TextViews
+                    nameTextView.setText(med);
+                    descriptionTextView.setText(medDescription);
+                    dosageTextView.setText(medDosage);
+                    frequencyTextView.setText(medFrequency);
 
-        // Set up message button
-        ImageButton messageButton = view.findViewById(R.id.msg_btn);
-        if (user.getPhone() == null || user.getPhone().isEmpty()) {
-            messageButton.setVisibility(View.GONE); // Hide message button if phone number is empty
-        } else {
-            messageButton.setVisibility(View.VISIBLE); // Show message button if phone number is valid
-            messageButton.setOnClickListener(v -> sendMessage(user.getPhone()));
-        }
-    }
-
-
-    // Method to show a dialog for editing user information
-    private void showEditDialog(String field, String currentValue, TextView textView) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-        builder.setTitle("Edit " + field);
-
-        // Create an EditText for editing the value
-        final EditText editText = new EditText(requireContext());
-        editText.setText(currentValue);
-        builder.setView(editText);
-
-        // Set up the buttons
-        builder.setPositiveButton("Save", (dialog, which) -> {
-            String newValue = editText.getText().toString().trim();
-            textView.setText(newValue);
-            // You can perform further actions here, like updating the user object
-            // with the new value and saving it to a database, etc.
+//        nameEditText.setText(med);
+                    descriptionEditText.setText(medDescription);
+                    dosageEditText.setText(medDosage);
+                    frequencyEditText.setText(medFrequency);
+                } else {
+                    // Document does not exist
+                    Log.d(TAG, "No such document");
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                // Handle errors
+                Log.e(TAG, "Error fetching document: " + e.getMessage());
+            }
         });
-        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
 
-        builder.show();
+
+
+
+        mEditButton.setOnClickListener(v -> {
+            // Show EditText fields and Save button, hide TextViews and Edit button
+
+//            memberIDTextView.setVisibility(View.GONE);
+            descriptionTextView.setVisibility(View.GONE);
+            dosageTextView.setVisibility(View.GONE);
+            frequencyTextView.setVisibility(View.GONE);
+
+
+            descriptionEditText.setVisibility(View.VISIBLE);
+            dosageEditText.setVisibility(View.VISIBLE);
+            frequencyEditText.setVisibility(View.VISIBLE);
+
+            mEditButton.setVisibility(View.GONE);
+            mSaveButton.setVisibility(View.VISIBLE);
+
+        });
+
+        mSaveButton.setOnClickListener(v -> {
+            // Update Firestore with new values
+
+            String newDescription= descriptionEditText.getText().toString();
+            String newDosage = dosageEditText.getText().toString();
+            String newFrequency = frequencyEditText.getText().toString();
+
+            DocumentReference medicationRef = fStore.collection("medications").document(med);
+            medicationRef.update(
+                            "description",newDescription,
+                            "dosage", newDosage,
+                            "frequency", newFrequency)
+                    .addOnSuccessListener(aVoid -> {
+                        Toast.makeText(getContext(), "Medication updated successfully", Toast.LENGTH_SHORT).show();
+                        // Hide EditText fields and Save button, show TextViews and Edit button
+
+                        descriptionTextView.setText(newDescription);
+                        dosageTextView.setText(newDosage);
+                        frequencyTextView.setText(newFrequency);
+
+
+                        descriptionTextView.setVisibility(View.VISIBLE);
+                        dosageTextView.setVisibility(View.VISIBLE);
+                        frequencyTextView.setVisibility(View.VISIBLE);
+
+
+                        descriptionEditText.setVisibility(View.GONE);
+                        dosageEditText.setVisibility(View.GONE);
+                        frequencyEditText.setVisibility(View.GONE);
+
+                        mEditButton.setVisibility(View.VISIBLE);
+                        mSaveButton.setVisibility(View.GONE);
+
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.e("Firestore Error", "Error updating document: " + e.getMessage());
+                        Toast.makeText(getContext(), "Failed to update profile", Toast.LENGTH_SHORT).show();
+                    });
+        });
     }
 
-    private void makeCall(String phoneNumber) {
-        Intent intent = new Intent(Intent.ACTION_DIAL);
-        intent.setData(Uri.parse("tel:" + phoneNumber));
-        startActivity(intent);
-    }
-
-    private void sendMessage(String phoneNumber) {
-        Intent intent = new Intent(Intent.ACTION_SENDTO);
-        intent.setData(Uri.parse("smsto:" + phoneNumber));
-        startActivity(intent);
-    }
-
-
-
-    @Override
-    public void onDestroyView() {
+        public void onDestroyView() {
         super.onDestroyView();
     }
 }
