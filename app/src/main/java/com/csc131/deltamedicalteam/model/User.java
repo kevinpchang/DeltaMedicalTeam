@@ -96,7 +96,7 @@ public class User implements Parcelable {
 
     @NonNull
     @Override
-    public String toString() {  return fName + " " + lName;}
+    public String toString() {  return "(" + permission + ") "+ fName + " " + lName ;}
 
     public String getPermission() {
         return permission;

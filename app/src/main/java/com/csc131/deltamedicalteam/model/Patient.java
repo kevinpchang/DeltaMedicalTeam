@@ -96,6 +96,12 @@ public class Patient implements Parcelable {
 
 //    public void setDocumentId(String documentId) { this.documentId = documentId;}
 
+    @NonNull
+    @Override
+    public String toString() {
+        return this.getMemberID() + " - "+ fName + " " + lName; // Return the name when the object is converted to a string
+    }
+
     public  String getDocumentId() {
         return documentId;
     }
