@@ -1,26 +1,33 @@
 package com.csc131.deltamedicalteam.ui.user;
 
+import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.csc131.deltamedicalteam.R;
 import com.csc131.deltamedicalteam.adapter.UserList;
+import com.csc131.deltamedicalteam.helper.SwipeItemTouchHelper;
+import com.csc131.deltamedicalteam.model.Appointment;
 import com.csc131.deltamedicalteam.model.User;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -72,6 +79,7 @@ public class UserManagerFragment extends Fragment {
                 if (!queryDocumentSnapshots.isEmpty()) {
                     List<User> items = new ArrayList<>();
                     for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+
                         // Retrieve user information from Firestore document
                         String documentId = documentSnapshot.getId();
                         String fName = documentSnapshot.getString("fName");
@@ -79,6 +87,8 @@ public class UserManagerFragment extends Fragment {
                         String email = documentSnapshot.getString("email");
                         String phoneNumber = documentSnapshot.getString("phone");
                         String permission = documentSnapshot.getString("permission");
+
+
 
                         // Create User object with user information
                         User user = new User(documentId, email, fName, lName, permission, phoneNumber);
@@ -88,6 +98,56 @@ public class UserManagerFragment extends Fragment {
                     // Set data and list adapter
                     mAdapter = new UserList(getActivity(), items);
                     recyclerView.setAdapter(mAdapter);
+
+                    SwipeItemTouchHelper swipeItemTouchHelper = new SwipeItemTouchHelper(mAdapter);
+                    // Create an instance of ItemTouchHelper and attach SwipeItemTouchHelper to it
+                    ItemTouchHelper itemTouchHelper = new ItemTouchHelper(swipeItemTouchHelper);
+                    itemTouchHelper.attachToRecyclerView(recyclerView);
+                    swipeItemTouchHelper.setSwipeListener(new SwipeItemTouchHelper.SwipeListener() {
+                        @SuppressLint("NotifyDataSetChanged")
+                        @Override
+                        public void onItemDismiss(int position) {
+                            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                            builder.setTitle("Confirm Deletion");
+                            builder.setMessage("Are you sure you want to remove this User?");
+                            builder.setPositiveButton("Yes", (dialog, which) -> {
+
+                                // Remove the item from the list
+                                User removedUser = mAdapter.getUsers().get(position); // Get the User at the specified position
+                                Log.d(TAG, "ID got: " + removedUser.getDocumentId());
+                                mAdapter.getUsers().remove(position); // Remove the User from the list
+                                mAdapter.notifyItemRemoved(position); // Notify the adapter about the removal
+
+
+                                // Additional logic to handle the removal from the database (already implemented in your code)
+                                FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+                                DocumentReference userRef = db.collection("users").document(removedUser.getDocumentId());
+                                userRef.delete()
+                                        .addOnSuccessListener(aVoid -> {
+                                            Toast.makeText(getContext(), "User Removed: " + removedUser.getDocumentId(), Toast.LENGTH_SHORT).show();
+                                            dialog.dismiss(); // Dismiss the dialog after successful deletion
+
+                                        })
+                                        .addOnFailureListener(e -> {
+                                            Log.e(TAG, "Failed to remove User: " + e.getMessage());
+                                            // If removal from database fails, add the item back to the list and notify the adapter
+                                            mAdapter.getUsers().add(position, removedUser);
+                                            mAdapter.notifyItemInserted(position);
+                                            Toast.makeText(getContext(), "Failed to remove User: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                        });
+                                refreshUsers();
+                            });
+
+                            builder.setNegativeButton("Cancel", (dialog, which) -> {
+                                dialog.dismiss();
+                                mAdapter.notifyDataSetChanged(); // Refresh the list after canceling
+                            });
+                            builder.setOnDismissListener(dialog -> mAdapter.notifyDataSetChanged());
+                            builder.show();
+
+                        }
+                    });
 
                     // On item list clicked
                     mAdapter.setOnItemClickListener(new UserList.OnItemClickListener() {
@@ -110,6 +170,33 @@ public class UserManagerFragment extends Fragment {
                 Log.e(TAG, "Error fetching documents: " + e.getMessage());
             }
         });
+    }
+
+    private void refreshUsers() {
+        // Retrieve the updated list of users from the database
+        FirebaseFirestore.getInstance().collection("users")
+                .get().addOnSuccessListener(queryDocumentSnapshots -> {
+                    List<User> updatedUsers = new ArrayList<>();
+                    for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                        // Convert DocumentSnapshot to User object
+                        User mUser = documentSnapshot.toObject(User.class);
+                        // Call fromDocumentSnapshot() method to populate additional fields
+                        assert mUser != null;
+                        mUser.fromDocumentSnapshot(documentSnapshot);
+                        // Add the User to the list
+                        updatedUsers.add(mUser);
+                    }
+                    // Notify the adapter with the updated list of users
+                    if (mAdapter != null) {
+                        mAdapter.updateUsers(updatedUsers);
+                    } else {
+                        Log.e(TAG, "Adapter is null");
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "Error getting Users: " + e.getMessage());
+                });
+
     }
 
 

@@ -1,6 +1,7 @@
 package com.csc131.deltamedicalteam.ui.appointment;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,16 +20,18 @@ import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
-import androidx.navigation.fragment.NavHostFragment;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.csc131.deltamedicalteam.R;
 import com.csc131.deltamedicalteam.adapter.AppointmentListAdapter;
+import com.csc131.deltamedicalteam.helper.SwipeItemTouchHelper;
 import com.csc131.deltamedicalteam.model.Appointment;
 import com.csc131.deltamedicalteam.model.Patient;
 import com.csc131.deltamedicalteam.model.User;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -46,7 +49,7 @@ public class AppointmentManagerFragment extends Fragment {
 
     private final CollectionReference patientsRef = db.collection("patients");
     private final CollectionReference userRef = db.collection("users");
-
+    private Patient mCurrentPatient;
 
     List<Patient> patientNames = new ArrayList<>();
     List<User> userNames = new ArrayList<>();
@@ -150,8 +153,8 @@ public class AppointmentManagerFragment extends Fragment {
         patientSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Patient patient = (Patient) parent.getItemAtPosition(position);
-                String ID = patient.getDocumentId();
+                mCurrentPatient = (Patient) parent.getItemAtPosition(position);
+                String ID = mCurrentPatient.getDocumentId();
 
                     // Get selected patient name from spinner
                     mAdapter.filterByPatientID(ID);
@@ -214,17 +217,20 @@ public class AppointmentManagerFragment extends Fragment {
         // Reference to the "appointments" collection
         CollectionReference appointmentsRef = db.collection("appointments");
 
-        // Query to get all documents from the "appointments" collection
+// Query to get all documents from the "appointments" collection
         appointmentsRef.get().addOnSuccessListener(queryDocumentSnapshots -> {
             List<Appointment> appointments = new ArrayList<>();
             for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
                 // Convert DocumentSnapshot to Appointment object
                 Appointment appointment = documentSnapshot.toObject(Appointment.class);
 
+                // Call fromDocumentSnapshot() method to populate additional fields
+                assert appointment != null;
+                appointment.fromDocumentSnapshot(documentSnapshot);
+
                 // Add the Appointment to the list
                 appointments.add(appointment);
             }
-
 
             // Sort appointments based on date and time
             appointments.sort((a1, a2) -> {
@@ -237,11 +243,72 @@ public class AppointmentManagerFragment extends Fragment {
                 return a1.getTime().compareToIgnoreCase(a2.getTime());
             });
 
+            // Now you have a list of populated Appointment objects sorted by date and time
+            // You can use this list as needed
 
 
-            // Set data and list adapter
+
+
+
+        // Set data and list adapter
             mAdapter = new AppointmentListAdapter(getActivity(), appointments);
             recyclerView.setAdapter(mAdapter);
+
+            SwipeItemTouchHelper swipeItemTouchHelper = new SwipeItemTouchHelper(mAdapter);
+            // Create an instance of ItemTouchHelper and attach SwipeItemTouchHelper to it
+            ItemTouchHelper itemTouchHelper = new ItemTouchHelper(swipeItemTouchHelper);
+            itemTouchHelper.attachToRecyclerView(recyclerView);
+            swipeItemTouchHelper.setSwipeListener(new SwipeItemTouchHelper.SwipeListener() {
+                @SuppressLint("NotifyDataSetChanged")
+                @Override
+                public void onItemDismiss(int position) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                    builder.setTitle("Confirm Deletion");
+                    builder.setMessage("Are you sure you want to remove this appointment?");
+                    builder.setPositiveButton("Yes", (dialog, which) -> {
+
+                        // Remove the item from the list
+                        Appointment removedAppointment = mAdapter.getAppointments().get(position); // Get the appointment at the specified position
+                        Log.d(TAG, "ID got: " + removedAppointment.getAppointmentId());
+                        mAdapter.getAppointments().remove(position); // Remove the appointment from the list
+                        mAdapter.notifyItemRemoved(position); // Notify the adapter about the removal
+
+
+                        // Additional logic to handle the removal from the database (already implemented in your code)
+                        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+                        DocumentReference appointmentRef = db.collection("appointments").document(removedAppointment.getAppointmentId());
+                        appointmentRef.delete()
+                                .addOnSuccessListener(aVoid -> {
+                                    Toast.makeText(getContext(), "Appointment Removed: " + removedAppointment.getAppointmentId(), Toast.LENGTH_SHORT).show();
+                                    dialog.dismiss(); // Dismiss the dialog after successful deletion
+
+                                })
+                                .addOnFailureListener(e -> {
+                                    Log.e(TAG, "Failed to remove Appointment: " + e.getMessage());
+                                    // If removal from database fails, add the item back to the list and notify the adapter
+                                    mAdapter.getAppointments().add(position, removedAppointment);
+                                    mAdapter.notifyItemInserted(position);
+                                    Toast.makeText(getContext(), "Failed to remove appointment: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                });
+                        refreshAppointments();
+                    });
+
+                    builder.setNegativeButton("Cancel", (dialog, which) -> {
+                        dialog.dismiss();
+                        mAdapter.notifyDataSetChanged(); // Refresh the list after canceling
+                    });
+                    builder.setOnDismissListener(dialog -> mAdapter.notifyDataSetChanged());
+                    builder.show();
+
+                }
+
+
+
+
+
+
+            });
 
             // On item list clicked
             mAdapter.setOnItemClickListener((appointment, position) -> {
@@ -249,6 +316,31 @@ public class AppointmentManagerFragment extends Fragment {
                 Toast.makeText(requireContext(), "Item CLICKED", Toast.LENGTH_SHORT).show();
             });
         }).addOnFailureListener(e -> Log.e(TAG, "Error fetching documents: " + e.getMessage()));
+    }
+
+    private void refreshAppointments() {
+        // Retrieve the updated list of appointments from the database
+        FirebaseFirestore.getInstance().collection("appointments")
+                .get().addOnSuccessListener(queryDocumentSnapshots -> {
+                    List<Appointment> updatedAppointments = new ArrayList<>();
+                    for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                        // Convert DocumentSnapshot to Appointment object
+                        Appointment appointment = documentSnapshot.toObject(Appointment.class);
+                        // Call fromDocumentSnapshot() method to populate additional fields
+                        appointment.fromDocumentSnapshot(documentSnapshot);
+                        // Add the appointment to the list
+                        updatedAppointments.add(appointment);
+                    }
+                    // Notify the adapter with the updated list of appointments
+                    if (mAdapter != null) {
+                        mAdapter.updateAppointments(updatedAppointments);
+                    } else {
+                        Log.e(TAG, "Adapter is null");
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "Error getting appointments: " + e.getMessage());
+                });
     }
 
     // Method to fetch the list of patients, spinner is populated with patient objects
@@ -310,6 +402,9 @@ public class AppointmentManagerFragment extends Fragment {
         // Apply the adapter to the spinner
         userSpinner.setAdapter(adapter);
     }
+
+
+
 
 
 }

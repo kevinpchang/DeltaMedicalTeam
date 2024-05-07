@@ -6,6 +6,7 @@ import android.os.Parcelable;
 import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 public class User implements Parcelable {
@@ -115,6 +116,18 @@ public class User implements Parcelable {
                     // Handle errors by returning null
                     onSuccessListener.onSuccess(null);
                 });
+    }
+
+    public void fromDocumentSnapshot(DocumentSnapshot documentSnapshot) {
+        if (documentSnapshot != null && documentSnapshot.exists()) {
+            // Extract data from the documentSnapshot
+            this.documentId = documentSnapshot.getId();
+            this.email = documentSnapshot.getString("email");
+            this.fName = documentSnapshot.getString("fName");
+            this.lName = documentSnapshot.getString("lName");
+            this.permission = documentSnapshot.getString("permission");
+            this.phone = documentSnapshot.getString("phone");
+        }
     }
 
     // Parcelable methods

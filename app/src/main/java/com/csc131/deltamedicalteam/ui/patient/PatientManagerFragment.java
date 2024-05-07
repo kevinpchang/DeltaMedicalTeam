@@ -125,6 +125,7 @@ public class PatientManagerFragment extends Fragment {
                     Patient patient = documentSnapshot.toObject(Patient.class);
                     patient.setDocumentId(documentSnapshot.getId());
 
+
                     // Add the patient to the list
                     items.add(patient);
                 }

@@ -6,7 +6,6 @@ import android.os.Parcelable;
 import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.List;
@@ -27,8 +26,9 @@ public class Patient implements Parcelable {
     private String rhFactor;
     private String email;
 
+    private List<String> specificAllergies;
     private HealthConditions healthConditions;
-    private List specificAllergies;;
+  
 
 
     public Patient() {
@@ -40,7 +40,7 @@ public class Patient implements Parcelable {
         this.address = address;
         this.ageFormat = ageFormat;
         this.bloodGroup = bloodGroup;
-         this.dob = dob; // Temporarily disable dob field
+        //this.dob = dob; // Temporarily disable dob field
         this.fName = fName;
         this.lName = lName;
         this.sex = sex;
@@ -95,9 +95,9 @@ public class Patient implements Parcelable {
         return address;
     }
 
-//    public String getAgeFormat() {
-//        return ageFormat;
-//    }
+    public String getAgeFormat() {
+        return ageFormat;
+    }
 
 //    public String getBloodGroup() {
 //        return bloodGroup;
@@ -128,9 +128,9 @@ public class Patient implements Parcelable {
     @Override
     public String toString() {  return fName + " " + lName;}
 
-//    public String getMaritalStatus() {
-//        return maritalStatus;
-//    }
+    public String getMaritalStatus() {
+        return maritalStatus;
+    }
 
 //    public Medication getMedication() {
 //        return medication;
@@ -141,6 +141,9 @@ public class Patient implements Parcelable {
 //    public String getRhFactor() {
 //        return rhFactor;
 //    }
+
+
+
 
     // Getter and setter for imageResource
     public int getImage() {
@@ -182,30 +185,8 @@ public class Patient implements Parcelable {
                 });
     }
 
-    public void fromDocumentSnapshot(DocumentSnapshot document) {
-        documentId = document.getId();
-        address = document.getString("address");
-        ageFormat = document.getString("ageFormat");
-        bloodGroup = document.getString("bloodGroup");
-        fName = document.getString("fName");
-        lName = document.getString("lName");
-        maritalStatus = document.getString("maritalStatus");
-        rhFactor = document.getString("rhFactor");
-// Get specificAllergies as a List<String> instead of String[]
-        specificAllergies = document.get("specificAllergies", List.class);
 
-        
-        // Extract nested objects
-        healthConditions = document.toObject(HealthConditions.class);
-        medication = document.toObject(Medication.class);
-    }
 
-    // Add method to convert to Map for Firestore
-//    public Map<String, Object> toMap() {
-//        // Convert all fields to a Map
-//        // You need to implement this according to your document structure
-//        return null;
-//    }
 
     // Parcelable methods
     @Override
@@ -233,14 +214,7 @@ public class Patient implements Parcelable {
     }
 
 
-    public String getAgeFormat() {
-        String ret = "??";
-        return  ret;
-    }
 
-    public String getMaritalStatus() {
-        return  maritalStatus;
-    }
 }
 
 

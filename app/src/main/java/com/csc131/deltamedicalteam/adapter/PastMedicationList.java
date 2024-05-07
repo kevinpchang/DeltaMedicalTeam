@@ -9,6 +9,7 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.csc131.deltamedicalteam.R;
+import com.csc131.deltamedicalteam.model.HealthConditions;
 import com.csc131.deltamedicalteam.model.Medication;
 
 import java.util.ArrayList;
@@ -32,6 +33,13 @@ public class PastMedicationList extends RecyclerView.Adapter<RecyclerView.ViewHo
     public PastMedicationList(Context context, List<Medication> items) {
         this.items = items;
         ctx = context;
+    }
+
+    public List<Medication> getPastMedication() { return items;}
+
+    public void updatePastMedication(List<Medication> updatedItems){
+        items.clear();
+        items.addAll(updatedItems);
     }
 
     public class OriginalViewHolder extends RecyclerView.ViewHolder {

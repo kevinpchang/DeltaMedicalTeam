@@ -29,13 +29,43 @@
         android:id="@+id/nav_medication"
         android:name="com.csc131.deltamedicalteam.ui.medication.MedicationFragment"
         android:label="@string/menu_medication"
-        tools:layout="@layout/fragment_medication" />
+        tools:layout="@layout/fragment_medication" >
+        <action
+            android:id="@+id/action_medicationManagerFragment_to_nav_profile_current_medication"
+            app:destination="@id/nav_profile_current_medication" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_profile_current_medication"
+        android:name="com.csc131.deltamedicalteam.ui.profile.ProfileCurrentMedicationFragment"
+        android:label="Medication Detail"
+        tools:layout="@layout/fragment_profile_current_medication" >
+        <argument
+            android:name="medication"
+            app:argType="com.csc131.deltamedicalteam.model.Medication" />
+    </fragment>
 
     <fragment
         android:id="@+id/nav_health_condition"
         android:name="com.csc131.deltamedicalteam.ui.healthcondition.HealthConditionFragment"
         android:label="@string/menu_health_condition"
-        tools:layout="@layout/fragment_health_condition" />
+        tools:layout="@layout/fragment_health_condition">
+        <action
+            android:id="@+id/action_healthManagerFragment_to_nav_profile_current_illness"
+            app:destination="@id/nav_profile_current_illness" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_profile_current_illness"
+        android:name="com.csc131.deltamedicalteam.ui.profile.ProfileCurrentIllnessFragment"
+        android:label="Illness Detail"
+        tools:layout="@layout/fragment_profile_current_illness" >
+        <argument
+            android:name="healthConditions"
+            app:argType="com.csc131.deltamedicalteam.model.HealthConditions" />
+    </fragment>
+
+
 
     <fragment
         android:id="@+id/nav_lab_report"
@@ -55,6 +85,16 @@
         <action
             android:id="@+id/action_appointmentManagerFragment_to_nav_profile_appointment"
             app:destination="@id/nav_profile_appointment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_profile_appointment"
+        android:name="com.csc131.deltamedicalteam.ui.profile.ProfileAppointmentFragment"
+        android:label="Appointment Detail"
+        tools:layout="@layout/fragment_profile_appointment" >
+        <argument
+            android:name="appointment"
+            app:argType="com.csc131.deltamedicalteam.model.Appointment" />
     </fragment>
 
     <fragment
@@ -90,20 +130,18 @@
     </fragment>
 
     <fragment
-        android:id="@+id/nav_profile_appointment"
-        android:name="com.csc131.deltamedicalteam.ui.profile.ProfileAppointmentFragment"
-        android:label="Appointment Detail"
-        tools:layout="@layout/fragment_profile_appointment" >
-        <argument
-            android:name="appointment"
-            app:argType="com.csc131.deltamedicalteam.model.Appointment" />
-    </fragment>
+        android:id="@+id/nav_add_patient"
+        android:name="com.csc131.deltamedicalteam.ui.patient.AddPatientFragment"
+        android:label="@string/menu_add_patient"
+        tools:layout="@layout/fragment_addpatient" />
 
-    <fragment
-        android:id="@+id/nav_add_user"
-        android:name="com.csc131.deltamedicalteam.ui.user.AddUserFragment"
-        android:label="@string/menu_add_user"
-        tools:layout="@layout/fragment_adduser" />
+
+
+
+
+
+
+
 
     <fragment
         android:id="@+id/userManagerFragment"
@@ -118,11 +156,13 @@
             app:destination="@id/nav_profile_user" />
     </fragment>
 
+
+
     <fragment
-        android:id="@+id/nav_add_patient"
-        android:name="com.csc131.deltamedicalteam.ui.patient.AddPatientFragment"
-        android:label="@string/menu_add_patient"
-        tools:layout="@layout/fragment_addpatient" />
+        android:id="@+id/nav_add_user"
+        android:name="com.csc131.deltamedicalteam.ui.user.AddUserFragment"
+        android:label="@string/menu_add_user"
+        tools:layout="@layout/fragment_adduser" />
 
 
 </navigation>

@@ -16,13 +16,14 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.csc131.deltamedicalteam.R;
+import com.csc131.deltamedicalteam.model.HealthConditions;
 import com.csc131.deltamedicalteam.model.User;
 
-public class ProfileUserFragment extends Fragment {
+public class ProfileCurrentIllnessFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        com.csc131.deltamedicalteam.databinding.FragmentProfileUserBinding binding = com.csc131.deltamedicalteam.databinding.FragmentProfileUserBinding.inflate(inflater, container, false);
+        com.csc131.deltamedicalteam.databinding.FragmentProfileCurrentIllnessBinding binding = com.csc131.deltamedicalteam.databinding.FragmentProfileCurrentIllnessBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
     @Override
@@ -30,8 +31,8 @@ public class ProfileUserFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         // Retrieve the passed user information
-        ProfileUserFragmentArgs args = ProfileUserFragmentArgs.fromBundle(getArguments());
-        User user = args.getUser();
+        ProfileCurrentIllnessFragmentArgs args = ProfileCurrentIllnessFragmentArgs.fromBundle(getArguments());
+        HealthConditions health = args.getHealthConditions();
 
         // Display the user information
         TextView nameTextView = view.findViewById(R.id.profile_name);
@@ -40,10 +41,10 @@ public class ProfileUserFragment extends Fragment {
         TextView phoneTextView = view.findViewById(R.id.profile_phone);
 
         // Set user information in TextViews
-        nameTextView.setText(user.getName());
-        emailTextView.setText(user.getEmail());
-        permissionTextView.setText(user.getPermission());
-        phoneTextView.setText(user.getPhone());
+//        nameTextView.setText(health.getName());
+//        emailTextView.setText(health.getEmail());
+//        permissionTextView.setText(health.getPermission());
+//        phoneTextView.setText(health.getPhone());
 
         // Set up edit buttons click listeners
         ImageButton editNameButton = view.findViewById(R.id.edit_name_btn);
@@ -53,28 +54,28 @@ public class ProfileUserFragment extends Fragment {
 
 
         // Set click listeners to allow editing directly in the fields
-        editNameButton.setOnClickListener(v -> showEditDialog("Name", user.getName(), nameTextView));
-        editEmailButton.setOnClickListener(v -> showEditDialog("Email", user.getEmail(), emailTextView));
-        editPhoneButton.setOnClickListener(v -> showEditDialog("Phone", user.getPhone(), phoneTextView));
+//        editNameButton.setOnClickListener(v -> showEditDialog("Name", health.getName(), nameTextView));
+//        editEmailButton.setOnClickListener(v -> showEditDialog("Email", health.getEmail(), emailTextView));
+//        editPhoneButton.setOnClickListener(v -> showEditDialog("Phone", health.getPhone(), phoneTextView));
 
 
         // Set up call button
-        ImageButton callButton = view.findViewById(R.id.call_btn);
-        if (user.getPhone() == null || user.getPhone().isEmpty()) {
-            callButton.setVisibility(View.GONE); // Hide call button if phone number is empty
-        } else {
-            callButton.setVisibility(View.VISIBLE); // Show call button if phone number is valid
-            callButton.setOnClickListener(v -> makeCall(user.getPhone()));
-        }
-
-        // Set up message button
-        ImageButton messageButton = view.findViewById(R.id.msg_btn);
-        if (user.getPhone() == null || user.getPhone().isEmpty()) {
-            messageButton.setVisibility(View.GONE); // Hide message button if phone number is empty
-        } else {
-            messageButton.setVisibility(View.VISIBLE); // Show message button if phone number is valid
-            messageButton.setOnClickListener(v -> sendMessage(user.getPhone()));
-        }
+//        ImageButton callButton = view.findViewById(R.id.call_btn);
+//        if (health.getPhone() == null || health.getPhone().isEmpty()) {
+//            callButton.setVisibility(View.GONE); // Hide call button if phone number is empty
+//        } else {
+//            callButton.setVisibility(View.VISIBLE); // Show call button if phone number is valid
+//            callButton.setOnClickListener(v -> makeCall(user.getPhone()));
+//        }
+//
+//        // Set up message button
+//        ImageButton messageButton = view.findViewById(R.id.msg_btn);
+//        if (user.getPhone() == null || user.getPhone().isEmpty()) {
+//            messageButton.setVisibility(View.GONE); // Hide message button if phone number is empty
+//        } else {
+//            messageButton.setVisibility(View.VISIBLE); // Show message button if phone number is valid
+//            messageButton.setOnClickListener(v -> sendMessage(user.getPhone()));
+//        }
     }
 
 

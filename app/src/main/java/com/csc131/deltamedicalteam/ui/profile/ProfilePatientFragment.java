@@ -15,11 +15,11 @@ import com.csc131.deltamedicalteam.R;
 import com.csc131.deltamedicalteam.model.Patient;
 
 public class ProfilePatientFragment extends Fragment {
-    private com.csc131.deltamedicalteam.databinding.FragmentProfileBinding binding;
+    private com.csc131.deltamedicalteam.databinding.FragmentProfilePatientBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        binding = com.csc131.deltamedicalteam.databinding.FragmentProfileBinding.inflate(inflater, container, false);
+        binding = com.csc131.deltamedicalteam.databinding.FragmentProfilePatientBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
         return root;
     }

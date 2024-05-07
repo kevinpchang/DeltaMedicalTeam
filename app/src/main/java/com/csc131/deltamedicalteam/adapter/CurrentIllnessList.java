@@ -21,12 +21,19 @@ public class CurrentIllnessList extends RecyclerView.Adapter<RecyclerView.ViewHo
     private Context ctx;
     private OnItemClickListener mOnItemClickListener;
 
+
+
+
     public interface OnItemClickListener {
         void onItemClick(View view, HealthConditions obj, int position);
     }
 
-    public void setOnItemClickListener(final OnItemClickListener mItemClickListener) {
-        this.mOnItemClickListener = mItemClickListener;
+//    public void setOnItemClickListener(final OnItemClickListener mItemClickListener) {
+//        this.mOnItemClickListener = mItemClickListener;
+//    }
+
+    public void setOnItemClickListener(CurrentIllnessList.OnItemClickListener onItemClickListener) {
+        this.mOnItemClickListener = onItemClickListener;
     }
 
     public CurrentIllnessList(Context context, List<HealthConditions> hCons) {

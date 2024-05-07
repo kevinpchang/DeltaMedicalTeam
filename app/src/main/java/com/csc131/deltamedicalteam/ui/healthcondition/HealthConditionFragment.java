@@ -18,8 +18,8 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -31,19 +31,13 @@ import com.csc131.deltamedicalteam.adapter.MedicalHistoryList;
 import com.csc131.deltamedicalteam.helper.SwipeItemTouchHelper;
 import com.csc131.deltamedicalteam.model.HealthConditions;
 import com.csc131.deltamedicalteam.model.Patient;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -111,6 +105,18 @@ public class HealthConditionFragment extends Fragment {
                     mCurrentIllnessAdapter = new CurrentIllnessList(getActivity(), currIllnessItems);
                     recyclerViewCurrentIllness.setAdapter(mCurrentIllnessAdapter);
 
+                    // On item list clicked
+                    mCurrentIllnessAdapter.setOnItemClickListener(new CurrentIllnessList.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(View view, HealthConditions obj, int position) {
+                            // Inside the click listener where you navigate to ProfilePatientFragment
+                            HealthConditions hCons = currIllnessItems.get(position);
+                            HealthConditionFragmentDirections.ActionHealthManagerFragmentToNavProfileCurrentIllness action =
+                                    HealthConditionFragmentDirections.actionHealthManagerFragmentToNavProfileCurrentIllness(hCons);
+                            Navigation.findNavController(view).navigate(action);
+                        }
+                    });
+
                     //Medical History
                     List<String> prevIllness = (List<String>) documentSnapshot.get("previousIllnesses");
                     List<HealthConditions> prevIllnessItems = new ArrayList<>();
@@ -128,7 +134,7 @@ public class HealthConditionFragment extends Fragment {
 
                     List<String> currAllergies = (List<String>) documentSnapshot.get("specificAllergies");
 
-// Check if the list of allergies is not null and not empty
+                    // Check if the list of allergies is not null and not empty
                     if (currAllergies != null && !currAllergies.isEmpty()) {
                         // Create the adapter with the list of allergies
                         mAllergiesAdapter = new CurrentAllergiesList(currAllergies);
@@ -174,15 +180,15 @@ public class HealthConditionFragment extends Fragment {
                             DocumentReference patientRef = db.collection("patients").document(mCurrentPatient.getDocumentId());
                             patientRef.update("currentIllnesses", FieldValue.arrayRemove(removedCurrentIllness))
                                     .addOnSuccessListener(aVoid -> {
-                                        Toast.makeText(getContext(), "Allergy Removed: " + removedCurrentIllness, Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(getContext(), "Illness Removed: " + removedCurrentIllness, Toast.LENGTH_SHORT).show();
                                         dialog.dismiss(); // Dismiss the dialog after successful deletion
                                     })
                                     .addOnFailureListener(e -> {
-                                        Log.e(TAG, "Failed to remove allergy: " + e.getMessage());
+                                        Log.e(TAG, "Failed to remove illness: " + e.getMessage());
                                         // If removal from database fails, add the item back to the list and notify the adapter
                                         mCurrentIllnessAdapter.getHealthConditions().add(position, hCon);
                                         mCurrentIllnessAdapter.notifyItemInserted(position);
-                                        Toast.makeText(getContext(), "Failed to remove allergy: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(getContext(), "Failed to remove illness: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                                     });
                             AlertDialog.Builder confirmTransfer = new AlertDialog.Builder(getContext());
                             confirmTransfer.setTitle("Transfer");
@@ -190,15 +196,15 @@ public class HealthConditionFragment extends Fragment {
                             confirmTransfer.setPositiveButton("Yes", (transferDialog, transferWhich) -> {
                                 patientRef.update("previousIllnesses", FieldValue.arrayUnion(removedCurrentIllness))
                                         .addOnSuccessListener(aVoid -> {
-                                            Toast.makeText(getContext(), "Allergy Removed: " + removedCurrentIllness, Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(getContext(), "Illness moved: " + removedCurrentIllness, Toast.LENGTH_SHORT).show();
                                             transferDialog.dismiss(); // Dismiss the dialog after successful deletion
                                         })
                                         .addOnFailureListener(e -> {
-                                            Log.e(TAG, "Failed to remove allergy: " + e.getMessage());
+                                            Log.e(TAG, "Failed to move Illness: " + e.getMessage());
                                             // If removal from database fails, add the item back to the list and notify the adapter
                                             mAllergiesAdapter.getAllergies().add(position, removedCurrentIllness);
                                             mAllergiesAdapter.notifyItemInserted(position);
-                                            Toast.makeText(getContext(), "Failed to remove allergy: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(getContext(), "Failed to move Illness: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                                         });
                                 refreshHealthConditions();
                             });

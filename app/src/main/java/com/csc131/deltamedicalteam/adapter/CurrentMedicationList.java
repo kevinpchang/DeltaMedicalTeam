@@ -8,6 +8,7 @@ package com.csc131.deltamedicalteam.adapter;
         import androidx.recyclerview.widget.RecyclerView;
 
         import com.csc131.deltamedicalteam.R;
+        import com.csc131.deltamedicalteam.model.HealthConditions;
         import com.csc131.deltamedicalteam.model.Medication;
 
         import java.util.ArrayList;
@@ -33,6 +34,14 @@ public class CurrentMedicationList extends RecyclerView.Adapter<RecyclerView.Vie
     public CurrentMedicationList(Context context, List<Medication> items) {
         this.items = items;
         ctx = context;
+    }
+
+    public List<Medication> getHealthConditions() { return items; }
+
+    public void updateCurrentMedication(List<Medication> updatedItems){
+        items.clear();
+        items.addAll(updatedItems);
+        notifyDataSetChanged();
     }
 
     public class OriginalViewHolder extends RecyclerView.ViewHolder {
