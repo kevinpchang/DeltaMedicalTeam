@@ -51,7 +51,7 @@ public class ProfileAppointmentFragment extends Fragment {
 //        }
 
         if (phoneTextView != null) {
-            phoneTextView.setText(patient.getCellPhone());
+            phoneTextView.setText(patient.getPhone());
         } else {
             Log.e("TextView Error", "phoneTextView is null");
         }

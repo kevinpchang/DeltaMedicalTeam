@@ -2,8 +2,6 @@ package com.csc131.deltamedicalteam.ui.labreport;
 
 import static android.content.ContentValues.TAG;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,38 +12,26 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.csc131.deltamedicalteam.R;
-import com.csc131.deltamedicalteam.adapter.CurrentAllergiesList;
-import com.csc131.deltamedicalteam.adapter.CurrentIllnessList;
-import com.csc131.deltamedicalteam.databinding.FragmentHomeBinding;
-import com.csc131.deltamedicalteam.databinding.FragmentLabReportBinding;
-import com.csc131.deltamedicalteam.model.HealthConditions;
 import com.csc131.deltamedicalteam.model.Patient;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.Firebase;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.ListResult;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -216,8 +202,11 @@ public class LabReportFragment extends Fragment {
                         // Get patient name from DocumentSnapshot
                         // Get patient id from DocumentSnapshot
                         Patient patient = documentSnapshot.toObject(Patient.class);
-                        String documentId = documentSnapshot.getId();
-                        patient.setDocumentId(documentId);
+
+                        assert patient != null;
+                        patient.fromDocumentSnapshot(documentSnapshot);
+//                        String documentId = documentSnapshot.getId();
+//                        patient.setDocumentId(documentId);
 
                         // Add patient name to the list
                         patientNames.add(patient);

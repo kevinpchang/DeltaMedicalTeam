@@ -351,8 +351,10 @@ public class AppointmentManagerFragment extends Fragment {
                         // Get patient name from DocumentSnapshot
                         // Get patient id from DocumentSnapshot
                         Patient patient = documentSnapshot.toObject(Patient.class);
-                        String documentId = documentSnapshot.getId();
-                        patient.setDocumentId(documentId);
+
+                        assert patient != null;
+                        patient.fromDocumentSnapshot(documentSnapshot);
+
 
                         // Add patient name to the list
                         patientNames.add(patient);

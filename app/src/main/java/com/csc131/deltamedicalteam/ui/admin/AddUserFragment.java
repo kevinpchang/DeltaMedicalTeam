@@ -1,4 +1,4 @@
-package com.csc131.deltamedicalteam.ui.user;
+package com.csc131.deltamedicalteam.ui.admin;
 import com.balysv.materialripple.MaterialRippleLayout;
 import com.csc131.deltamedicalteam.R;
 import android.os.Bundle;
@@ -29,10 +29,11 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class AddUserFragment extends Fragment {
 
-    private EditText mFullname, mEmail, mPhone;
+    private EditText mFname, mLname, mEmail, mPhone;
     private Spinner mPermission;
     private MaterialRippleLayout mRegisterBtn;
     private FirebaseAuth fAuth;
@@ -54,7 +55,8 @@ public class AddUserFragment extends Fragment {
         mPermission.setAdapter(adapter);
 
 
-        mFullname = rootView.findViewById(R.id.add_user_fName);
+        mFname = rootView.findViewById(R.id.add_user_fName);
+        mLname = rootView.findViewById(R.id.add_user_lName);
         mPhone = rootView.findViewById(R.id.phone);
         mEmail = rootView.findViewById(R.id.add_user_address);
         mRegisterBtn = rootView.findViewById(R.id.bt_create_account);
@@ -70,7 +72,8 @@ public class AddUserFragment extends Fragment {
                 // Handle registration logic
                 String email = mEmail.getText().toString().trim();
 
-                String fullName = mFullname.getText().toString();
+                String fName = mFname.getText().toString();
+                String lName = mLname.getText().toString();
                 String phone = mPhone.getText().toString();
                 String permission = (String) mPermission.getSelectedItem();
 
@@ -83,20 +86,34 @@ public class AddUserFragment extends Fragment {
                     return;
                 }
 
-                if (TextUtils.isEmpty(fullName)) {
-                    mFullname.setError("Name is Required.");
+                if (TextUtils.isEmpty(fName)) {
+                    mFname.setError("First name is Required.");
+                    return;
+                } else if (fName.length() < 3) {
+                    mFname.setError("First name must be at least 3 chars.");
+                    return;
+                }
+
+                if (TextUtils.isEmpty(lName)) {
+                    mLname.setError("Last name is Required.");
+                    return;
+                } else if (lName.length() < 3) {
+                    mLname.setError("Last name must be at least 3 chars.");
                     return;
                 }
 
                 if (TextUtils.isEmpty(phone)) {
-                    mPhone.setError("com.csc131.deltamedicalteam.model.Patient.Phone is Required.");
+                    mPhone.setError("Phone is Required.");
+                    return;
+                } else if (phone.length() != 10) {
+                    mPhone.setError("Phone number must be 10 digits.");
                     return;
                 }
 
 
 
                 progressBar.setVisibility(View.VISIBLE);
-                String password = setPassword(fullName,phone);
+                String password = setPassword(fName, lName, phone);
                 // Register the user in Firebase
                 fAuth.createUserWithEmailAndPassword(email, password)
                         .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -106,7 +123,7 @@ public class AddUserFragment extends Fragment {
                                     // User registration successful
                                     Toast.makeText(requireContext(), "User Created.", Toast.LENGTH_SHORT).show();
                                     sendEmailVerification();
-                                    saveUserData(fullName, email, phone, permission);
+                                    saveUserData(fName, lName, email, phone, permission);
                                 } else {
                                     // User registration failed
                                     Toast.makeText(requireContext(), "Error: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
@@ -127,25 +144,22 @@ public class AddUserFragment extends Fragment {
     private boolean isValidEmail(String email) {
         return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
-    public static String setPassword(String fullname, String phonenumber) {
+    public static String setPassword(String firstName,String lastName, String phoneNumber) {
         // Extract first name and last name
-        String[] names = fullname.split(" ");
-        String firstName = names[0];
-        String lastName = names[names.length - 1];
+
             // Extract last 4 digits of phone number
-            String lastFourDigits = phonenumber.substring(phonenumber.length() - 4);
+            String lastFourDigits = phoneNumber.substring(phoneNumber.length() - 4);
 
             // Generate password
-            String password = firstName.substring(0, 2) + lastName.substring(0, 2) + lastFourDigits;
 
-            return password;
+        return firstName.substring(0, 2) + lastName.substring(0, 2) + lastFourDigits;
 
     }
 
     private void sendEmailVerification() {
-        FirebaseUser fuser = fAuth.getCurrentUser();
-        if (fuser != null) {
-            fuser.sendEmailVerification()
+        FirebaseUser fUser = fAuth.getCurrentUser();
+        if (fUser != null) {
+            fUser.sendEmailVerification()
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void unused) {
@@ -161,16 +175,19 @@ public class AddUserFragment extends Fragment {
         }
     }
 
-    private void saveUserData(String fullName, String email, String phone, String permission) {
+    private void saveUserData(String fName, String lName, String email, String phone, String permission) {
         FirebaseUser user = fAuth.getCurrentUser();
         if (user != null) {
             String userID = user.getUid();
             DocumentReference documentReference = fstore.collection("users").document(userID);
             Map<String, Object> userData = new HashMap<>();
-            userData.put("fName", fullName);
+            userData.put("fName", fName);
+            userData.put("lName", lName);
             userData.put("email", email);
             userData.put("phone", phone);
             userData.put("permission", permission);
+            userData.put("address", "N/A");
+            userData.put("location", "N/A");
             documentReference.set(userData)
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
@@ -178,7 +195,7 @@ public class AddUserFragment extends Fragment {
                             // User data saved successfully
                             Toast.makeText(requireContext(), "User Profile created for " + userID, Toast.LENGTH_SHORT).show();
                             fAuth.signInWithEmailAndPassword("admin@csc131.delta", "123456");
-                            Navigation.findNavController(getView()).navigate(R.id.userManagerFragment);
+                            Navigation.findNavController(requireView()).navigate(R.id.userManagerFragment);
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {

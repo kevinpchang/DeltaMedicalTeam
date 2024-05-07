@@ -26,10 +26,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.csc131.deltamedicalteam.R;
 import com.csc131.deltamedicalteam.adapter.CurrentAllergiesList;
-import com.csc131.deltamedicalteam.adapter.CurrentIllnessList;
-import com.csc131.deltamedicalteam.adapter.MedicalHistoryList;
+import com.csc131.deltamedicalteam.adapter.StringList;
 import com.csc131.deltamedicalteam.helper.SwipeItemTouchHelper;
-import com.csc131.deltamedicalteam.model.HealthConditions;
 import com.csc131.deltamedicalteam.model.Patient;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.firestore.CollectionReference;
@@ -52,9 +50,9 @@ public class HealthConditionFragment extends Fragment {
     private Spinner patientSpinner;
     RecyclerView recyclerViewCurrentIllness, recyclerViewMedicalHistory, recyclerViewSpecificAllergies;
     TabLayout tabLayout;
-    private CurrentIllnessList mCurrentIllnessAdapter;
+    private StringList mCurrentIllnessAdapter;
     private String currentIllnessSelector;
-    private MedicalHistoryList mMedicalHistoryAdapter;
+    private StringList mMedicalHistoryAdapter;
     private CurrentAllergiesList mAllergiesAdapter;
 
     private Patient mCurrentPatient;
@@ -92,25 +90,25 @@ public class HealthConditionFragment extends Fragment {
                 String ID = mCurrentPatient.getDocumentId();
                 //uses patient id from spinner and to display current illnesses
                 patientsRef.document(ID).get().addOnSuccessListener(documentSnapshot -> {
-                    List<String> currIllness = (List<String>) documentSnapshot.get("currentIllnesses");
-                    List<HealthConditions> currIllnessItems = new ArrayList<>();
-                    //used to check if array is empty or not
-                    if (currIllness != null) {
-                        for (int i = 0; i < currIllness.size(); i++) {
-                            HealthConditions hCons = new HealthConditions();
-                            hCons.setCurrentIllnesses(currIllness.get(i));
-                            currIllnessItems.add(hCons);
-                        }
-                    }
-                    mCurrentIllnessAdapter = new CurrentIllnessList(getActivity(), currIllnessItems);
+                    List<String> currIllnessItems = (List<String>) documentSnapshot.get("currentIllnesses");
+//                    List<String> currIllnessItems = new ArrayList<>();
+//                    //used to check if array is empty or not
+//                    if (currIllness != null) {
+//                        for (int i = 0; i < currIllness.size(); i++) {
+////
+//                            mCurrentPatient.setCurrentIllnesses(currIllness.get(i));
+//                            currIllnessItems.add(hCons);
+//                        }
+//                    }
+                    mCurrentIllnessAdapter = new StringList(getActivity(), currIllnessItems);
                     recyclerViewCurrentIllness.setAdapter(mCurrentIllnessAdapter);
 
                     // On item list clicked
-                    mCurrentIllnessAdapter.setOnItemClickListener(new CurrentIllnessList.OnItemClickListener() {
+                    mCurrentIllnessAdapter.setOnItemClickListener(new StringList.OnItemClickListener() {
                         @Override
-                        public void onItemClick(View view, HealthConditions obj, int position) {
+                        public void onItemClick(View view, String obj, int position) {
                             // Inside the click listener where you navigate to ProfilePatientFragment
-                            HealthConditions hCons = currIllnessItems.get(position);
+                            String hCons = currIllnessItems.get(position);
                             HealthConditionFragmentDirections.ActionHealthManagerFragmentToNavProfileCurrentIllness action =
                                     HealthConditionFragmentDirections.actionHealthManagerFragmentToNavProfileCurrentIllness(hCons);
                             Navigation.findNavController(view).navigate(action);
@@ -118,16 +116,16 @@ public class HealthConditionFragment extends Fragment {
                     });
 
                     //Medical History
-                    List<String> prevIllness = (List<String>) documentSnapshot.get("previousIllnesses");
-                    List<HealthConditions> prevIllnessItems = new ArrayList<>();
-                    if (prevIllness != null) {
-                        for (int i = 0; i < prevIllness.size(); i++) {
-                            HealthConditions hCons = new HealthConditions();
-                            hCons.setPreviousIllnesses(prevIllness.get(i));
-                            prevIllnessItems.add(hCons);
-                        }
-                    }
-                    mMedicalHistoryAdapter = new MedicalHistoryList(getActivity(), prevIllnessItems);
+                    List<String> prevIllnessItems = (List<String>) documentSnapshot.get("pastIllnesses");
+//                    List<HealthConditions> prevIllnessItems = new ArrayList<>();
+//                    if (prevIllness != null) {
+//                        for (int i = 0; i < prevIllness.size(); i++) {
+//                            HealthConditions hCons = new HealthConditions();
+//                            hCons.setPreviousIllnesses(prevIllness.get(i));
+//                            prevIllnessItems.add(hCons);
+//                        }
+//                    }
+                    mMedicalHistoryAdapter = new StringList(getActivity(), prevIllnessItems);
                     recyclerViewMedicalHistory.setAdapter(mMedicalHistoryAdapter);
 
                     //currentAllegies
@@ -165,14 +163,17 @@ public class HealthConditionFragment extends Fragment {
                     @SuppressLint("NotifyDataSetChanged")
                     @Override
                     public void onItemDismiss(int position) {
-                        HealthConditions hCon = mCurrentIllnessAdapter.getHealthConditions().get(position);
-                        String removedCurrentIllness = mCurrentIllnessAdapter.getHealthConditions().get(position).getCurrentIllnesses();
+//                        HealthConditions hCon = mCurrentIllnessAdapter.getItem().get(position);
+//                        String removedCurrentIllness = mCurrentIllnessAdapter.getItem().get(position).getCurrentIllnesses();
                         AlertDialog.Builder confirmDelete = new AlertDialog.Builder(getContext());
                         confirmDelete.setTitle("Confirm Deletion");
                         confirmDelete.setMessage("Are you sure you want to remove this illness?");
                         confirmDelete.setPositiveButton("Yes", (dialog, which) -> {
+
                             // Remove the item from the list
-                            mCurrentIllnessAdapter.getHealthConditions().remove(position);
+                            String removedCurrentIllness = mCurrentIllnessAdapter.getItem().get(position);
+
+                            mCurrentIllnessAdapter.getItem().remove(position);
                             mCurrentIllnessAdapter.notifyItemRemoved(position);
 
                             // Remove the item from the database
@@ -186,7 +187,7 @@ public class HealthConditionFragment extends Fragment {
                                     .addOnFailureListener(e -> {
                                         Log.e(TAG, "Failed to remove illness: " + e.getMessage());
                                         // If removal from database fails, add the item back to the list and notify the adapter
-                                        mCurrentIllnessAdapter.getHealthConditions().add(position, hCon);
+                                        mCurrentIllnessAdapter.getItem().add(position, removedCurrentIllness);
                                         mCurrentIllnessAdapter.notifyItemInserted(position);
                                         Toast.makeText(getContext(), "Failed to remove illness: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                                     });
@@ -194,7 +195,7 @@ public class HealthConditionFragment extends Fragment {
                             confirmTransfer.setTitle("Transfer");
                             confirmTransfer.setMessage("Would you like to move this to Medical History?");
                             confirmTransfer.setPositiveButton("Yes", (transferDialog, transferWhich) -> {
-                                patientRef.update("previousIllnesses", FieldValue.arrayUnion(removedCurrentIllness))
+                                patientRef.update("pastIllnesses", FieldValue.arrayUnion(removedCurrentIllness))
                                         .addOnSuccessListener(aVoid -> {
                                             Toast.makeText(getContext(), "Illness moved: " + removedCurrentIllness, Toast.LENGTH_SHORT).show();
                                             transferDialog.dismiss(); // Dismiss the dialog after successful deletion
@@ -343,16 +344,17 @@ public class HealthConditionFragment extends Fragment {
                     .addOnSuccessListener(queryDocumentSnapshots -> {
                         List<String> illnessList = new ArrayList<>();
                         for(QueryDocumentSnapshot documentSnapshot: queryDocumentSnapshots) {
-                            List<String> illnesses = (List<String>) documentSnapshot.get("Illnesses");
-                            if(illnesses != null){
-                                illnessList.addAll(illnesses);
-                            }
+                            String documentId = documentSnapshot.getId(); // Get the Document ID
+                            illnessList.add(documentId); // Add Document ID to the list
+                        }
                             ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, illnessList);
                             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
                             illnessSelector.setAdapter(adapter);
-                        }
+
             });
+
+
 
             illnessSelector.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
@@ -444,8 +446,11 @@ public class HealthConditionFragment extends Fragment {
                         // Get patient name from DocumentSnapshot
                         // Get patient id from DocumentSnapshot
                         Patient patient = documentSnapshot.toObject(Patient.class);
-                        String documentId = documentSnapshot.getId();
-                        patient.setDocumentId(documentId);
+
+                        assert patient != null;
+                        patient.fromDocumentSnapshot(documentSnapshot);
+//                        String documentId = documentSnapshot.getId();
+//                        patient.setDocumentId(documentId);
 
                         // Add patient name to the list
                         patientNames.add(patient);
@@ -474,44 +479,36 @@ public class HealthConditionFragment extends Fragment {
         FirebaseFirestore.getInstance().collection("patients").document(mCurrentPatient.getDocumentId())
                 .get().addOnSuccessListener(documentSnapshot -> {
                     //current illnesses
-                    List<String> currentIllnesses = (List<String>) documentSnapshot.get("currentIllnesses");
-                    List<HealthConditions> updatedCurrentIllnesses = new ArrayList<>();
-                    if (currentIllnesses != null && !currentIllnesses.isEmpty()) {
-                        for (int i = 0; i < currentIllnesses.size(); i++) {
-                            HealthConditions hCons = new HealthConditions();
-                            hCons.setCurrentIllnesses(currentIllnesses.get(i));
-                            updatedCurrentIllnesses.add(hCons);
-                        }
-                        mCurrentIllnessAdapter.updateCurrentIllnesses(updatedCurrentIllnesses);
-                    }else {
+                    List<String> updatedCurrentIllnesses = (List<String>) documentSnapshot.get("currentIllnesses");
+//                    List<HealthConditions> updatedCurrentIllnesses = new ArrayList<>();
+                    if (updatedCurrentIllnesses != null && !updatedCurrentIllnesses.isEmpty()) {
+//                        for (int i = 0; i < currentIllnesses.size(); i++) {
+//                            HealthConditions hCons = new HealthConditions();
+//                            hCons.setCurrentIllnesses(currentIllnesses.get(i));
+//                            updatedCurrentIllnesses.add(hCons);
+//                        }
+                        mCurrentIllnessAdapter.updateItems(updatedCurrentIllnesses);
+                    } else {
                         // Create a dummy list if allergies are empty
                         List<String> tempdummyList = new ArrayList<>();
-                        List<HealthConditions> dummyList = new ArrayList<>();
+//                        List<HealthConditions> dummyList = new ArrayList<>();
                         tempdummyList.add("No illnesses found");
-                        HealthConditions dummyHCons = new HealthConditions();
-                        dummyHCons.setCurrentIllnesses(tempdummyList.get(0));
-                        dummyList.add(dummyHCons);
-                        mCurrentIllnessAdapter.updateCurrentIllnesses(dummyList);
+//
+
+                        mCurrentIllnessAdapter.updateItems(tempdummyList);
                     }
 
-                    List<String> previousIllnesses = (List<String>) documentSnapshot.get("previousIllnesses");
-                    List<HealthConditions> updatedPreviousIllnesses = new ArrayList<>();
+                    List<String> previousIllnesses = (List<String>) documentSnapshot.get("pastIllnesses");
+//                    List<HealthConditions> updatedPreviousIllnesses = new ArrayList<>();
                     if (previousIllnesses != null && !previousIllnesses.isEmpty()) {
-                        for (int i = 0; i < previousIllnesses.size(); i++) {
-                            HealthConditions hCons = new HealthConditions();
-                            hCons.setPreviousIllnesses(previousIllnesses.get(i));
-                            updatedPreviousIllnesses.add(hCons);
-                        }
-                        mMedicalHistoryAdapter.updateMedicalHistory(updatedPreviousIllnesses);
+
+                        mMedicalHistoryAdapter.updateItems(previousIllnesses);
                     }else {
                         // Create a dummy list if allergies are empty
                         List<String> tempdummyList = new ArrayList<>();
-                        List<HealthConditions> dummyList = new ArrayList<>();
                         tempdummyList.add("No illnesses found");
-                        HealthConditions dummyHCons = new HealthConditions();
-                        dummyHCons.setPreviousIllnesses(tempdummyList.get(0));
-                        dummyList.add(dummyHCons);
-                        mMedicalHistoryAdapter.updateMedicalHistory(dummyList);
+
+                        mMedicalHistoryAdapter.updateItems(tempdummyList);
                     }
                 });
     }

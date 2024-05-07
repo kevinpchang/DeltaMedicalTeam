@@ -91,28 +91,6 @@
                         android:background="@color/grey_5" />
 
                     <EditText
-                        android:id="@+id/add_patient_mName"
-                        style="@style/EditText.Flat.Grey"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/spacing_xxlarge"
-                        android:background="@android:color/transparent"
-                        android:hint="Middle Name"
-                        android:minHeight="@dimen/spacing_xmlarge"
-                        android:paddingLeft="@dimen/spacing_large"
-                        android:paddingRight="@dimen/spacing_large" />
-
-                    <View
-                        android:id="@+id/view2"
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@color/grey_5" />
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@color/grey_5" />
-
-                    <EditText
                         android:id="@+id/add_patient_lName"
                         style="@style/EditText.Flat.Grey"
                         android:layout_width="match_parent"
@@ -122,6 +100,11 @@
                         android:minHeight="@dimen/spacing_xmlarge"
                         android:paddingLeft="@dimen/spacing_large"
                         android:paddingRight="@dimen/spacing_large" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/grey_5" />
 
                     <TextView
                         android:layout_width="match_parent"
@@ -183,7 +166,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/spacing_xxlarge"
                         android:background="@android:color/transparent"
-                        android:hint="Date of Birth (MM-dd-yyyy)"
+                        android:hint="Date of Birth (MM-DD-YYYY)"
                         android:inputType="datetime|date"
                         android:minHeight="@dimen/spacing_xmlarge"
                         android:paddingLeft="@dimen/spacing_large"

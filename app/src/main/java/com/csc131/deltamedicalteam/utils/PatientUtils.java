@@ -15,7 +15,7 @@ public class PatientUtils {
         List<String> names = new ArrayList<>();
         for (Patient patient : patients) {
             // Concatenate first name and last name to form the full name
-            String fullName = patient.getfName() + " " + patient.getlName();
+            String fullName = patient.getName();
             names.add(fullName);
         }
         return names;

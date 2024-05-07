@@ -16,7 +16,6 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -24,24 +23,17 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.csc131.deltamedicalteam.R;
-import com.csc131.deltamedicalteam.adapter.CurrentIllnessList;
-import com.csc131.deltamedicalteam.adapter.CurrentMedicationList;
 import com.csc131.deltamedicalteam.adapter.PastMedicationList;
+import com.csc131.deltamedicalteam.adapter.StringList;
 import com.csc131.deltamedicalteam.helper.SwipeItemTouchHelper;
-import com.csc131.deltamedicalteam.model.HealthConditions;
 import com.csc131.deltamedicalteam.model.Medication;
 import com.csc131.deltamedicalteam.model.Patient;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,8 +52,8 @@ public class MedicationFragment extends Fragment {
     String currentMedicationSelector;
 
     private RecyclerView recyclerViewCurrentMedication, recyclerViewPastMedication;
-    private CurrentMedicationList mCurrentMedicationAdapter;
-    private PastMedicationList mPastMedicationAdapter;
+    private StringList mCurrentMedicationAdapter;
+    private StringList mPastMedicationAdapter;
     TabLayout tabLayout;
     List<Patient> patientNames = new ArrayList<>();
 
@@ -94,26 +86,25 @@ patientSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(
         String ID = mCurrentPatient.getDocumentId();
         //uses patient id from spinner and to display current illnesses
         patientsRef.document(ID).get().addOnSuccessListener(documentSnapshot ->  {
-
-                List<String> currMedication = (List<String>) documentSnapshot.get("currentMedications");
-                List<Medication> currMedicationItems = new ArrayList<>();
-                //used to check if array is empty or not
-                if (currMedication != null) {
-                    for (int i = 0; i < currMedication.size(); i++) {
-                        Medication cMeds = new Medication();
-                        cMeds.setCurrentMedications(currMedication.get(i));
-                        currMedicationItems.add(cMeds);
-                    }
-                }
-                mCurrentMedicationAdapter = new CurrentMedicationList(getActivity(), currMedicationItems);
+                List<String> currMedicationItems = (List<String>) documentSnapshot.get("currentMedications");
+//                List<Medication> currMedicationItems = new ArrayList<>();
+//                //used to check if array is empty or not
+//                if (currMedication != null) {
+//                    for (int i = 0; i < currMedication.size(); i++) {
+//                        Medication cMeds = new Medication();
+//                        cMeds.setCurrentMedications(currMedication.get(i));
+//                        currMedicationItems.add(cMeds);
+//                    }
+//                }
+                mCurrentMedicationAdapter = new StringList(getActivity(), currMedicationItems);
                 recyclerViewCurrentMedication.setAdapter(mCurrentMedicationAdapter);
 
                 // On item list clicked
-            mCurrentMedicationAdapter.setOnItemClickListener(new CurrentMedicationList.OnItemClickListener() {
+            mCurrentMedicationAdapter.setOnItemClickListener(new StringList.OnItemClickListener() {
                     @Override
-                    public void onItemClick(View view, Medication obj, int position) {
+                    public void onItemClick(View view, String obj, int position) {
                         // Inside the click listener where you navigate to ProfilePatientFragment
-                        Medication Meds = currMedicationItems.get(position);
+                        String Meds = currMedicationItems.get(position);
                         MedicationFragmentDirections.ActionMedicationManagerFragmentToNavProfileCurrentMedication action =
                                 MedicationFragmentDirections.actionMedicationManagerFragmentToNavProfileCurrentMedication(Meds);
                         Navigation.findNavController(view).navigate(action);
@@ -121,16 +112,16 @@ patientSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(
                 });
 
                 //Past medication history prescribed
-                List<String> pastMedication = (List<String>) documentSnapshot.get("pastMedications");
-                List<Medication> pastMedicationItems = new ArrayList<>();
-                if (pastMedication != null) {
-                    for (int i = 0; i < pastMedication.size(); i++) {
-                        Medication pMeds = new Medication();
-                        pMeds.setPastMedications(pastMedication.get(i));
-                        pastMedicationItems.add(pMeds);
-                    }
-                }
-                mPastMedicationAdapter = new PastMedicationList(getActivity(), pastMedicationItems);
+                List<String> pastMedicationItems = (List<String>) documentSnapshot.get("pastMedications");
+//                List<Medication> pastMedicationItems = new ArrayList<>();
+//                if (pastMedication != null) {
+//                    for (int i = 0; i < pastMedication.size(); i++) {
+//                        Medication pMeds = new Medication();
+//                        pMeds.setPastMedications(pastMedication.get(i));
+//                        pastMedicationItems.add(pMeds);
+//                    }
+//                }
+                mPastMedicationAdapter = new StringList(getActivity(), pastMedicationItems);
                 recyclerViewPastMedication.setAdapter(mPastMedicationAdapter);
 
 
@@ -147,14 +138,17 @@ patientSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(
             @Override
             public void onItemDismiss(int position) {
 
-                Medication cMed = mCurrentMedicationAdapter.getHealthConditions().get(position);
-                String removedMedication = mCurrentMedicationAdapter.getCurrentMedication().get(position).getCurrentMedications();
+//                Medication cMed = mCurrentMedicationAdapter.getItem().get(position);
+//                String removedMedication = mCurrentMedicationAdapter.getItem().get(position).getCurrentMedications();
                 AlertDialog.Builder confirmDelete = new AlertDialog.Builder(getContext());
                 confirmDelete.setTitle("Confirm Deletion");
                 confirmDelete.setMessage("Are you sure you want to remove this current medication?");
                 confirmDelete.setPositiveButton("Yes", (dialog, which) -> {
                     // Remove the item from the list
-                    mCurrentMedicationAdapter.getCurrentMedication().remove(position);
+
+                    String removedMedication = mCurrentMedicationAdapter.getItem().get(position);
+
+                    mCurrentMedicationAdapter.getItem().remove(position);
                     mCurrentMedicationAdapter.notifyItemRemoved(position);
 
                     // Get a reference to your Firestore collection
@@ -170,7 +164,7 @@ patientSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(
                             .addOnFailureListener(e -> {
                                 Toast.makeText(getContext(), "Failed to remove medication", Toast.LENGTH_SHORT).show();
                                 // Add the removed item back to the list if removal failed
-                                mCurrentMedicationAdapter.getCurrentMedication().add(position, cMed);
+                                mCurrentMedicationAdapter.getItem().add(position, removedMedication);
                                 mCurrentMedicationAdapter.notifyItemInserted(position);
                             });
 
@@ -189,7 +183,7 @@ patientSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(
                                 .addOnFailureListener(e -> {
                                     Log.e(TAG, "Failed to remove Medication: " + e.getMessage());
                                     // If removal from database fails, add the item back to the list and notify the adapter
-                                    mCurrentMedicationAdapter.getCurrentMedication().add(position, cMed);
+                                    mCurrentMedicationAdapter.getItem().add(position, removedMedication);
                                     mCurrentMedicationAdapter.notifyItemInserted(position);
                                     Toast.makeText(getContext(), "Failed to remove medication: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                                 });
@@ -262,15 +256,14 @@ patientSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(
                     .addOnSuccessListener(queryDocumentSnapshots -> {
                         List<String> medicationList = new ArrayList<>();
                         for(QueryDocumentSnapshot documentSnapshot: queryDocumentSnapshots) {
-                            List<String> medications = (List<String>) documentSnapshot.get("Medications");
-                            if(medications != null){
-                                medicationList.addAll(medications);
-                            }
-                            ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, medicationList);
-                            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                            medicationSelector.setAdapter(adapter);
+                            String documentId = documentSnapshot.getId(); // Get the Document ID
+                            medicationList.add(documentId); // Add Document ID to the list
                         }
+                        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, medicationList);
+                        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                        medicationSelector.setAdapter(adapter);
                     });
+
             medicationSelector.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -309,8 +302,11 @@ patientSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(
                         // Get patient name from DocumentSnapshot
                         // Get patient id from DocumentSnapshot
                         Patient patient = documentSnapshot.toObject(Patient.class);
-                        String documentId = documentSnapshot.getId();
-                        patient.setDocumentId(documentId);
+
+                        assert patient != null;
+                        patient.fromDocumentSnapshot(documentSnapshot);
+//                        String documentId = documentSnapshot.getId();
+//                        patient.setDocumentId(documentId);
 
                         // Add patient name to the list
                         patientNames.add(patient);
@@ -341,45 +337,45 @@ patientSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(
         FirebaseFirestore.getInstance().collection("patients").document(mCurrentPatient.getDocumentId())
                 .get().addOnSuccessListener(documentSnapshot -> {
                     //current medications
-                    List<String> currentMedication = (List<String>) documentSnapshot.get("currentMedications");
-                    List<Medication> updatedCurrentMedication = new ArrayList<>();
-                    if (currentMedication != null && !currentMedication.isEmpty()) {
-                        for (int i = 0; i < currentMedication.size(); i++) {
-                            Medication cMeds = new Medication();
-                            cMeds.setCurrentMedications(currentMedication.get(i));
-                            updatedCurrentMedication.add(cMeds);
-                        }
-                        mCurrentMedicationAdapter.updateCurrentMedication(updatedCurrentMedication);
+                    List<String> updatedCurrentMedication = (List<String>) documentSnapshot.get("currentMedications");
+//                    List<Medication> updatedCurrentMedication = new ArrayList<>();
+                    if (updatedCurrentMedication != null && !updatedCurrentMedication.isEmpty()) {
+//                        for (int i = 0; i < currentMedication.size(); i++) {
+//                            Medication cMeds = new Medication();
+//                            cMeds.setCurrentMedications(currentMedication.get(i));
+//                            updatedCurrentMedication.add(cMeds);
+//                        }
+                        mCurrentMedicationAdapter.updateItems(updatedCurrentMedication);
                     }else {
                         // Create a dummy list if allergies are empty
                         List<String> tempdummyList = new ArrayList<>();
-                        List<Medication> dummyList = new ArrayList<>();
+//                        List<Medication> dummyList = new ArrayList<>();
                         tempdummyList.add("No Medications found");
-                        Medication dummycMeds = new Medication();
-                        dummycMeds.setCurrentMedications(tempdummyList.get(0));
-                        dummyList.add(dummycMeds);
-                        mCurrentMedicationAdapter.updateCurrentMedication(dummyList);
+//                        Medication dummycMeds = new Medication();
+//                        dummycMeds.setCurrentMedications(tempdummyList.get(0));
+//                        dummyList.add(dummycMeds);
+                        mCurrentMedicationAdapter.updateItems(tempdummyList);
                     }
 
-                    List<String> pastMedications = (List<String>) documentSnapshot.get("pastMedications");
-                    List<Medication> updatedPastMedications = new ArrayList<>();
-                    if (pastMedications != null && !pastMedications.isEmpty()) {
-                        for (int i = 0; i < pastMedications.size(); i++) {
-                            Medication cMeds = new Medication();
-                            cMeds.setPastMedications(pastMedications.get(i));
-                            updatedPastMedications.add(cMeds);
-                        }
+                    List<String> updatedPastMedications = (List<String>) documentSnapshot.get("pastMedications");
+//                    List<Medication> updatedPastMedications = new ArrayList<>();
+                    if (updatedPastMedications != null && !updatedPastMedications.isEmpty()) {
+//                        for (int i = 0; i < pastMedications.size(); i++) {
+//                            Medication cMeds = new Medication();
+//                            cMeds.setPastMedications(pastMedications.get(i));
+//                            updatedPastMedications.add(cMeds);
+//                        }
 
-                        mPastMedicationAdapter.updatePastMedication(updatedPastMedications);
-                    }else {
+                        mPastMedicationAdapter.updateItems(updatedPastMedications);
+                    } else {
                         // Create a dummy list if allergies are empty
                         List<String> tempdummyList = new ArrayList<>();
-                        List<Medication> dummyList = new ArrayList<>();
+//                        List<Medication> dummyList = new ArrayList<>();
                         tempdummyList.add("No Medications found");
-                        Medication dummycMeds = new Medication();
-                        dummycMeds.setPastMedications(tempdummyList.get(0));
-                        dummyList.add(dummycMeds);
-                        mPastMedicationAdapter.updatePastMedication(dummyList);
+//                        Medication dummycMeds = new Medication();
+//                        dummycMeds.setPastMedications(tempdummyList.get(0));
+//                        dummyList.add(dummycMeds);
+                        mPastMedicationAdapter.updateItems(tempdummyList);
                     }
                 });
     }

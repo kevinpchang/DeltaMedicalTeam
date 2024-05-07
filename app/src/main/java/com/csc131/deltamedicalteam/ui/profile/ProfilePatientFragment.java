@@ -33,9 +33,8 @@ public class ProfilePatientFragment extends Fragment {
 
         // Display the patient information
         TextView nameTextView = view.findViewById(R.id.profile_name);
-        TextView ageTextView = view.findViewById(R.id.patient_age);
         TextView emailTextView = view.findViewById(R.id.profile_email);
-        TextView phoneTextView = view.findViewById(R.id.patient_cellPhone);
+        TextView phoneTextView = view.findViewById(R.id.patient_phone);
         TextView dobTextView = view.findViewById(R.id.patient_dob);
         TextView martialTextView = view.findViewById(R.id.patient_martialStatus);
         TextView addressTextView = view.findViewById(R.id.profile_address);
@@ -48,18 +47,14 @@ public class ProfilePatientFragment extends Fragment {
         } else {
             Log.e("TextView Error", "nameTextView is null");
         }
-        if (ageTextView != null) {
-            ageTextView.setText(patient.getAgeFormat());
-        } else {
-            Log.e("TextView Error", "ageTextView is null");
-        }
+
         if (emailTextView != null) {
             emailTextView.setText(patient.getEmail());
         } else {
             Log.e("TextView Error", "emailTextView is null");
         }
         if (phoneTextView != null) {
-            phoneTextView.setText(patient.getCellPhone());
+            phoneTextView.setText(patient.getPhone());
         } else {
             Log.e("TextView Error", "phoneTextView is null");
         }
@@ -86,7 +81,7 @@ public class ProfilePatientFragment extends Fragment {
        // }
 
    //     if (emergencyNumTextView != null) {
- //           emergencyNumTextView.setText(patient.getCellPhone());
+ //           emergencyNumTextView.setText(patient.getPhone());
   //      } else {
    //         Log.e("TextView Error", "emergencyNumTextView is null");
   //      }

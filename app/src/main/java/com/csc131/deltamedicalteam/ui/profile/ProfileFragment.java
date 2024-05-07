@@ -5,7 +5,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -37,76 +40,122 @@ public class ProfileFragment extends Fragment {
         binding = com.csc131.deltamedicalteam.databinding.FragmentProfileBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
+//       EditText mNameEditText = root.findViewById(R.id.profile_name_edit);
+//       EditText mPermissionEditText = root.findViewById(R.id.profile_permission_edit);
+        EditText mEmailEditText = root.findViewById(R.id.profile_email_edit);
+        EditText  mPhoneEditText = root.findViewById(R.id.profile_phone_edit);
+        EditText  mAddressEditText = root.findViewById(R.id.profile_address_edit);
+        EditText mLocationEditText = root.findViewById(R.id.profile_location_edit);
+
+        TextView mMemberIDTextView = root.findViewById(R.id.profile_memberID);
+        TextView mNameTextView = root.findViewById(R.id.profile_name);
+        TextView mEmailTextView = root.findViewById(R.id.profile_email);
+        TextView mPermissionTextView = root.findViewById(R.id.profile_permission);
+        TextView mPhoneTextView = root.findViewById(R.id.profile_phone);
+        TextView mAddressTextView = root.findViewById(R.id.profile_address);
+        TextView mLocationTextView = root.findViewById(R.id.profile_location);
+
+        Button mEditButton = root.findViewById(R.id.profile_edit_button);
+        Button  mSaveButton = root.findViewById(R.id.profile_save_button);
+        Button mResetPwdBtn = root.findViewById(R.id.reset_pwd_btn);
 
 
-        // Find the profileEmail view by its ID
-        TextView emailProfile = root.findViewById(R.id.profile_email);
-        TextView mName = root.findViewById(R.id.profile_name);
-        TextView mPermission = root.findViewById(R.id.profile_permission);
         //init Database
         fAuth = FirebaseAuth.getInstance();
         fStore = FirebaseFirestore.getInstance();
-
         userID = fAuth.getCurrentUser().getUid();
 
-        //pulling bd from table users
         DocumentReference documentReference = fStore.collection("users").document(userID);
+        documentReference.get().addOnSuccessListener(documentSnapshot -> {
+            if (documentSnapshot.exists()) {
 
-        // Create an EventListener<DocumentSnapshot> instance
-        EventListener<DocumentSnapshot> eventListener = new EventListener<DocumentSnapshot>() {
-            @Override
-            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException error) {
-                if (error != null) {
-                    // Handle any errors that occur during the retrieval of the document
-                    Log.e("Firestore Error", "Error fetching user document: " + error.getMessage());
-                    return;
-                }
+                String fName = documentSnapshot.getString("fName");
+                String lName = documentSnapshot.getString("lName");
+                String permission = documentSnapshot.getString("permission");
+                String phone = documentSnapshot.getString("phone");
+                String address = documentSnapshot.getString("address");
+                String location = documentSnapshot.getString("location");
+                String email = documentSnapshot.getString("email");
+                String fullName = fName + " " + lName;
 
-                if (documentSnapshot != null && documentSnapshot.exists()) {
-                    // Document exists, retrieve and set the text of TextViews with user's information
-                    String fullName = documentSnapshot.getString("fName");
-                    String email = documentSnapshot.getString("email");
-                    String permission = documentSnapshot.getString("permission");
+                // Extract first three characters of permission and last five characters of userID
+                String memberID = (permission.substring(0, Math.min(permission.length(), 3)) +
+                        userID.substring(userID.length() - 5)).toUpperCase();
 
-                    // Set the text of emailProfile TextView
-                    if (email != null) {
-                        emailProfile.setText(email);
-                    } else {
-                        Log.e("Firestore Error", "Email is null");
-                        emailProfile.setText("Click to setup Email"); //do this feature later
-                    }
+                mNameTextView.setText(fullName);
+                mMemberIDTextView.setText(memberID);
+                mEmailTextView.setText(email);
+                mPermissionTextView.setText(permission);
+                mPhoneTextView.setText(phone);
+                mAddressTextView.setText(address);
+                mLocationTextView.setText(location);
 
-                    // Set the text of emailProfile TextView
-                    if (fullName != null) {
-                        mName.setText(fullName);
-                    } else {
-                        Log.e("Firestore Error", "fullName is null");
-                        mName.setText("Click to setup fullName"); //do this feature later
-                    }
-
-                    // Set the text of emailProfile TextView
-                    if (permission != null) {
-                        mPermission.setText(permission);
-                    } else {
-                        Log.e("Firestore Error", "permission is null");
-                        mPermission.setText("Click to setup permission"); //do this feature later
-                    }
-
-                    // Similarly, handle other fields like fullName, permission, etc.
-                    // Make sure to handle null cases for other fields as well
-
-                } else {
-                    // Document does not exist or snapshot is null
-                    Log.e("Firestore Error", "User document does not exist or snapshot is null");
-                }
+                mEmailEditText.setText(email);
+                mPhoneEditText.setText(phone);
+                mAddressEditText.setText(address);
+                mLocationEditText.setText(location);
             }
-        };
+        });
 
-        // Add the event listener to the documentReference
-        documentReference.addSnapshotListener(eventListener);
+        mEditButton.setOnClickListener(view -> {
+            // Show EditText fields and Save button, hide TextViews and Edit button
+
+            mEmailTextView.setVisibility(View.GONE);
+            mPhoneTextView.setVisibility(View.GONE);
+            mAddressTextView.setVisibility(View.GONE);
+            mLocationTextView.setVisibility(View.GONE);
+
+            mEmailEditText.setVisibility(View.VISIBLE);
+            mPhoneEditText.setVisibility(View.VISIBLE);
+            mAddressEditText.setVisibility(View.VISIBLE);
+            mLocationEditText.setVisibility(View.VISIBLE);
+
+            mEditButton.setVisibility(View.GONE);
+            mSaveButton.setVisibility(View.VISIBLE);
+            mResetPwdBtn.setVisibility(View.GONE);
+        });
+
+        mSaveButton.setOnClickListener(view -> {
+            // Update Firestore with new values
+            String newPhone = mPhoneEditText.getText().toString();
+            String newAddress = mAddressEditText.getText().toString();
+            String newLocation = mLocationEditText.getText().toString();
+            String newEmail = mEmailEditText.getText().toString();
+
+            DocumentReference userRef = fStore.collection("users").document(userID);
+            userRef.update("phone", newPhone,
+                            "address", newAddress,
+                            "location", newLocation,
+                            "email", newEmail)
+                    .addOnSuccessListener(aVoid -> {
+                        Toast.makeText(getContext(), "Profile updated successfully", Toast.LENGTH_SHORT).show();
+                        // Hide EditText fields and Save button, show TextViews and Edit button
+
+                        mPhoneTextView.setText(newPhone);
+                        mEmailTextView.setText(newEmail);
+                        mAddressTextView.setText(newAddress);
+                        mLocationTextView.setText(newLocation);
 
 
-        // Now you can use emailProfile to work with the TextView
+                        mEmailTextView.setVisibility(View.VISIBLE);
+                        mPhoneTextView.setVisibility(View.VISIBLE);
+                        mAddressTextView.setVisibility(View.VISIBLE);
+                        mLocationTextView.setVisibility(View.VISIBLE);
+
+                        mEmailEditText.setVisibility(View.GONE);
+                        mPhoneEditText.setVisibility(View.GONE);
+                        mAddressEditText.setVisibility(View.GONE);
+                        mLocationEditText.setVisibility(View.GONE);
+
+                        mEditButton.setVisibility(View.VISIBLE);
+                        mSaveButton.setVisibility(View.GONE);
+                        mResetPwdBtn.setVisibility(View.VISIBLE);
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.e("Firestore Error", "Error updating document: " + e.getMessage());
+                        Toast.makeText(getContext(), "Failed to update profile", Toast.LENGTH_SHORT).show();
+                    });
+        });
 
         return root;
 

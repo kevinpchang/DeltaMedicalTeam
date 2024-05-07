@@ -75,15 +75,17 @@
                     android:orientation="vertical">
 
 
-                    <TextView
+                    <EditText
+                        android:id="@+id/add_medication_name"
+                        style="@style/EditText.Flat.Grey"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Permission" />
-
-                    <Spinner
-                        android:id="@+id/spinner_permission"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="@dimen/spacing_xxlarge"
+                        android:background="@android:color/transparent"
+                        android:hint="Medication Name"
+                        android:inputType="textEmailAddress"
+                        android:minHeight="@dimen/spacing_xmlarge"
+                        android:paddingLeft="@dimen/spacing_large"
+                        android:paddingRight="@dimen/spacing_large" />
 
                     <View
                         android:layout_width="match_parent"
@@ -107,14 +109,26 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Description" />
+
                     <EditText
-                        android:id="@+id/add_user_address"
+                        android:id="@+id/editTextTextMultiLine_medicationDescription"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ems="10"
+                        android:gravity="start|top"
+                        android:inputType="textMultiLine" />
+
+                    <EditText
+                        android:id="@+id/add_medication_dosage"
                         style="@style/EditText.Flat.Grey"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/spacing_xxlarge"
                         android:background="@android:color/transparent"
-                        android:hint="Email"
-                        android:inputType="textEmailAddress"
+                        android:hint="Dosage"
                         android:minHeight="@dimen/spacing_xmlarge"
                         android:paddingLeft="@dimen/spacing_large"
                         android:paddingRight="@dimen/spacing_large" />
@@ -123,6 +137,17 @@
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:background="@color/grey_5" />
+
+                    <EditText
+                        android:id="@+id/add_medication_Frequency"
+                        style="@style/EditText.Flat.Grey"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/spacing_xxlarge"
+                        android:background="@android:color/transparent"
+                        android:hint="Frequency"
+                        android:minHeight="@dimen/spacing_xmlarge"
+                        android:paddingLeft="@dimen/spacing_large"
+                        android:paddingRight="@dimen/spacing_large" />
 
                     <View
                         android:layout_width="match_parent"
@@ -147,57 +172,6 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
-                    <EditText
-                        android:id="@+id/add_user_fName"
-                        style="@style/EditText.Flat.Grey"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/spacing_xxlarge"
-                        android:background="@android:color/transparent"
-                        android:hint="First Name"
-                        android:minHeight="@dimen/spacing_xmlarge"
-                        android:paddingLeft="@dimen/spacing_large"
-                        android:paddingRight="@dimen/spacing_large" />
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@color/grey_5" />
-
-                    <EditText
-                        android:id="@+id/add_user_lName"
-                        style="@style/EditText.Flat.Grey"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/spacing_xxlarge"
-                        android:background="@android:color/transparent"
-                        android:hint="Last Name"
-                        android:minHeight="@dimen/spacing_xmlarge"
-                        android:paddingLeft="@dimen/spacing_large"
-                        android:paddingRight="@dimen/spacing_large" />
-
-                    <View
-                        android:id="@+id/view8"
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@color/grey_5" />
-
-                    <EditText
-                        android:id="@+id/phone"
-                        style="@style/EditText.Flat.Grey"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/spacing_xxlarge"
-                        android:background="@android:color/transparent"
-                        android:hint="Phone Number"
-                        android:inputType="phone"
-                        android:minHeight="@dimen/spacing_xmlarge"
-                        android:paddingLeft="@dimen/spacing_large"
-                        android:paddingRight="@dimen/spacing_large" />
-
-                    <View
-                        android:id="@+id/view"
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@color/grey_5" />
-
                     <com.balysv.materialripple.MaterialRippleLayout
                         android:id="@+id/bt_create_account"
                         style="@style/RippleStyleWhite"
@@ -209,7 +183,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
-                            android:text="ADD USER"
+                            android:text="ADD MEDICATION"
 
                             android:textAppearance="@style/Base.TextAppearance.AppCompat.Body2"
                             android:textColor="@android:color/white" />

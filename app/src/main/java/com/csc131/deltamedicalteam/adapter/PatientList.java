@@ -13,6 +13,7 @@ import com.csc131.deltamedicalteam.R;
 import com.csc131.deltamedicalteam.model.Patient;
 
 
+import com.csc131.deltamedicalteam.model.User;
 import com.csc131.deltamedicalteam.utils.Tools;
 
 import java.util.ArrayList;
@@ -69,19 +70,22 @@ public class PatientList extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     // Replace the contents of a view (invoked by the layout manager)
-
+    public void setFilteredList(List<Patient> filteredList ) {
+        this.items = filteredList;
+        notifyDataSetChanged();
+    }
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
         if (holder instanceof OriginalViewHolder) {
             OriginalViewHolder viewHolder = (OriginalViewHolder) holder;
-            String idSetText = items.get(position).getDocumentId();
-            String idSubString = idSetText.substring(Math.max(idSetText.length()-10,0));
+
+
 
             Patient patient = items.get(position);
-            viewHolder.id.setText(idSubString);
-            viewHolder.name.setText(patient.toString());
+            viewHolder.id.setText(patient.getMemberID());
+            viewHolder.name.setText(patient.getName());
             viewHolder.sex.setText(patient.getSex());
-            viewHolder.phone.setText(patient.getCellPhone());
+            viewHolder.phone.setText(patient.getPhone());
             viewHolder.address.setText(patient.getAddress()); // Assuming you have added an address TextView
 
             viewHolder.lyt_parent.setOnClickListener(view -> {
