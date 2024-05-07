@@ -1,21 +1,36 @@
 package com.csc131.deltamedicalteam.ui.profile;
 
+import static android.app.Activity.RESULT_OK;
+import static android.content.ContentValues.TAG;
+
+import android.app.Activity;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.media.Image;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.bumptech.glide.Glide;
+import com.csc131.deltamedicalteam.Login;
 import com.csc131.deltamedicalteam.R;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -23,13 +38,16 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 public class ProfileFragment extends Fragment {
 
-    TextView emailProfile, mName, mPermission;
+    private static final int PICK_IMAGE_REQUEST = 1;
     FirebaseFirestore fStore;
     FirebaseAuth fAuth;
     String userID;
+    ImageView mProfileImage;
     private com.csc131.deltamedicalteam.databinding.FragmentProfileBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -58,6 +76,12 @@ public class ProfileFragment extends Fragment {
         Button mEditButton = root.findViewById(R.id.profile_edit_button);
         Button  mSaveButton = root.findViewById(R.id.profile_save_button);
         Button mResetPwdBtn = root.findViewById(R.id.reset_pwd_btn);
+
+        mProfileImage = root.findViewById(R.id.image);
+        // Set click listener for profile image
+        mProfileImage.setOnClickListener(v -> selectProfilePicture());
+
+
 
 
         //init Database
@@ -157,10 +181,130 @@ public class ProfileFragment extends Fragment {
                     });
         });
 
+        mResetPwdBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EditText resetMail = new EditText(v.getContext());
+                AlertDialog.Builder passwordResetDialog = new AlertDialog.Builder(v.getContext());
+                passwordResetDialog.setTitle("Reset Password");
+                passwordResetDialog.setMessage("Enter email address to receive reset link");
+                passwordResetDialog.setView(resetMail);
+
+                passwordResetDialog.setPositiveButton("Add", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //extract email and send reset link
+                        String mail = resetMail.getText().toString();
+                        fAuth.sendPasswordResetEmail(mail).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Toast.makeText(getContext(), "Reset Link Sent to Your Email.", Toast.LENGTH_SHORT).show();
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(getContext(), "Error ! Reset Link is Not Sent" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        });
+
+                    }
+                });
+
+
+                passwordResetDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //Close
+
+                    }
+                });
+                passwordResetDialog.create().show();
+            }
+        });
+
+
+
+
+
+
+
         return root;
 
 
     }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        // Load profile picture when the fragment starts
+        loadProfilePicture();
+    }
+
+    private void loadProfilePicture() {
+        DocumentReference userRef = fStore.collection("users").document(userID);
+        userRef.get().addOnSuccessListener(documentSnapshot -> {
+            if (documentSnapshot.exists()) {
+                String profilePictureUrl = documentSnapshot.getString("profilePictureUrl");
+                if (profilePictureUrl != null && !profilePictureUrl.isEmpty()) {
+                    Glide.with(requireContext()).load(profilePictureUrl).into(mProfileImage);
+                } else {
+                    // If profile picture URL is not available, you can set a default image or hide the ImageView
+                    // For example:
+                     mProfileImage.setImageResource(R.drawable.photo_male_1);
+                    // or
+                    // mProfileImage.setVisibility(View.GONE);
+                }
+            }
+        }).addOnFailureListener(e -> {
+            Log.e(TAG, "Error loading profile picture URL from Firestore: " + e.getMessage());
+        });
+    }
+    // Method to handle image selection (e.g., from gallery or camera)
+    private void selectProfilePicture() {
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(intent, PICK_IMAGE_REQUEST);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK && data != null && data.getData() != null) {
+            Uri imageUri = data.getData();
+            uploadProfilePicture(imageUri);
+        }
+    }
+
+    private void uploadProfilePicture(Uri imageUri) {
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReference().child("profile_pictures/" + userID);
+
+        storageRef.putFile(imageUri)
+                .addOnSuccessListener(taskSnapshot -> {
+                    storageRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                        String profilePictureUrl = uri.toString();
+                        updateProfilePictureInFirestore(profilePictureUrl);
+                    });
+                })
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "Error uploading profile picture: " + e.getMessage());
+                    Toast.makeText(getContext(), "Failed to upload profile picture", Toast.LENGTH_SHORT).show();
+                });
+    }
+
+    private void updateProfilePictureInFirestore(String profilePictureUrl) {
+        DocumentReference userRef = fStore.collection("users").document(userID);
+        userRef.update("profilePictureUrl", profilePictureUrl)
+                .addOnSuccessListener(aVoid -> {
+                    // Update the profile image ImageView with the new profile picture URL
+                    Glide.with(requireContext()).load(profilePictureUrl).into(mProfileImage);
+                    Toast.makeText(getContext(), "Profile picture updated successfully", Toast.LENGTH_SHORT).show();
+                })
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "Error updating profile picture URL in Firestore: " + e.getMessage());
+                    Toast.makeText(getContext(), "Failed to update profile picture", Toast.LENGTH_SHORT).show();
+                });
+    }
+
 
     @Override
     public void onDestroyView() {

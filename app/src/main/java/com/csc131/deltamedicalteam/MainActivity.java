@@ -2,14 +2,18 @@ package com.csc131.deltamedicalteam;
 
 import static android.content.ContentValues.TAG;
 
+import static androidx.core.content.ContentProviderCompat.requireContext;
+
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
 import android.content.Intent;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.csc131.deltamedicalteam.ui.appointment.AddAppointmentFragment;
 import com.csc131.deltamedicalteam.utils.Tools;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -44,6 +48,8 @@ public class MainActivity extends AppCompatActivity {
      TextView fullNameTextView;
      TextView permissionTextView;
      TextView emailTextView, verifyMsg;
+
+    ImageView profileImage;
     FirebaseAuth fAuth;
     FirebaseFirestore fStore;
     String userID;
@@ -192,10 +198,13 @@ public class MainActivity extends AppCompatActivity {
         });
 
         View headerView = navigationView.getHeaderView(0);
+        profileImage = headerView.findViewById(R.id.imageView);
         fullNameTextView = headerView.findViewById(R.id.add_patient_fName);
         permissionTextView = headerView.findViewById(R.id.permission);
         emailTextView = headerView.findViewById(R.id.profileEmail);
         verifyMsg = headerView.findViewById(R.id.notverifymessage);
+
+        loadProfilePicture(profileImage);
 
         FirebaseUser fuser = fAuth.getCurrentUser();
 
@@ -280,43 +289,25 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    // Method to check if the user has admin permission
-//    public void checkAdminPermission(final PermissionCallback callback) {
-//        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-//        if (user != null) {
-//            FirebaseFirestore db = FirebaseFirestore.getInstance();
-//            DocumentReference userRef = db.collection("users").document(user.getUid());
-//            userRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-//                @Override
-//                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-//                    if (task.isSuccessful()) {
-//                        DocumentSnapshot document = task.getResult();
-//                        if (document.exists()) {
-//                            String permission = document.getString("permission");
-//                            Log.e(TAG, "db check permission = " + permission);
-//                            if ("admin".equalsIgnoreCase(permission)) {
-//                                callback.onPermissionCheck(true);
-//                            } else {
-//                                callback.onPermissionCheck(false);
-//                            }
-//                        } else {
-//                            // User data does not exist
-//                            callback.onPermissionCheck(false);
-//                            Log.e(TAG, "db not exist");
-//                        }
-//                    } else {
-//                        // Error getting document
-//                        callback.onPermissionCheck(false);
-//                        Log.e(TAG, "Error getting document: ", task.getException());
-//                    }
-//                }
-//            });
-//        } else {
-//            // User is not authenticated
-//            callback.onPermissionCheck(false);
-//            Log.e(TAG, "user not auth");
-//        }
-//    }
+    private void loadProfilePicture(ImageView profileImage) {
+        DocumentReference userRef = fStore.collection("users").document(userID);
+        userRef.get().addOnSuccessListener(documentSnapshot -> {
+            if (documentSnapshot.exists()) {
+                String profilePictureUrl = documentSnapshot.getString("profilePictureUrl");
+                if (profilePictureUrl != null && !profilePictureUrl.isEmpty()) {
+                    Glide.with(this).load(profilePictureUrl).into(profileImage);
+                } else {
+                    // If profile picture URL is not available, you can set a default image or hide the ImageView
+                    profileImage.setImageResource(R.drawable.photo_male_1);
+                    // or
+                    // profileImage.setVisibility(View.GONE);
+                }
+            }
+        }).addOnFailureListener(e -> {
+            Log.e(TAG, "Error loading profile picture URL from Firestore: " + e.getMessage());
+        });
+    }
+
 
     public interface PermissionCallback {
         void onPermissionCheck(boolean isAdmin);
