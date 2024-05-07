@@ -22,6 +22,7 @@ firebaseInappmessaging = "20.4.0"
 activity = "1.8.0"
 kotlin = "1.9.0"
 firebaseStorage = "20.3.0"
+core = "1.13.1"
 
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -45,6 +46,7 @@ recyclerview = { group = "androidx.recyclerview", name = "recyclerview", version
 firebase-inappmessaging = { group = "com.google.firebase", name = "firebase-inappmessaging", version.ref = "firebaseInappmessaging" }
 activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 firebase-storage = { group = "com.google.firebase", name = "firebase-storage", version.ref = "firebaseStorage" }
+core = { group = "androidx.core", name = "core", version.ref = "core" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

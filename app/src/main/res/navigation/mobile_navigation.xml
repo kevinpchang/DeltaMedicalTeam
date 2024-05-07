@@ -135,7 +135,7 @@
         android:label="@string/menu_profile"
         tools:layout="@layout/fragment_profile_illness" >
         <argument
-            android:name="medication"
+            android:name="illness"
             app:argType="java.lang.String" />
     </fragment>
 
