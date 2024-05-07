@@ -20,6 +20,7 @@ public class User implements Parcelable {
     private String address;
 
     private String location;
+    private String profilePictureUrl;
 
     public User() {
         // Default constructor required for Firestore deserialization
@@ -178,5 +179,13 @@ public class User implements Parcelable {
             // Handle cases where either permission or userID is null
             return null;
         }
+    }
+
+    public String getProfilePictureUrl() {
+        return profilePictureUrl;
+    }
+
+    public void setProfilePictureUrl(String profilePictureUrl) {
+        this.profilePictureUrl = profilePictureUrl;
     }
 }

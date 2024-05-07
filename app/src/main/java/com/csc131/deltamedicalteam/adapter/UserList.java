@@ -10,6 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.csc131.deltamedicalteam.R;
 import com.csc131.deltamedicalteam.model.User;
 
@@ -93,6 +94,13 @@ public void setFilteredList(List<User> filteredList ) {
             viewHolder.email.setText(user.getEmail());
             viewHolder.phone.setText(user.getPhone());
             viewHolder.permission.setText(user.getPermission());
+
+            // Load profile picture using Glide
+            Glide.with(ctx)
+                    .load(user.getProfilePictureUrl()) // Assuming the method is implemented in the User class
+                    .placeholder(R.drawable.photo_male_1) // Placeholder image while loading
+                    .error(R.drawable.ic_error) // Error image if loading fails
+                    .into(viewHolder.image);
 
             viewHolder.lyt_parent.setOnClickListener(new View.OnClickListener() {
                 @Override

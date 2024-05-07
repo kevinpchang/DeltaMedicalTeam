@@ -91,10 +91,15 @@ public class UserManagerFragment extends Fragment {
                         User user = documentSnapshot.toObject(User.class);
 //                        patient.setDocumentId(documentSnapshot.getId());
 
-                        assert user != null;
-                        user.fromDocumentSnapshot(documentSnapshot);
-                        // Add the patient to the list
-                        items.add(user);
+                        if (user != null) {
+                            user.fromDocumentSnapshot(documentSnapshot);
+                            // Fetch profile picture URL from the user object
+                            String profilePictureUrl = user.getProfilePictureUrl();
+                            // Set the profile picture URL to the user object
+                            user.setProfilePictureUrl(profilePictureUrl);
+                            // Add the user to the list
+                            items.add(user);
+                        }
 //                        // Retrieve user information from Firestore document
 //                        String documentId = documentSnapshot.getId();
 //                        String fName = documentSnapshot.getString("fName");

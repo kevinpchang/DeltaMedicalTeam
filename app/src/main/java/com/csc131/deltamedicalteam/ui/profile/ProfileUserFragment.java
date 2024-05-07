@@ -1,5 +1,7 @@
 package com.csc131.deltamedicalteam.ui.profile;
 
+import static android.content.ContentValues.TAG;
+
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.net.Uri;
@@ -11,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,6 +21,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.bumptech.glide.Glide;
 import com.csc131.deltamedicalteam.R;
 import com.csc131.deltamedicalteam.model.User;
 import com.google.firebase.firestore.DocumentReference;
@@ -26,6 +30,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 public class ProfileUserFragment extends Fragment {
 
     FirebaseFirestore fStore;
+
+    ImageView profileImage;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -41,6 +47,26 @@ public class ProfileUserFragment extends Fragment {
         User user = args.getUser();
 
         fStore = FirebaseFirestore.getInstance();
+        DocumentReference userRef = fStore.collection("users").document(user.getDocumentId());
+
+
+        profileImage = view.findViewById(R.id.image);
+
+        userRef.get().addOnSuccessListener(documentSnapshot -> {
+            if (documentSnapshot.exists()) {
+                String profilePictureUrl = documentSnapshot.getString("profilePictureUrl");
+                if (profilePictureUrl != null && !profilePictureUrl.isEmpty()) {
+                    Glide.with(this).load(profilePictureUrl).into(profileImage);
+                } else {
+                    // If profile picture URL is not available, you can set a default image or hide the ImageView
+                    profileImage.setImageResource(R.drawable.photo_male_1);
+                    // or
+                    // profileImage.setVisibility(View.GONE);
+                }
+            }
+        }).addOnFailureListener(e -> {
+            Log.e(TAG, "Error loading profile picture URL from Firestore: " + e.getMessage());
+        });
 
         // Display the user information
         TextView nameTextView = view.findViewById(R.id.profile_name);
@@ -111,7 +137,7 @@ public class ProfileUserFragment extends Fragment {
             String newLocation = locationEditText.getText().toString();
             String newEmail = emailEditText.getText().toString();
 
-            DocumentReference userRef = fStore.collection("users").document(user.getDocumentId());
+//            DocumentReference userRef = fStore.collection("users").document(user.getDocumentId());
             userRef.update(
                             "permission",newPermission,
                             "phone", newPhone,
@@ -190,6 +216,8 @@ public class ProfileUserFragment extends Fragment {
         intent.setData(Uri.parse("smsto:" + phoneNumber));
         startActivity(intent);
     }
+
+
 
 
 
