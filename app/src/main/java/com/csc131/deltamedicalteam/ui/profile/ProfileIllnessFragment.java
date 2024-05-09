@@ -36,7 +36,7 @@ public class ProfileIllnessFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        com.csc131.deltamedicalteam.databinding.FragmentProfileUserBinding binding = com.csc131.deltamedicalteam.databinding.FragmentProfileUserBinding.inflate(inflater, container, false);
+        com.csc131.deltamedicalteam.databinding.FragmentProfileIllnessBinding binding = com.csc131.deltamedicalteam.databinding.FragmentProfileIllnessBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
     @Override
@@ -56,7 +56,7 @@ public class ProfileIllnessFragment extends Fragment {
         TextView symptomTextView = view.findViewById(R.id.textview_symptom);
         TextView treatmentTextView = view.findViewById(R.id.textview_treatment);
 
-        ImageButton mPrint = view.findViewById(R.id.imageButton_medicationPrint);
+        ImageButton mPrint = view.findViewById(R.id.imageButton_illnessPrint);
 
 
         EditText descriptionEditText = view.findViewById(R.id.editTextTextMultiLine_illnessDescription);
@@ -141,8 +141,8 @@ public class ProfileIllnessFragment extends Fragment {
             String newSymptom = symptomEditText.getText().toString();
             String newTreatment = treatmentEditText.getText().toString();
 
-            DocumentReference medicationRef = fStore.collection("illnesses").document(health);
-            medicationRef.update(
+            DocumentReference illnessRef = fStore.collection("illnesses").document(health);
+            illnessRef.update(
                             "description",newDescription,
                             "prevention", newPrevention,
                             "severity", newSeverity,

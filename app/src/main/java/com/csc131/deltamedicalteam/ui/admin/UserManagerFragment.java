@@ -89,7 +89,6 @@ public class UserManagerFragment extends Fragment {
                     items = new ArrayList<>();
                     for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
                         User user = documentSnapshot.toObject(User.class);
-//                        patient.setDocumentId(documentSnapshot.getId());
 
                         if (user != null) {
                             user.fromDocumentSnapshot(documentSnapshot);
@@ -100,21 +99,6 @@ public class UserManagerFragment extends Fragment {
                             // Add the user to the list
                             items.add(user);
                         }
-//                        // Retrieve user information from Firestore document
-//                        String documentId = documentSnapshot.getId();
-//                        String fName = documentSnapshot.getString("fName");
-//                        String lName = documentSnapshot.getString("lName");
-//                        String email = documentSnapshot.getString("email");
-//                        String phoneNumber = documentSnapshot.getString("phone");
-//                        String permission = documentSnapshot.getString("permission");
-//                        String address = documentSnapshot.getString("address");
-//                        String location = documentSnapshot.getString("location");
-//
-//
-//
-//                        // Create User object with user information
-//                        User user = new User(documentId, email, fName, lName, permission, phoneNumber, address, location);
-//                        items.add(user);
                     }
 
                     // Set data and list adapter

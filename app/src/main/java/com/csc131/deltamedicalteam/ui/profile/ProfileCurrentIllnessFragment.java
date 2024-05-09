@@ -3,9 +3,17 @@ package com.csc131.deltamedicalteam.ui.profile;
 import static android.content.ContentValues.TAG;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.CancellationSignal;
+import android.os.ParcelFileDescriptor;
+import android.print.PageRange;
+import android.print.PrintAttributes;
+import android.print.PrintDocumentAdapter;
+import android.print.PrintDocumentInfo;
+import android.print.PrintManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,6 +33,10 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 
 public class ProfileCurrentIllnessFragment extends Fragment {
 
@@ -53,7 +65,7 @@ public class ProfileCurrentIllnessFragment extends Fragment {
         TextView symptomTextView = view.findViewById(R.id.textview_symptom);
         TextView treatmentTextView = view.findViewById(R.id.textview_treatment);
 
-        ImageButton mPrint = view.findViewById(R.id.imageButton_medicationPrint);
+        ImageButton mPrint = view.findViewById(R.id.imageButton_illnessPrint);
 
 
         DocumentReference MedRef = fStore.collection("illnesses").document(health);
@@ -92,14 +104,14 @@ public class ProfileCurrentIllnessFragment extends Fragment {
         });
 
         // Adding OnClickListener to mPrint button
-        mPrint.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Create a PrintManager instance
+//        mPrint.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+////                 Create a PrintManager instance
 //                PrintManager printManager = (PrintManager) requireContext().getSystemService(Context.PRINT_SERVICE);
 //
 //                // Set the print job name
-//                String jobName = getString(R.string.app_name) + " Document";
+//                String jobName = "Illness Document";
 //
 //                // Start a print job
 //                printManager.print(jobName, new PrintDocumentAdapter() {
@@ -136,10 +148,12 @@ public class ProfileCurrentIllnessFragment extends Fragment {
 //                        PrintWriter writer = new PrintWriter(new OutputStreamWriter(outputStream));
 //
 //                        // Write medication information to the output stream
-//                        writer.println("Medication Name: " + med);
-//                        writer.println("Description: " + medDescription);
-//                        writer.println("Dosage: " + medDosage);
-//                        writer.println("Frequency: " + medFrequency);
+//                        writer.println("Illness Name: " + health);
+//                        writer.println("Description: " + illDescription);
+//                        writer.println("Prevention: " + illPrevention);
+//                        writer.println("Severity: " + illSeverity);
+//                        writer.println("Symptom: " + illSymptom);
+//                        writer.println("Treatment: " + illTreatment);
 //
 //                        // Close the writer
 //                        writer.close();
@@ -149,9 +163,9 @@ public class ProfileCurrentIllnessFragment extends Fragment {
 //
 //                    }
 //                }, null);
-                Toast.makeText(requireContext(), "Printing medication information", Toast.LENGTH_SHORT).show();
-            }
-        });
+//                Toast.makeText(requireContext(), "Printing medication information", Toast.LENGTH_SHORT).show();
+//            }
+//        });
 
 
 

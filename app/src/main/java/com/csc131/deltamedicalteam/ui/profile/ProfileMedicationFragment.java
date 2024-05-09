@@ -33,7 +33,7 @@ public class ProfileMedicationFragment extends Fragment {
     String medDescription, medDosage, medFrequency;
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        com.csc131.deltamedicalteam.databinding.FragmentProfileUserBinding binding = com.csc131.deltamedicalteam.databinding.FragmentProfileUserBinding.inflate(inflater, container, false);
+        com.csc131.deltamedicalteam.databinding.FragmentProfileMedicationBinding binding = com.csc131.deltamedicalteam.databinding.FragmentProfileMedicationBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
     @Override

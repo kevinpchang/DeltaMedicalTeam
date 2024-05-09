@@ -86,6 +86,19 @@ public class IllnessManagerFragment extends Fragment {
                     mAdapter = new StringList(getActivity(), illnessList);
                     recyclerView.setAdapter(mAdapter);
 
+
+                    // On item list clicked
+                    mAdapter.setOnItemClickListener(new StringList.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(View view, String obj, int position) {
+                            // Inside the click listener where you navigate to ProfileUserFragment
+                            String selectedIllness = illnessList.get(position);
+                            IllnessManagerFragmentDirections.ActionIllnessManagerFragmentToNavProfileIllness action =
+                                    IllnessManagerFragmentDirections.actionIllnessManagerFragmentToNavProfileIllness(selectedIllness);
+                            Navigation.findNavController(view).navigate(action);
+                        }
+                    });
+
                     searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                         @Override
                         public boolean onQueryTextSubmit(String query) {
