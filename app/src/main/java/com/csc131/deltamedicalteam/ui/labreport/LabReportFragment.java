@@ -18,9 +18,11 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.csc131.deltamedicalteam.R;
+import com.csc131.deltamedicalteam.adapter.StringList;
 import com.csc131.deltamedicalteam.model.Patient;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -29,9 +31,11 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.ListResult;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,7 +57,10 @@ public class LabReportFragment extends Fragment {
     private Spinner patientSpinner;
     RecyclerView recyclerViewReport, recyclerViewPhoto, recyclerViewVideo;
     TabLayout tabLayout;
-    
+
+    private StringList reportListAdapter;
+    private StringList photoListAdapter;
+    private StringList radListAdapter;
     private int tabLayoutPosition;
     private String tabName;
     private Patient mCurrentPatient;
@@ -72,6 +79,10 @@ public class LabReportFragment extends Fragment {
         recyclerViewPhoto = rootView.findViewById(R.id.RecyclerView_photo);
         recyclerViewVideo = rootView.findViewById(R.id.RecyclerView_current_video);
 
+        recyclerViewReport.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerViewPhoto.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerViewVideo.setLayoutManager(new LinearLayoutManager(getActivity()));
+
         //button
         mUploadButton = rootView.findViewById(R.id.current_lab_report_edit);
 
@@ -84,10 +95,7 @@ public class LabReportFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 mCurrentPatient = (Patient) parent.getItemAtPosition(position);
-                String docID = mCurrentPatient.getDocumentId();
-
-                //StorageReference patientStorageRef = storageRef.child("patients/"+"test"+"/");
-                //StorageReference folderRef = patientStorageRef.child("profile.jpg");
+                updateTabs();
             }
 
             @Override
@@ -96,12 +104,10 @@ public class LabReportFragment extends Fragment {
             }
         });
 
+
         mUploadButton.setOnClickListener(v -> {
             openFilePicker();
         });
-
-
-
                 // Set up OnTabSelectedListener
                 tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
                     @Override
@@ -109,6 +115,7 @@ public class LabReportFragment extends Fragment {
                         // Show corresponding RecyclerView and hide others
                         switch (tab.getPosition()) {
                             case 0:
+                                updateTabs();
                                 recyclerViewReport.setVisibility(View.VISIBLE);
                                 recyclerViewPhoto.setVisibility(View.GONE);
                                 recyclerViewVideo.setVisibility(View.GONE);
@@ -116,6 +123,7 @@ public class LabReportFragment extends Fragment {
                                 tabName = "lab_reports";
                                 break;
                             case 1:
+                                updateTabs();
                                 recyclerViewReport.setVisibility(View.GONE);
                                 recyclerViewPhoto.setVisibility(View.VISIBLE);
                                 recyclerViewVideo.setVisibility(View.GONE);
@@ -123,6 +131,7 @@ public class LabReportFragment extends Fragment {
                                 tabName = "photos";
                                 break;
                             case 2:
+                                updateTabs();
                                 recyclerViewReport.setVisibility(View.GONE);
                                 recyclerViewPhoto.setVisibility(View.GONE);
                                 recyclerViewVideo.setVisibility(View.VISIBLE);
@@ -135,6 +144,7 @@ public class LabReportFragment extends Fragment {
                     @Override
                     public void onTabUnselected(TabLayout.Tab tab) {
                         // No action needed
+                        updateTabs();
                         recyclerViewReport.setVisibility(View.VISIBLE);
                         recyclerViewPhoto.setVisibility(View.GONE);
                         recyclerViewVideo.setVisibility(View.GONE);
@@ -148,49 +158,6 @@ public class LabReportFragment extends Fragment {
                         // No action needed
                     }
                 });
-
-        //health_condition_edit button onClick
-//        mAddEditButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                EditText resetMail = new EditText(v.getContext());
-//                AlertDialog.Builder passwordResetDialog = new AlertDialog.Builder(v.getContext());
-//                passwordResetDialog.setTitle("Add more field");
-//                passwordResetDialog.setMessage("Enter email address to receive reset link");
-//                passwordResetDialog.setView(resetMail);
-//
-//                passwordResetDialog.setPositiveButton("Add", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//                        //extract email and send reset link
-//                        String mail = resetMail.getText().toString();
-//                        fAuth.sendPasswordResetEmail(mail).addOnSuccessListener(new OnSuccessListener<Void>() {
-//                            @Override
-//                            public void onSuccess(Void aVoid) {
-//                                Toast.makeText(Login.this, "Reset Link Sent to Your Email.", Toast.LENGTH_SHORT).show();
-//                            }
-//                        }).addOnFailureListener(new OnFailureListener() {
-//                            @Override
-//                            public void onFailure(@NonNull Exception e) {
-//                                Toast.makeText(Login.this, "Error ! Reset Link is Not Sent" + e.getMessage(), Toast.LENGTH_SHORT).show();
-//                            }
-//                        });
-//
-//                    }
-//                });
-//
-//
-//                passwordResetDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//                        //Close
-//
-//                    }
-//                });
-//                passwordResetDialog.create().show();
-//            }
-//        });
-
         return rootView;
     }
 
@@ -230,11 +197,11 @@ public class LabReportFragment extends Fragment {
         patientSpinner.setAdapter(adapter);
     }
 
-    private void registerFilePicker(){
+    private void registerFilePicker() {
         filePicker = registerForActivityResult(new ActivityResultContracts.GetContent(), uri -> onPickFile(uri));
     }
 
-    private void openFilePicker(){
+    private void openFilePicker() {
         switch (tabLayoutPosition){
             case 0:
                 filePicker.launch("application/pdf");
@@ -248,7 +215,7 @@ public class LabReportFragment extends Fragment {
         }
     }
 
-    private void onPickFile(Uri uri){
+    private void onPickFile(Uri uri) {
         if(uri != null){
             StorageReference tempRef = storageRef.child("patients/"+mCurrentPatient.getDocumentId()+"/"+tabName+"/"+uri.getLastPathSegment());
             UploadTask uploadTask = tempRef.putFile(uri);
@@ -256,14 +223,79 @@ public class LabReportFragment extends Fragment {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                     Toast.makeText(getActivity(), "File Uploaded Successfully", Toast.LENGTH_SHORT).show();
+                    updateTabs();
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
                     Toast.makeText(getActivity(), "An Error Occurred While Uploading", Toast.LENGTH_SHORT).show();
+                    updateTabs();
                 }
             });
         }
+    }
+
+    private void updateTabs() {
+        StorageReference reportRef = storageRef.child("patients/"+mCurrentPatient.getDocumentId()+"/lab_reports");
+        List<String> reportListFiles = new ArrayList<>();
+        reportRef.listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
+            @Override
+            public void onSuccess(ListResult listResult) {
+                List<StorageReference> results = listResult.getItems();
+                for(int i = 0; i < results.size(); i++) {
+                    String resultsURL = results.get(i).toString();
+                    Log.d("MYTAG", resultsURL);
+                    int index = resultsURL.indexOf("lab_reports");
+                    String tempFileName = resultsURL.substring(index);
+                    String unconvertedFileName = tempFileName.substring("lab_reports/".length());
+                    String fileName = URLDecoder.decode(unconvertedFileName);
+                    reportListFiles.add(fileName);
+                }
+                reportListAdapter = new StringList(getActivity(), reportListFiles);
+                recyclerViewReport.setAdapter(reportListAdapter);
+            }
+        });
+
+        StorageReference photoRef = storageRef.child("patients/"+mCurrentPatient.getDocumentId()+"/photos");
+        List<String> photoListFiles = new ArrayList<>();
+        photoRef.listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
+            @Override
+            public void onSuccess(ListResult listResult) {
+                List<StorageReference> results = listResult.getItems();
+                for(int i = 0; i < results.size(); i++) {
+                    String resultsURL = results.get(i).toString();
+                    Log.d("MYTAG", resultsURL);
+                    int index = resultsURL.indexOf("photos");
+                    String tempFileName = resultsURL.substring(index);
+                    String unconvertedFileName = tempFileName.substring("photos/".length());
+                    String fileName = URLDecoder.decode(unconvertedFileName);
+                    photoListFiles.add(fileName);
+                }
+                photoListAdapter = new StringList(getActivity(), photoListFiles);
+                recyclerViewPhoto.setAdapter(photoListAdapter);
+            }
+        });
+
+        StorageReference radRef = storageRef.child("patients/"+mCurrentPatient.getDocumentId()+"/radiology");
+        List<String> radListFiles = new ArrayList<>();
+        radRef.listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
+            @Override
+            public void onSuccess(ListResult listResult) {
+                List<StorageReference> results = listResult.getItems();
+                Log.d("MYTAG", "SUCCESS");
+                for(int i = 0; i < results.size(); i++) {
+                    String resultsURL = results.get(i).toString();
+                    Log.d("MYTAG", resultsURL);
+                    int index = resultsURL.indexOf("radiology");
+                    String tempFileName = resultsURL.substring(index);
+                    String unconvertedFileName = tempFileName.substring("radiology/".length());
+                    String fileName = URLDecoder.decode(unconvertedFileName);
+                    radListFiles.add(fileName);
+                }
+                radListAdapter = new StringList(getActivity(), radListFiles);
+                recyclerViewVideo.setAdapter(radListAdapter);
+            }
+        });
     }
 
     @Override
