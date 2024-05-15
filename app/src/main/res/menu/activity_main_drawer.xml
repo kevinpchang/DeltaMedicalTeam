@@ -3,19 +3,35 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
-    <group android:checkableBehavior="single">
+    <group >
         <item
             android:id="@+id/nav_home"
             android:icon="@drawable/ic_auto_awesome"
             android:title="@string/menu_home" />
+    </group>
+    <group >
         <item
-            android:id="@+id/patientManagerFragment"
-            android:icon="@drawable/ic_peoples_outline"
-            android:title="@string/menu_patientManagement" />
+            android:id="@+id/userManagerFragment"
+            android:icon="@drawable/ic_peoples"
+            android:title="@string/menu_user" />
+        <item
+            android:id="@+id/medicationManagerFragment"
+            android:icon="@drawable/ic_peoples"
+            android:title="@string/medication_database" />
+        <item
+            android:id="@+id/illnessManagerFragment"
+            android:icon="@drawable/ic_peoples"
+            android:title="@string/illness_database" />
+    </group>
+    <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_appointment"
             android:icon="@drawable/ic_event"
             android:title="@string/menu_appointment" />
+        <item
+            android:id="@+id/patientManagerFragment"
+            android:icon="@drawable/ic_peoples_outline"
+            android:title="@string/menu_patientManagement" />
         <item
             android:id="@+id/nav_health_condition"
             android:icon="@drawable/ic_accessibility"
@@ -39,20 +55,6 @@
 <!--            android:id="@+id/nav_slideshow"-->
 <!--            android:icon="@drawable/ic_person_outline"-->
 <!--            android:title="@string/menu_profile" />-->
-        <item
-            android:id="@+id/userManagerFragment"
-            android:icon="@drawable/ic_peoples"
-            android:title="@string/menu_user" />
-
-        <item
-            android:id="@+id/medicationManagerFragment"
-            android:icon="@drawable/ic_peoples"
-            android:title="@string/medication_database" />
-
-        <item
-            android:id="@+id/illnessManagerFragment"
-            android:icon="@drawable/ic_peoples"
-            android:title="@string/illness_database" />
 
 
         <item
