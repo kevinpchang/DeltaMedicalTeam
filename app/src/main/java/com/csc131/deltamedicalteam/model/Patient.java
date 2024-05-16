@@ -30,6 +30,8 @@ public class Patient implements Parcelable {
     private List<String> pastMedications;
     private List<String> currentIllnesses;
     private List<String> pastIllnesses;
+
+    private String profilePictureUrl;
   
 
 
@@ -197,6 +199,9 @@ public class Patient implements Parcelable {
                 });
     }
 
+
+
+
     public void fromDocumentSnapshot(DocumentSnapshot documentSnapshot) {
         if (documentSnapshot != null && documentSnapshot.exists()) {
             // Extract data from the documentSnapshot
@@ -251,6 +256,14 @@ public class Patient implements Parcelable {
     @Override
     public int describeContents() {
         return 0;
+    }
+
+    public String getProfilePictureUrl() {
+        return profilePictureUrl;
+    }
+
+    public void setProfilePictureUrl(String profilePictureUrl) {
+        this.profilePictureUrl = profilePictureUrl;
     }
 
 

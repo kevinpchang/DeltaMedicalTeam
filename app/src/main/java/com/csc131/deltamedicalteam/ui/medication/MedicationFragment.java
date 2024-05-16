@@ -23,10 +23,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.csc131.deltamedicalteam.R;
-import com.csc131.deltamedicalteam.adapter.PastMedicationList;
 import com.csc131.deltamedicalteam.adapter.StringList;
 import com.csc131.deltamedicalteam.helper.SwipeItemTouchHelper;
-import com.csc131.deltamedicalteam.model.Medication;
 import com.csc131.deltamedicalteam.model.Patient;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.firestore.CollectionReference;
