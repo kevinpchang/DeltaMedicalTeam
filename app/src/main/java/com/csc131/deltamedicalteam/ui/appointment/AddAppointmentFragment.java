@@ -92,22 +92,37 @@ public class AddAppointmentFragment extends Fragment {
         datePickButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // Create a MaterialDatePicker builder
                 MaterialDatePicker.Builder<Long> materialDateBuilder = MaterialDatePicker.Builder.datePicker();
+                // Set the title for the date picker
                 materialDateBuilder.setTitleText("Select date");
+                // Build the MaterialDatePicker
                 MaterialDatePicker<Long> materialDatePicker = materialDateBuilder.build();
+                // Show the MaterialDatePicker
                 materialDatePicker.show(getParentFragmentManager(), "DATE_PICKER");
+
+                // Add a listener for the positive button click (selection)
                 materialDatePicker.addOnPositiveButtonClickListener(new MaterialPickerOnPositiveButtonClickListener<Long>() {
                     @Override
                     public void onPositiveButtonClick(Long selection) {
-                        Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("PST"));
-                        calendar.setTimeInMillis(selection);
+                        // Convert the selected date to Calendar object
+                        Calendar selectedCalendar = Calendar.getInstance();
+                        selectedCalendar.setTimeInMillis(selection);
+
+                        // Add one day to the selected date
+                        selectedCalendar.add(Calendar.DAY_OF_MONTH, 1);
+
+                        // Format the selected date
                         SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy", Locale.getDefault());
-                        String selectedDate = dateFormat.format(calendar.getTime());
+                        String selectedDate = dateFormat.format(selectedCalendar.getTime());
+
+                        // Set the text of the datePickButton to the selected date
                         datePickButton.setText("DATE PICK: " + selectedDate);
                     }
                 });
             }
         });
+
 
         Button timePickButton = rootView.findViewById(R.id.time_pick);
         timePickButton.setOnClickListener(new View.OnClickListener() {
