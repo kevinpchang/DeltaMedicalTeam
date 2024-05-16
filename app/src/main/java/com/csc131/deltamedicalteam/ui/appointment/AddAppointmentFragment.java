@@ -3,7 +3,6 @@ package com.csc131.deltamedicalteam.ui.appointment;
 import static android.content.ContentValues.TAG;
 
 import android.app.AlertDialog;
-import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,23 +13,23 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
-import android.widget.TimePicker;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
 import com.balysv.materialripple.MaterialRippleLayout;
 import com.csc131.deltamedicalteam.R;
-import com.csc131.deltamedicalteam.model.Appointment;
 import com.csc131.deltamedicalteam.model.Patient;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.datepicker.MaterialDatePicker;
-
-
 import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -39,11 +38,11 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
-import java.util.TimeZone;
-import java.util.UUID;
 
 public class AddAppointmentFragment extends Fragment {
 
@@ -310,27 +309,26 @@ public class AddAppointmentFragment extends Fragment {
 
 
     private void addAppointment(String selectedDate, String selectedTime, String userDocumentId) {
-        // Assuming you have a collection named "appointments" in your Firestore database
-        // You can replace "yourField" with appropriate field names in your Firestore document
-
-        Appointment appointment = new Appointment(((Patient) patientSpinner.getSelectedItem()).getDocumentId(), userDocumentId, mPurpose.getSelectedItem().toString(), selectedTime, selectedDate);
-
-        db.collection("appointments")
-                .add(appointment)
-                .addOnSuccessListener(documentReference -> {
-                    // Appointment added successfully
-                    // You can show a success message to the user
-                    Log.d(TAG, "Appointment added successfully");
-                    // Go back to the previous fragment
-                    requireActivity().getSupportFragmentManager().popBackStack();
-                })
-                .addOnFailureListener(e -> {
-                    // Failed to add appointment
-                    // You can show an error message to the user
-                    Log.e(TAG, "Error adding appointment: " + e.getMessage());
-                    // Show a toast message for error logging
-                    Toast.makeText(requireContext(), "Failed to add appointment. Please try again later.", Toast.LENGTH_SHORT).show();
-                });
+        CollectionReference documentReference = db.collection("appointments");
+        Map<String, Object> appointmentData = new HashMap<>();
+        appointmentData.put("date", selectedDate);
+        appointmentData.put("time", selectedTime);
+        appointmentData.put("userDocumentId", userDocumentId);
+        appointmentData.put("patientDocumentId",((Patient) patientSpinner.getSelectedItem()).getDocumentId());
+        appointmentData.put("purpose",mPurpose.getSelectedItem().toString());
+        appointmentData.put("note", "");
+        documentReference.add(appointmentData).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+            @Override
+            public void onSuccess(DocumentReference documentReference) {
+                Toast.makeText(requireContext(), "Appointment Profile created", Toast.LENGTH_SHORT).show();
+                Navigation.findNavController(requireView()).navigate(R.id.nav_appointment);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(requireContext(), "Failed to create Patient Profile ", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
 }
