@@ -98,7 +98,7 @@ public void setFilteredList(List<User> filteredList ) {
             // Load profile picture using Glide
             Glide.with(ctx)
                     .load(user.getProfilePictureUrl()) // Assuming the method is implemented in the User class
-                    .placeholder(R.drawable.photo_male_1) // Placeholder image while loading
+                    .placeholder(R.drawable.no_avatar) // Placeholder image while loading
                     .error(R.drawable.ic_error) // Error image if loading fails
                     .into(viewHolder.image);
 

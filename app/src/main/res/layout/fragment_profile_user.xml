@@ -82,7 +82,7 @@
                     android:layout_height="100dp"
                     android:background="@drawable/circle_shape"
                     android:padding="2dp"
-                    android:src="@drawable/photo_female_5" />
+                    android:src="@drawable/no_avatar" />
 
                 <ImageButton
                     android:id="@+id/call_btn"

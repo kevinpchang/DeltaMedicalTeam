@@ -57,12 +57,13 @@ public class ProfileUserFragment extends Fragment {
                 String profilePictureUrl = documentSnapshot.getString("profilePictureUrl");
                 if (profilePictureUrl != null && !profilePictureUrl.isEmpty()) {
                     Glide.with(this).load(profilePictureUrl).into(profileImage);
-                } else {
-                    // If profile picture URL is not available, you can set a default image or hide the ImageView
-                    profileImage.setImageResource(R.drawable.photo_male_1);
-                    // or
-                    // profileImage.setVisibility(View.GONE);
                 }
+//                else {
+//                    // If profile picture URL is not available, you can set a default image or hide the ImageView
+//                    profileImage.setImageResource(R.drawable.no_avatar);
+//                    // or
+//                    // profileImage.setVisibility(View.GONE);
+//                }
             }
         }).addOnFailureListener(e -> {
             Log.e(TAG, "Error loading profile picture URL from Firestore: " + e.getMessage());

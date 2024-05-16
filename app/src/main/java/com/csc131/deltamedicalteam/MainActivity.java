@@ -2,36 +2,30 @@ package com.csc131.deltamedicalteam;
 
 import static android.content.ContentValues.TAG;
 
-import static androidx.core.content.ContentProviderCompat.requireContext;
-
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Menu;
-import android.content.Intent;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.csc131.deltamedicalteam.ui.appointment.AddAppointmentFragment;
-import com.csc131.deltamedicalteam.utils.Tools;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.android.material.snackbar.Snackbar;
-import com.google.android.material.navigation.NavigationView;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
 import com.csc131.deltamedicalteam.databinding.ActivityMainBinding;
+import com.csc131.deltamedicalteam.utils.Tools;
+import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -296,9 +290,10 @@ public class MainActivity extends AppCompatActivity {
                 String profilePictureUrl = documentSnapshot.getString("profilePictureUrl");
                 if (profilePictureUrl != null && !profilePictureUrl.isEmpty()) {
                     Glide.with(this).load(profilePictureUrl).into(profileImage);
-                } else {
+                }
+                else {
                     // If profile picture URL is not available, you can set a default image or hide the ImageView
-                    profileImage.setImageResource(R.drawable.photo_male_1);
+                    profileImage.setImageResource(R.drawable.no_avatar);
                     // or
                     // profileImage.setVisibility(View.GONE);
                 }
