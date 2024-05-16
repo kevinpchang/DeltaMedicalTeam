@@ -18,7 +18,6 @@ import androidx.navigation.Navigation;
 
 import com.balysv.materialripple.MaterialRippleLayout;
 import com.csc131.deltamedicalteam.R;
-import com.csc131.deltamedicalteam.model.Medication;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;

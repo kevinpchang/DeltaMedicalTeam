@@ -269,7 +269,7 @@ public class AppointmentManagerFragment extends Fragment {
 
                         // Remove the item from the list
                         Appointment removedAppointment = mAdapter.getAppointments().get(position); // Get the appointment at the specified position
-                        Log.d(TAG, "ID got: " + removedAppointment.getAppointmentId());
+                        Log.d(TAG, "ID got: " + removedAppointment.getDocumentId());
                         mAdapter.getAppointments().remove(position); // Remove the appointment from the list
                         mAdapter.notifyItemRemoved(position); // Notify the adapter about the removal
 
@@ -277,10 +277,10 @@ public class AppointmentManagerFragment extends Fragment {
                         // Additional logic to handle the removal from the database (already implemented in your code)
                         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-                        DocumentReference appointmentRef = db.collection("appointments").document(removedAppointment.getAppointmentId());
+                        DocumentReference appointmentRef = db.collection("appointments").document(removedAppointment.getDocumentId());
                         appointmentRef.delete()
                                 .addOnSuccessListener(aVoid -> {
-                                    Toast.makeText(getContext(), "Appointment Removed: " + removedAppointment.getAppointmentId(), Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getContext(), "Appointment Removed: " + removedAppointment.getDocumentId(), Toast.LENGTH_SHORT).show();
                                     dialog.dismiss(); // Dismiss the dialog after successful deletion
 
                                 })
@@ -310,11 +310,15 @@ public class AppointmentManagerFragment extends Fragment {
 
             });
 
-            // On item list clicked
             mAdapter.setOnItemClickListener((appointment, position) -> {
-                // Inside the click listener where you navigate to ProfileAppointmentFragment
-                Toast.makeText(requireContext(), "Item CLICKED", Toast.LENGTH_SHORT).show();
+                // Inside the click listener where you navigate to ProfileUserFragment
+                Appointment selectedAppointment = appointments.get(position);
+                AppointmentManagerFragmentDirections.ActionAppointmentManagerFragmentToNavProfileAppointment action =
+                        AppointmentManagerFragmentDirections.actionAppointmentManagerFragmentToNavProfileAppointment(selectedAppointment);
+                // Assuming you're inside a fragment, use getView() to get the associated view
+                Navigation.findNavController(requireView()).navigate(action);
             });
+
         }).addOnFailureListener(e -> Log.e(TAG, "Error fetching documents: " + e.getMessage()));
     }
 
@@ -327,7 +331,9 @@ public class AppointmentManagerFragment extends Fragment {
                         // Convert DocumentSnapshot to Appointment object
                         Appointment appointment = documentSnapshot.toObject(Appointment.class);
                         // Call fromDocumentSnapshot() method to populate additional fields
-                        appointment.fromDocumentSnapshot(documentSnapshot);
+                        if (appointment != null) {
+                            appointment.fromDocumentSnapshot(documentSnapshot);
+                        }
                         // Add the appointment to the list
                         updatedAppointments.add(appointment);
                     }
@@ -338,9 +344,7 @@ public class AppointmentManagerFragment extends Fragment {
                         Log.e(TAG, "Adapter is null");
                     }
                 })
-                .addOnFailureListener(e -> {
-                    Log.e(TAG, "Error getting appointments: " + e.getMessage());
-                });
+                .addOnFailureListener(e -> Log.e(TAG, "Error getting appointments: " + e.getMessage()));
     }
 
     // Method to fetch the list of patients, spinner is populated with patient objects
@@ -352,7 +356,6 @@ public class AppointmentManagerFragment extends Fragment {
                         // Get patient id from DocumentSnapshot
                         Patient patient = documentSnapshot.toObject(Patient.class);
 
-                        assert patient != null;
                         patient.fromDocumentSnapshot(documentSnapshot);
 
 

@@ -1,10 +1,10 @@
 package com.csc131.deltamedicalteam.model;
 
-import static android.content.ContentValues.TAG;
+import static com.csc131.deltamedicalteam.utils.Tools.getPatientNameFromId;
+import static com.csc131.deltamedicalteam.utils.Tools.getUserNameFromId;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Log;
 
 import com.google.firebase.firestore.DocumentSnapshot;
 
@@ -16,15 +16,15 @@ public class Appointment implements Parcelable {
     private String time;
     private String date;
 
-    private String appointmentId; // Add this field
+    private String documentId; // Add this field
 
 
     public Appointment() {
         // Default constructor required for Firestore
     }
 
-    public Appointment(String appointmentId,String patientDocumentId, String userDocumentId, String purpose, String time, String date) {
-        this.appointmentId = appointmentId;
+    public Appointment(String documentId,String patientDocumentId, String userDocumentId, String purpose, String time, String date) {
+        this.documentId = documentId;
         this.patientDocumentId = patientDocumentId;
         this.userDocumentId = userDocumentId;
         this.purpose = purpose;
@@ -33,17 +33,10 @@ public class Appointment implements Parcelable {
 
     }
 
-    public Appointment(String patientDocumentId, String userDocumentId, String purpose, String time, String date) {
-        this.appointmentId = appointmentId;
-        this.patientDocumentId = patientDocumentId;
-        this.userDocumentId = userDocumentId;
-        this.purpose = purpose;
-        this.time = time;
-        this.date = date;
 
-    }
 
     protected Appointment(Parcel in) {
+        documentId = in.readString();
         patientDocumentId = in.readString();
         userDocumentId = in.readString();
         purpose = in.readString();
@@ -68,9 +61,19 @@ public class Appointment implements Parcelable {
         return patientDocumentId;
     }
 
+    public String getUserName() {
+
+        return getUserNameFromId(this.userDocumentId);
+    }
+
+    public String getPatientName() {
+        return getPatientNameFromId(this.patientDocumentId);
+    }
+
     public String getUserDocumentId() {
         return userDocumentId;
     }
+
 
     public String getPurpose() {
         return purpose;
@@ -84,36 +87,24 @@ public class Appointment implements Parcelable {
         return date;
     }
 
-    // Getter method for appointmentId
-    public String getAppointmentId() {
-        return appointmentId;
+    // Getter method for documentId
+    public String getDocumentId() {
+        return documentId;
     }
 
 
     public void fromDocumentSnapshot(DocumentSnapshot document) {
         // Check if the DocumentSnapshot is valid and contains data
         if (document != null && document.exists()) {
-            // Retrieve the appointment ID from the DocumentSnapshot
-            appointmentId = document.getId();
+            this.documentId = document.getId();
 
-            // Check if the appointment ID is not null or empty
-            if (appointmentId != null && !appointmentId.isEmpty()) {
-                // Log the retrieved appointment ID for debugging
-                Log.d(TAG, "Appointment ID retrieved: " + appointmentId);
-            } else {
-                // Log an error message if the appointment ID is null or empty
-                Log.e(TAG, "Appointment ID is null or empty");
-            }
 
             // Retrieve other appointment fields as before
-            patientDocumentId = document.getString("patientDocumentId");
-            userDocumentId = document.getString("userDocumentId");
-            purpose = document.getString("purpose");
-            time = document.getString("time");
-            date = document.getString("date");
-        } else {
-            // Log an error message if the DocumentSnapshot is invalid or empty
-            Log.e(TAG, "Invalid or empty DocumentSnapshot");
+            this.patientDocumentId = document.getString("patientDocumentId");
+            this.userDocumentId = document.getString("userDocumentId");
+            this.purpose = document.getString("purpose");
+            this.time = document.getString("time");
+            this.date = document.getString("date");
         }
     }
 //
@@ -127,6 +118,7 @@ public class Appointment implements Parcelable {
     // Parcelable methods
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(documentId);
         dest.writeString(patientDocumentId);
         dest.writeString(userDocumentId);
         dest.writeString(purpose);

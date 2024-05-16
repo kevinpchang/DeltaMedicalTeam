@@ -35,19 +35,17 @@ import androidx.core.graphics.drawable.RoundedBitmapDrawable;
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import androidx.core.widget.NestedScrollView;
 
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
-
-
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.csc131.deltamedicalteam.MainActivity;
+import com.csc131.deltamedicalteam.R;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomappbar.BottomAppBar;
-import com.csc131.deltamedicalteam.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -409,6 +407,47 @@ public class Tools {
         } catch (Exception e) {
             e.printStackTrace();
             return uri;
+        }
+    }
+
+    public static String getPatientNameFromId(String patientId) {
+        // Initialize Firestore
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        // Reference to the patient document
+        DocumentSnapshot documentSnapshot = db.collection("patients").document(patientId).get().getResult();
+
+        if (documentSnapshot.exists()) {
+            // Extract the first and last name from the document
+            String firstName = documentSnapshot.getString("fName");
+            String lastName = documentSnapshot.getString("lName");
+
+            // Concatenate first and last name
+            return firstName + " " + lastName;
+        } else {
+            // Document with the given ID does not exist
+            return null;
+        }
+    }
+
+
+    public static String getUserNameFromId(String userId) {
+        // Initialize Firestore
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        // Reference to the user document
+        DocumentSnapshot documentSnapshot = db.collection("users").document(userId).get().getResult();
+
+        if (documentSnapshot.exists()) {
+            // Extract the first and last name from the document
+            String firstName = documentSnapshot.getString("fName");
+            String lastName = documentSnapshot.getString("lName");
+
+            // Concatenate first and last name
+            return firstName + " " + lastName;
+        } else {
+            // Document with the given ID does not exist
+            return null;
         }
     }
 
