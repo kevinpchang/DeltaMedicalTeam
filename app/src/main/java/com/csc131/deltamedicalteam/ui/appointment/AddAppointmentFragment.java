@@ -2,7 +2,9 @@ package com.csc131.deltamedicalteam.ui.appointment;
 
 import static android.content.ContentValues.TAG;
 
+import android.app.AlertDialog;
 import android.app.TimePickerDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -62,6 +64,14 @@ public class AddAppointmentFragment extends Fragment {
         // Prepare the data source (list of suggestions)
         String[] purposeItems  = {"Analysis", "X-Rays",  "Vaccination", "Doctor Visit"};
 
+        String[][] purposeItemsWithDuration = {
+                //{"Name", "Minute"},
+                {"Analysis", "60"},
+                {"X-Rays", "30"},
+                {"Vaccination", "30"},
+                {"Doctor Visit", "120"}
+        };
+
 
         // Create the adapter
         ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, purposeItems);
@@ -103,23 +113,59 @@ public class AddAppointmentFragment extends Fragment {
         timePickButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Create a TimePickerDialog
-                TimePickerDialog timePickerDialog = new TimePickerDialog(requireContext(), android.R.style.Theme_Holo_Light_Dialog_NoActionBar,
-                        new TimePickerDialog.OnTimeSetListener() {
-                            @Override
-                            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                                // Round the selected minute to the nearest 15 minutes
-                                minute = roundToNearest15Minutes(minute);
+                // Get the selected purpose from the spinner
+                String selectedPurpose = mPurpose.getSelectedItem().toString();
 
-                                // Handle the selected time
-                                String selectedTime = String.format(Locale.getDefault(), "%02d:%02d", hourOfDay, minute);
-                                timePickButton.setText("TIME PICK: " + selectedTime);
-                            }
-                        }, Calendar.getInstance().get(Calendar.HOUR_OF_DAY), Calendar.getInstance().get(Calendar.MINUTE), true);
-                // Show the TimePickerDialog
-                timePickerDialog.show();
+                // Find the corresponding duration for the selected purpose
+                String duration = "";
+                for (String[] item : purposeItemsWithDuration) {
+                    if (item[0].equals(selectedPurpose)) {
+                        duration = item[1];
+                        break;
+                    }
+                }
+
+                // If duration is found, generate available times and display them in a dialog
+                if (!duration.isEmpty()) {
+                    int durationInMinutes = Integer.parseInt(duration);
+
+                    // Calculate the start and end times for the day
+                    Calendar startTime = Calendar.getInstance();
+                    startTime.set(Calendar.HOUR_OF_DAY, 8); // Assuming start time is 8:00 AM
+                    startTime.set(Calendar.MINUTE, 0);
+                    startTime.set(Calendar.SECOND, 0);
+                    Calendar endTime = Calendar.getInstance();
+                    endTime.set(Calendar.HOUR_OF_DAY, 17); // Assuming end time is 5:00 PM
+                    endTime.set(Calendar.MINUTE, 0);
+                    endTime.set(Calendar.SECOND, 0);
+
+                    // Generate available times based on duration
+                    List<String> availableTimes = new ArrayList<>();
+                    while (startTime.before(endTime)) {
+                        availableTimes.add(String.format(Locale.getDefault(), "%02d:%02d", startTime.get(Calendar.HOUR_OF_DAY), startTime.get(Calendar.MINUTE)));
+                        startTime.add(Calendar.MINUTE, durationInMinutes);
+                    }
+
+                    // Display available times in a dialog
+                    AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+                    builder.setTitle("Select Time");
+                    builder.setItems(availableTimes.toArray(new String[0]), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            // Handle the selected time
+                            String selectedTime = availableTimes.get(which);
+                            timePickButton.setText("TIME PICK: " + selectedTime);
+                        }
+                    });
+                    builder.show();
+                } else {
+                    // Show a message indicating that duration for the selected purpose is not available
+                    Toast.makeText(requireContext(), "Duration for the selected purpose is not available", Toast.LENGTH_SHORT).show();
+                }
             }
         });
+
+
 
         MaterialRippleLayout createAppointmentButton = rootView.findViewById(R.id.bt_create_appointment);
 
