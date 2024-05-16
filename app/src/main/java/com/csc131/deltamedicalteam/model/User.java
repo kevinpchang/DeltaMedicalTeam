@@ -72,13 +72,7 @@ public class User implements Parcelable {
         return fName + " " + lName;
     }
 
-    public String getfName() {
-        return fName;
-    }
 
-    public String getlName() {
-        return lName;
-    }
 
     public String getAddress() {
         return address;
@@ -87,13 +81,7 @@ public class User implements Parcelable {
         return location;
     }
 
-    public void setlName(String lName) {
-        this.lName = lName;
-    }
 
-    public void setfName(String fName) {
-        this.fName = fName;
-    }
 
     @NonNull
     @Override
@@ -111,28 +99,7 @@ public class User implements Parcelable {
         this.documentId = documentId;
     }
 
-    public static void getUserFromId(String userId, OnSuccessListener<User> onSuccessListener) {
-        // Initialize Firestore
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        // Reference to the collection where users are stored
-        db.collection("users").document(userId).get()
-                .addOnSuccessListener(documentSnapshot -> {
-                    if (documentSnapshot.exists()) {
-                        // Convert the document snapshot to a User object
-                        User user = documentSnapshot.toObject(User.class);
-                        // Invoke the success listener with the user object
-                        onSuccessListener.onSuccess(user);
-                    } else {
-                        // Document with the given ID does not exist
-                        onSuccessListener.onSuccess(null);
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    // Handle errors by returning null
-                    onSuccessListener.onSuccess(null);
-                });
-    }
 
     public void fromDocumentSnapshot(DocumentSnapshot documentSnapshot) {
         if (documentSnapshot != null && documentSnapshot.exists()) {
@@ -147,6 +114,34 @@ public class User implements Parcelable {
             this.location = documentSnapshot.getString("location");
         }
     }
+
+    public static void getUserFromId(String userId, OnSuccessListener<User> onSuccessListener) {
+        // Initialize Firestore
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        // Reference to the collection where users are stored
+        db.collection("users").document(userId).get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        // Convert the document snapshot to a User object
+                        User user = documentSnapshot.toObject(User.class);
+
+                        assert user != null;
+                        user.fromDocumentSnapshot(documentSnapshot);
+                        // Invoke the success listener with the user object
+                        onSuccessListener.onSuccess(user);
+                    } else {
+                        // Document with the given ID does not exist
+                        onSuccessListener.onSuccess(null);
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    // Handle errors by returning null
+                    onSuccessListener.onSuccess(null);
+                });
+    }
+
+
 
     // Parcelable methods
     @Override
